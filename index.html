@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trashy-0.1: Trash sorting AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#f1f5ea;--ink:#12200a;--mut:#58674a;--line:#dde6cd;--leaf:#3f6b0c;--lime:#c9ef5d;--deep:#12200a;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Bricolage Grotesque",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.nav{position:sticky;top:0;z-index:5;background:rgba(241,245,234,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.wrap,.how,footer{max-width:1200px;margin:0 auto;padding-left:28px;padding-right:28px}
+.nav>div{max-width:none;padding-left:22px;padding-right:22px;display:flex;justify-content:space-between;align-items:center;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.brand svg{width:32px;height:32px}
+.menuwrap{position:relative}
+.burger{width:44px;height:44px;padding:0;display:grid;place-content:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.burger:hover{background:#eef3e4;transform:none}
+.burger i{display:block;width:20px;height:2.5px;border-radius:2px;background:var(--ink);transition:transform .2s,opacity .2s}
+.burger[aria-expanded=true] i:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.burger[aria-expanded=true] i:nth-child(2){opacity:0}
+.burger[aria-expanded=true] i:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+#menu{position:absolute;right:0;top:calc(100% + 10px);min-width:230px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 20px 40px -20px rgba(18,32,10,.4)}
+#menu a{display:block;padding:11px 14px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:700}
+#menu a:hover{background:#eef5da}
+#drop,.how{scroll-margin-top:88px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:56px;align-items:start;padding-top:56px;padding-bottom:72px}
+h1{font-size:clamp(42px,6vw,72px);line-height:1;font-weight:800;letter-spacing:-.04em;margin:0 0 20px;text-wrap:balance}
+.lead{font-size:20px;line-height:1.5;color:var(--mut);margin:0 0 28px;max-width:540px}
+.pill{display:inline-flex;gap:10px;align-items:center;padding:8px 16px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:15px;color:var(--mut);margin-bottom:24px}
+.pill::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:#d9a400}
+.pill.ok::before{background:#4c9a1f;box-shadow:0 0 0 4px rgba(76,154,31,.18)}.pill.err::before{background:#c0483a}
+.pill b{color:var(--ink);font-weight:700}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 24px;background:var(--lime);color:var(--ink);cursor:pointer;transition:background .15s,transform .15s}
+button:hover{background:#bce44a;transform:translateY(-1px)}
+button.ghost{background:none;color:var(--leaf);padding:6px 12px;font-size:15px}
+button.ghost:hover{background:#e3ecd0;transform:none}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+#drop{background:#fff;border:2px dashed #bccf9b;border-radius:24px;padding:48px 24px;text-align:center;box-shadow:0 24px 48px -32px rgba(18,32,10,.35);transition:background .2s,border-color .2s,transform .2s}
+#drop.over{background:#f4fadf;border-color:var(--leaf);transform:scale(1.01)}
+#drop .ic{width:64px;height:64px;border-radius:50%;background:var(--lime);display:grid;place-items:center;margin:0 auto 14px}
+#drop svg{width:28px;height:28px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#drop .big{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}
+#drop .hint{margin:2px 0 22px;font-size:15px;color:var(--mut)}
+#head{display:flex;justify-content:space-between;align-items:center;margin:44px 0 12px}
+#head h2{font-size:24px;margin:0;font-weight:800;letter-spacing:-.02em}
+#out{display:grid;gap:14px;padding:0;margin:0;list-style:none}
+.res{display:grid;grid-template-columns:88px 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 18px 12px 12px;animation:pop .35s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.res img{width:88px;height:88px;object-fit:cover;border-radius:12px;background:var(--line)}
+.info{min-width:0}
+.nm{margin:0;font-size:13px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat{margin:2px 0 8px;font-size:26px;line-height:1.15;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:10px}
+.dot{flex:none;width:14px;height:14px;border-radius:50%;background:var(--c,#9aa)}
+.alt{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);background:#eef3e4;border-radius:8px;padding:2px 10px}
+.chip i{width:8px;height:8px;border-radius:50%}
+.ring{width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--c,#6f9c1f) calc(var(--p,0)*1%),#e5ecd6 0);display:grid;place-items:center}
+.ring span{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.res.wait .ring{background:none;border:5px solid #e5ecd6;border-top-color:var(--leaf);animation:spin .9s linear infinite}
+.res.wait .ring span,.res.bad .ring{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stage{position:sticky;top:88px;border-radius:32px;background:radial-gradient(circle at 50% 62%,#2f4a16,var(--deep) 70%);padding:36px 28px 40px;display:flex;flex-direction:column;align-items:center;gap:30px;overflow:hidden}
+#say{position:relative;margin:0;width:100%;min-height:4.4em;display:grid;place-items:center;background:#fff;color:var(--ink);border-radius:28px;padding:22px 28px;text-align:center;font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+#say::after{content:"";position:absolute;bottom:-11px;left:50%;margin-left:-11px;width:22px;height:22px;background:#fff;transform:rotate(45deg);border-radius:4px}
+#say b{color:var(--leaf)}
+#ax{position:relative;width:100%;max-width:340px}
+#ax::before{content:"";position:absolute;inset:6% 12% 4%;border-radius:50%;background:#3a5a1b;box-shadow:0 0 0 36px rgba(201,239,93,.07),0 0 0 76px rgba(201,239,93,.04)}
+#ax svg,#ax img{position:relative;width:100%;height:auto;display:block}
+.how{padding-top:0;padding-bottom:48px}
+.how h2{font-size:32px;letter-spacing:-.03em;margin:0 0 24px;font-weight:800}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;list-style:none;padding:0;margin:0}
+.steps li{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px}
+.steps b{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--lime);font-weight:800;margin-bottom:14px}
+.steps h3{margin:0 0 6px;font-size:20px;letter-spacing:-.02em}
+.steps p{margin:0;color:var(--mut);font-size:16px}
+body{padding-bottom:60px}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:5;max-width:none;margin:0;padding:14px 18px;text-align:center;font-size:15px;color:var(--mut);background:rgba(241,245,234,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+@media(max-width:940px){.wrap{grid-template-columns:1fr;gap:28px;padding-top:28px}.stage{order:-1;position:static;border-radius:24px;padding:24px 20px 28px;gap:22px}#ax{max-width:230px}#say{font-size:22px;padding:16px 20px;border-radius:22px}.steps{grid-template-columns:1fr}.nav>div{padding-left:14px;padding-right:14px}.wrap,.how,footer{padding-left:18px;padding-right:18px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header class="nav"><div>
+ <span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#c9ef5d"/><circle cx="11" cy="14" r="2.4" fill="#12200a"/><circle cx="21" cy="14" r="2.4" fill="#12200a"/><path d="M12 20q4 3 8 0" stroke="#12200a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Trashy-0.1</span>
+<div class="menuwrap">
+  <button id="mbtn" class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><i></i><i></i><i></i></button>
+  <nav id="menu" hidden aria-label="Page sections"><a href="#how">How it works</a><a href="#drop">Test Trashy-0.1</a></nav>
+ </div>
+</div></header>
+<div class="wrap">
+ <main>
+  <h1>Sort your trash with one picture</h1>
+  <p class="lead">Trashy-0.1 is an image model trained to recognize trash. Add a photo and it tells you which category the item belongs to.</p>
+  <div id="status" class="pill" aria-live="polite">Loading Trashy-0.1…</div>
+  <div id="drop">
+   <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></div>
+   <p class="big">Drop pictures here</p>
+   <p class="hint">JPG, PNG or WebP. You can add several at once.</p>
+   <button id="pick" type="button">Choose pictures</button>
+   <input id="files" type="file" accept="image/*" multiple hidden>
+  </div>
+  <div id="head" hidden><h2>Results</h2><button id="clear" class="ghost" type="button">Clear all</button></div>
+  <ul id="out"></ul>
+ </main>
+ <aside class="stage"><p id="say" aria-live="polite">Show me some trash.</p><div id="ax"></div></aside>
+</div>
+<section class="how" id="how" aria-labelledby="hw">
+ <h2 id="hw">How it works</h2>
+ <ol class="steps">
+  <li><b>1</b><h3>Add a picture</h3><p>Drop in one photo of an item, or a whole batch.</p></li>
+  <li><b>2</b><h3>Trashy-0.1 takes a look</h3><p>The model compares each picture with what it learned in training.</p></li>
+  <li><b>3</b><h3>Get the category</h3><p>Every picture comes back with a category and a confidence score.</p></li>
+ </ol>
+</section>
+<footer>Trashy-0.1 runs in your browser. Your pictures never leave your device.</footer>
+<template id="axFallback"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ax s-idle" viewBox="0 30 400 340" width="400" height="340" role="img" aria-label="Axolotl creature mascot">
+<title>Axolotl</title>
+<style>
+.ax{--ink:#16210a;--h1:#d4f27a;--h2:#6f9c1f;--h3:#2c3d0d;overflow:visible}
+.ax .ly,.ax .ax-dec{opacity:0}
+.ax.s-idle .l-idle,.ax.s-joy .l-joy,.ax.s-love .l-love,.ax.s-cool .l-cool,.ax.s-wow .l-wow,
+.ax.s-angry .l-angry,.ax.s-loading .l-loading,.ax.s-sleep .l-sleep{opacity:1}
+.ax.s-joy .d-h,.ax.s-love .d-h,.ax.s-sleep .d-z{opacity:1}
+.ax-bl{opacity:.55}.ax.s-joy .ax-bl,.ax.s-love .ax-bl{opacity:.95}.ax.s-angry .ax-bl{opacity:.2}
+.ax-float,.ax-turn,.ax-sq{transform-origin:200px 294px}
+.ax-look{transform-origin:200px 200px}
+.ax-sh,.ax-eye,.ax-spin{transform-box:fill-box;transform-origin:center}
+.ax-face{transition:transform .18s ease-out;transform:translate(var(--lx,0px),var(--ly,0px))}
+.ax-g{animation:ax-sw var(--sd,5s) ease-in-out infinite}
+.ax-g2{animation-delay:-1.3s}.ax-g3{animation-delay:-2.6s}.ax-r1{animation-delay:-.6s}.ax-r2{animation-delay:-1.9s}.ax-r3{animation-delay:-3.2s}
+.ax.s-joy{--sd:.9s;--sa:12;--sk:6}.ax.s-love{--sd:2s;--sa:8}.ax.s-wow{--sd:1.8s;--sa:9}
+.ax.s-angry{--sd:.3s;--sa:6}.ax.s-loading{--sd:2.2s}.ax.s-sleep{--sd:6s;--sa:2;--sk:1.5}.ax.s-cool{--sd:6s}
+.ax.s-idle .ax-float,.ax.s-cool .ax-float{animation:ax-bob 4.8s ease-in-out infinite}
+.ax.s-idle .ax-sh,.ax.s-cool .ax-sh{animation:ax-sh 4.8s ease-in-out infinite}
+.ax.s-idle .ax-sq,.ax.s-cool .ax-sq{animation:ax-br 4.8s ease-in-out -.6s infinite}
+.ax.s-idle .ax-turn{animation:ax-turn 11s ease-in-out infinite}
+.ax.s-idle .ax-look{animation:ax-look 11s ease-in-out infinite}
+.ax.follow .ax-look,.ax.follow .ax-turn{animation:none}
+.ax.s-idle .ax-eye{animation:ax-blink 5.5s infinite}
+.ax.s-love .ax-float{animation:ax-bob 3.8s ease-in-out infinite}
+.ax.s-love .ax-sh{animation:ax-sh 3.8s ease-in-out infinite}
+.ax.s-love .ax-sq{animation:ax-beat 1.2s ease-in-out infinite}
+.ax.s-loading .ax-float{animation:ax-bob 2.8s ease-in-out infinite}
+.ax.s-loading .ax-sh{animation:ax-sh 2.8s ease-in-out infinite}
+.ax.s-loading .ax-sq{animation:ax-br 2.8s ease-in-out infinite}
+.ax.s-loading .ax-spin{animation:ax-spin 1.1s linear infinite}
+.ax.s-loading .ax-spin.rv{animation-direction:reverse}
+.ax.s-joy .ax-float{animation:ax-hop .9s infinite}
+.ax.s-joy .ax-sh{animation:ax-shhop .9s infinite}
+.ax.s-joy .ax-sq{animation:ax-jsq .9s ease-in-out infinite}
+.ax.s-wow .ax-float{animation:ax-jit 1.8s ease-in-out infinite}
+.ax.s-wow .ax-sh{animation:ax-sh 1.8s ease-in-out infinite}
+.ax.s-wow .ax-sq{animation:ax-wsq 1.8s ease-in-out infinite}
+.ax.s-angry .ax-float{animation:ax-knock .3s ease-in-out infinite}
+.ax.s-angry .ax-sq{animation:ax-puff .6s ease-in-out infinite}
+.ax.s-sleep .ax-sq{animation:ax-sl 6s ease-in-out infinite}
+.ax.s-sleep .ax-sh{animation:ax-sh 6s ease-in-out infinite}
+.ax.s-sleep .ax-turn{animation:ax-nod 6s ease-in-out infinite}
+.ax-h{animation:ax-rise 3s ease-out infinite}.ax-h2{animation-delay:-1.4s}
+.ax-z{animation:ax-zz 3.4s ease-out infinite}.ax-z2{animation-delay:-1.7s}
+@keyframes ax-bob{0%,100%{transform:translateY(0) rotate(-.6deg)}45%{transform:translateY(-10px) rotate(.3deg)}60%{transform:translateY(-9px) rotate(.8deg)}}
+@keyframes ax-br{0%,100%{transform:scale(1.02,.98)}50%{transform:scale(.985,1.02)}}
+@keyframes ax-sh{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.82,.75);opacity:.55}}
+@keyframes ax-sw{0%,100%{transform:rotate(calc(var(--sa,6)*-1deg)) skewY(calc(var(--sk,4)*-1deg)) scale(1)}50%{transform:rotate(calc(var(--sa,6)*1deg)) skewY(calc(var(--sk,4)*1deg)) scale(1.04)}}
+@keyframes ax-blink{0%,40%,44%,88%,92%,100%{transform:scaleY(1)}42%,90%{transform:scaleY(.08)}}
+@keyframes ax-look{0%,12%,38%,46%,86%,100%{transform:translate(0,0) scale(1,1)}18%,32%{transform:translate(-9px,-1px) scale(.93,.97)}52%,66%{transform:translate(9px,-4px) scale(.93,.97)}72%,80%{transform:translate(3px,5px) scale(1,1)}}
+@keyframes ax-turn{0%,12%,38%,46%,86%,100%{transform:translate(0,0) rotate(0)}18%,32%{transform:translate(-3px,0) rotate(-2.5deg)}52%,66%{transform:translate(3px,0) rotate(2.5deg)}72%,80%{transform:translate(0,0) rotate(.8deg)}}
+@keyframes ax-hop{0%{transform:translateY(0) rotate(0);animation-timing-function:cubic-bezier(.2,.7,.3,1)}45%{transform:translateY(-30px) rotate(-4deg);animation-timing-function:cubic-bezier(.6,0,.9,.4)}70%{transform:translateY(-22px) rotate(3deg)}90%,100%{transform:translateY(0) rotate(0)}}
+@keyframes ax-jsq{0%,100%{transform:scale(1.1,.88)}12%{transform:scale(.94,1.1)}45%{transform:scale(.98,1.03)}78%{transform:scale(.96,1.06)}92%{transform:scale(1.12,.86)}}
+@keyframes ax-shhop{0%,90%,100%{transform:scale(1);opacity:1}45%{transform:scale(.6,.55);opacity:.45}}
+@keyframes ax-beat{0%,40%,100%{transform:scale(1)}10%{transform:scale(1.05,.97)}20%{transform:scale(.99,1.02)}30%{transform:scale(1.035,.98)}}
+@keyframes ax-jit{0%,100%{transform:translate(0,0) rotate(0)}25%{transform:translate(-2px,-12px) rotate(-2.5deg)}50%{transform:translate(2px,-3px) rotate(2.5deg)}75%{transform:translate(-1px,-8px) rotate(-1.5deg)}}
+@keyframes ax-wsq{0%,100%{transform:scale(1)}6%{transform:scale(1.07,.93)}14%{transform:scale(.94,1.09)}30%{transform:scale(1.01)}}
+@keyframes ax-knock{0%,100%{transform:translate(-3.5px,1px) rotate(-2deg)}50%{transform:translate(3.5px,-1px) rotate(2deg)}}
+@keyframes ax-puff{0%,100%{transform:scale(1)}50%{transform:scale(1.035,1.02)}}
+@keyframes ax-sl{0%,100%{transform:scale(1)}50%{transform:scale(1.045,.955)}}
+@keyframes ax-nod{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(.5deg)}}
+@keyframes ax-spin{to{transform:rotate(360deg)}}
+@keyframes ax-rise{0%{transform:translate(0,0) scale(.3);opacity:0}20%{opacity:.9}100%{transform:translate(-18px,-80px) scale(1);opacity:0}}
+@keyframes ax-zz{0%{transform:translate(0,0) scale(.4);opacity:0}25%{opacity:.85}100%{transform:translate(22px,-64px) scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ax *{animation:none!important}}
+</style>
+<defs>
+<radialGradient id="axh" cx=".34" cy=".26" r=".9"><stop offset="0" style="stop-color:var(--h1)"/><stop offset=".5" style="stop-color:var(--h2)"/><stop offset="1" style="stop-color:var(--h3)"/></radialGradient>
+<radialGradient id="axo" cx=".35" cy=".3" r=".9"><stop offset=".55" stop-color="#0f1a06" stop-opacity="0"/><stop offset="1" stop-color="#0f1a06" stop-opacity=".4"/></radialGradient>
+<radialGradient id="axbel" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="axbo" cx=".28" cy="1" r=".6"><stop offset="0" stop-color="#ff9cc6" stop-opacity=".45"/><stop offset="1" stop-color="#ff9cc6" stop-opacity="0"/></radialGradient>
+<radialGradient id="axs" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="axe" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#3f5a14"/><stop offset="1" stop-color="#0c1606"/></radialGradient>
+<radialGradient id="axbl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff7aa8" stop-opacity=".85"/><stop offset="1" stop-color="#ff7aa8" stop-opacity="0"/></radialGradient>
+<radialGradient id="axsh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#0f1a06" stop-opacity=".45"/><stop offset="1" stop-color="#0f1a06" stop-opacity="0"/></radialGradient>
+<linearGradient id="axr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+<linearGradient id="axf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--h2)"/><stop offset="1" style="stop-color:var(--h3)"/></linearGradient>
+<linearGradient id="axg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="-64" y2="0"><stop offset="0" stop-color="#f0578a"/><stop offset=".55" stop-color="#ff8db2"/><stop offset="1" stop-color="#ffd0e0"/></linearGradient>
+<clipPath id="axc"><circle cx="200" cy="200" r="88"/></clipPath>
+<g id="axgill"><path d="M4 -7C-20 -6 -44 -4 -58 -1.5Q-62 0 -58 1.5C-44 4 -20 6 4 7Z" fill="url(#axg)"/><path d="M-18 -3L-30 -20M-18 3L-30 20M-32 -2L-42 -16M-32 2L-42 16M-46 -1L-54 -11M-46 1L-54 11" stroke="url(#axg)" stroke-width="5.5" stroke-linecap="round" fill="none"/><path d="M-2 -3L-50 -1.5" stroke="#fff" stroke-opacity=".45" stroke-width="2.2" stroke-linecap="round" fill="none"/></g>
+<g id="axeye"><ellipse rx="11.5" ry="14.5" fill="url(#axe)"/><circle cx="-3.6" cy="-5.4" r="4.4" fill="#fff"/><circle cx="4.2" cy="5.2" r="2" fill="#fff" opacity=".75"/></g>
+<path id="axheart" d="M0 10C-14 0 -18 -9 -11 -14C-6 -17 -1 -14 0 -10C1 -14 6 -17 11 -14C18 -9 14 0 0 10Z"/>
+</defs>
+
+<ellipse class="ax-sh" cx="200" cy="302" rx="62" ry="9" fill="url(#axsh)"/>
+<g class="ax-float"><g class="ax-turn"><g class="ax-sq">
+<g transform="translate(124 172) rotate(34) scale(.92)"><use class="ax-g ax-g1" href="#axgill" xlink:href="#axgill"/></g>
+<g transform="translate(118 203) scale(1.05)"><use class="ax-g ax-g2" href="#axgill" xlink:href="#axgill"/></g>
+<g transform="translate(128 238) rotate(-34) scale(.92)"><use class="ax-g ax-g3" href="#axgill" xlink:href="#axgill"/></g>
+<g transform="translate(276 172) scale(-1 1) rotate(34) scale(.92)"><use class="ax-g ax-r1" href="#axgill" xlink:href="#axgill"/></g>
+<g transform="translate(282 203) scale(-1 1) scale(1.05)"><use class="ax-g ax-r2" href="#axgill" xlink:href="#axgill"/></g>
+<g transform="translate(272 238) scale(-1 1) rotate(-34) scale(.92)"><use class="ax-g ax-r3" href="#axgill" xlink:href="#axgill"/></g>
+<ellipse cx="164" cy="284" rx="22" ry="11" fill="url(#axf)"/><ellipse cx="236" cy="284" rx="22" ry="11" fill="url(#axf)"/>
+<circle cx="200" cy="200" r="88" fill="url(#axh)"/>
+<g clip-path="url(#axc)"><circle cx="200" cy="200" r="88" fill="url(#axo)"/><ellipse cx="200" cy="246" rx="56" ry="38" fill="url(#axbel)"/><circle cx="200" cy="200" r="88" fill="url(#axbo)"/><ellipse cx="156" cy="146" rx="36" ry="19" transform="rotate(-32 156 146)" fill="url(#axs)"/><ellipse cx="146" cy="141" rx="9" ry="4.5" transform="rotate(-32 146 141)" fill="#fff" opacity=".75"/></g>
+<circle cx="200" cy="200" r="88" fill="none" stroke="url(#axr)" stroke-width="1.5"/>
+
+<g class="ax-face"><g class="ax-look">
+<g class="ax-bl"><ellipse cx="144" cy="216" rx="14" ry="9" fill="url(#axbl)"/><ellipse cx="256" cy="216" rx="14" ry="9" fill="url(#axbl)"/></g>
+
+<g class="ly l-idle"><g transform="translate(168 192)"><g class="ax-eye"><use href="#axeye" xlink:href="#axeye"/></g></g><g transform="translate(232 192)"><g class="ax-eye"><use href="#axeye" xlink:href="#axeye"/></g></g><path d="M190 213Q200 223 210 213" fill="none" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g>
+
+<g class="ly l-joy"><g fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"><path d="M154 198Q168 176 182 198"/><path d="M218 198Q232 176 246 198"/></g><path d="M186 210Q200 240 214 210Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><path d="M193 227Q200 234 207 227Q200 221 193 227Z" fill="#ff7a9c"/></g>
+
+<g class="ly l-love"><g transform="translate(168 192)"><use href="#axheart" xlink:href="#axheart" transform="scale(1.3)" fill="#ff5c8a"/><circle cx="-5" cy="-6" r="2.6" fill="#fff" opacity=".85"/></g><g transform="translate(232 192)"><use href="#axheart" xlink:href="#axheart" transform="scale(1.3)" fill="#ff5c8a"/><circle cx="-5" cy="-6" r="2.6" fill="#fff" opacity=".85"/></g><path d="M190 214Q200 224 210 214" fill="none" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g>
+
+<g class="ly l-cool"><g transform="translate(168 192)"><path d="M-11.5 2A11.5 12.5 0 0 0 11.5 2Z" fill="url(#axe)"/><circle cx="-3.5" cy="7" r="2.4" fill="#fff"/><path d="M-14 2H14" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g><g transform="translate(232 192)"><path d="M-11.5 2A11.5 12.5 0 0 0 11.5 2Z" fill="url(#axe)"/><circle cx="-3.5" cy="7" r="2.4" fill="#fff"/><path d="M-14 2H14" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g><path d="M189 217Q202 223 213 211" fill="none" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g>
+
+<g class="ly l-wow"><g transform="translate(168 190) scale(1.3)"><use href="#axeye" xlink:href="#axeye"/></g><g transform="translate(232 190) scale(1.3)"><use href="#axeye" xlink:href="#axeye"/></g><ellipse cx="200" cy="222" rx="7" ry="9" fill="var(--ink)"/></g>
+
+<g class="ly l-angry"><g fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"><path d="M150 173L184 187"/><path d="M250 173L216 187"/><path d="M189 221Q200 212 211 221" stroke-width="4.5"/></g><g transform="translate(168 196) scale(.9)"><use href="#axeye" xlink:href="#axeye"/></g><g transform="translate(232 196) scale(.9)"><use href="#axeye" xlink:href="#axeye"/></g></g>
+
+<g class="ly l-loading"><g transform="translate(168 192)"><use href="#axeye" xlink:href="#axeye"/></g><g transform="translate(232 192)"><use href="#axeye" xlink:href="#axeye"/></g><g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"><g opacity=".3"><circle cx="168" cy="192" r="21"/><circle cx="232" cy="192" r="21"/></g><circle class="ax-spin" cx="168" cy="192" r="21" stroke-dasharray="34 98"/><circle class="ax-spin rv" cx="232" cy="192" r="21" stroke-dasharray="34 98"/></g><path d="M192 216H208" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/></g>
+
+<g class="ly l-sleep"><path d="M154 190Q168 203 182 190M218 190Q232 203 246 190" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/><ellipse cx="200" cy="216" rx="5" ry="6" fill="var(--ink)" opacity=".8"/></g>
+</g></g>
+</g></g>
+
+<g class="ax-dec d-h" fill="#ff9ac0"><g transform="translate(246 116)"><use class="ax-h" transform="scale(.7)" href="#axheart" xlink:href="#axheart"/></g><g transform="translate(268 142)"><use class="ax-h ax-h2" transform="scale(.5)" href="#axheart" xlink:href="#axheart"/></g></g>
+<g class="ax-dec d-z" fill="none" stroke="#6f9c1f" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(246 120)"><path class="ax-z" d="M0 0H14L0 16H14"/></g><g transform="translate(268 102)"><path class="ax-z ax-z2" d="M0 0H14L0 16H14"/></g></g>
+</g>
+</svg>
+</template>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js"></script>
+<script>
+const MODEL_JS='image-model.js', MODEL_FILE='image-model.json', SVG_FILE='svg/axolotl-bot-idle.svg';
+const $=id=>document.getElementById(id);
+function status(kind,html){const e=$('status');e.className='pill '+kind;e.innerHTML=html}
+let net=null, model=null, svg=null, eyes=[], resetTimer;
+
+/* ---------- Axolotl ---------- */
+const STATES=['idle','joy','wow','loading'];
+function setState(s){if(!svg)return;STATES.forEach(x=>svg.classList.remove('s-'+x));svg.classList.add('s-'+s)}
+function say(html){$('say').innerHTML=html}
+async function loadAxolotl(){
+ let el;
+ try{ /* works on a server / GitHub Pages: uses the file in /svg */
+  const r=await fetch(SVG_FILE);if(!r.ok)throw 0;
+  el=document.importNode(new DOMParser().parseFromString(await r.text(),'image/svg+xml').documentElement,true);
+ }catch(_){ /* opened straight from disk: use the copy built into this page */
+  el=document.importNode($('axFallback').content.firstElementChild,true);
+ }
+ svg=el;svg.removeAttribute('width');svg.removeAttribute('height');
+ $('ax').appendChild(svg);
+ const g=svg.querySelectorAll('.l-idle > g[transform]');
+ eyes=[[g[0],168,192],[g[1],232,192]].filter(e=>e[0]);
+}
+function look(x,y){
+ if(!svg)return;
+ const r=svg.getBoundingClientRect();
+ const dx=x-(r.left+r.width/2), dy=y-(r.top+r.height/2), d=Math.hypot(dx,dy)||1, k=Math.min(1,d/300);
+ const ux=dx/d*k, uy=dy/d*k;
+ svg.classList.add('follow');
+ svg.style.setProperty('--lx',ux*6+'px');svg.style.setProperty('--ly',uy*4+'px');
+ eyes.forEach(([g,bx,by])=>g.setAttribute('transform',`translate(${bx+ux*5} ${by+uy*5})`));
+}
+function unlook(){
+ if(!svg)return;svg.classList.remove('follow');
+ svg.style.removeProperty('--lx');svg.style.removeProperty('--ly');
+ eyes.forEach(([g,bx,by])=>g.setAttribute('transform',`translate(${bx} ${by})`));
+}
+addEventListener('pointermove',e=>look(e.clientX,e.clientY));
+document.documentElement.addEventListener('mouseleave',unlook);
+
+/* ---------- Model ---------- */
+function useModel(d){
+ if(d.format!=='image-trainer-v1'||!Array.isArray(d.classes))throw 0;
+ model=d.classes.filter(c=>c.samples.length);
+}
+function missingModel(){
+ status('err','Couldn’t load the Trashy-0.1 model. Put <b>image-model.js</b> in the same folder as this page.');
+}
+function loadModelScript(){
+ return new Promise(res=>{const t=document.createElement('script');t.src=MODEL_JS;
+  t.onload=()=>res(window.TRASHY_MODEL||null);t.onerror=()=>res(null);document.head.appendChild(t)});
+}
+async function loadModel(){
+ let d=await loadModelScript();
+ if(!d){try{const r=await fetch(MODEL_FILE);if(r.ok)d=await r.json()}catch(_){}}
+ try{if(!d)throw 0;useModel(d)}catch(_){missingModel()}
+}
+async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0})}catch(_){net=null}}
+const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
+ if(!model)return;
+ if(!net)return status('err','Couldn’t load the image engine. Check your internet connection and reload.');
+ status('ok',`Trashy-0.1 is ready. It sorts trash into <b>${model.length} categories</b>.`);
+ say('Show me some trash.');
+});
+
+/* ---------- Classify ---------- */
+const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
+function predict(e){
+ const sc=model.map(c=>{
+  const t=c.samples.map(x=>dot(x.e,e)).sort((a,b)=>b-a).slice(0,3);
+  return{n:c.name,c:c.color,v:t.reduce((a,b)=>a+b)/t.length}});
+ const ex=sc.map(x=>Math.exp(x.v*25)),z=ex.reduce((a,b)=>a+b,0);
+ sc.forEach((x,i)=>x.p=ex[i]/z);return sc.sort((a,b)=>b.p-a.p);
+}
+const toImg=url=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+const embed=img=>tf.tidy(()=>{const e=net.infer(img,true);return Array.from(e.div(e.norm()).dataSync())});
+
+function makeCard(f){
+ const li=document.createElement('li');li.className='res wait';
+ li.innerHTML='<img alt=""><div class="info"><p class="nm"></p><p class="cat"><span class="dot"></span><span class="t">Looking…</span></p><p class="alt"></p></div><div class="ring"><span></span></div>';
+ li.querySelector('img').src=URL.createObjectURL(f);
+ li.querySelector('.nm').textContent=f.name;
+ $('out').prepend(li);$('head').hidden=false;return li;
+}
+function fill(li,r){
+ const top=r[0],pc=Math.round(top.p*100);
+ li.style.setProperty('--c',top.c);li.classList.remove('wait');
+ li.querySelector('.t').textContent=top.p>=.5?top.n:`Maybe ${top.n}`;
+ const ring=li.querySelector('.ring');ring.style.setProperty('--p',pc);ring.firstElementChild.textContent=pc+'%';
+ const alt=li.querySelector('.alt');
+ r.slice(1,3).forEach(x=>{const c=document.createElement('span'),d=document.createElement('i');c.className='chip';d.style.background=x.c;c.append(d,`${x.n} ${Math.round(x.p*100)}%`);alt.appendChild(c)});
+}
+function fail(li,msg){li.classList.remove('wait');li.classList.add('bad');li.querySelector('.t').textContent=msg;li.querySelector('.dot').style.background='#c0483a'}
+
+const queue=[];let busy=false;
+function add(files){
+ [...files].filter(f=>f.type.startsWith('image/')).forEach(f=>queue.push({f,li:makeCard(f)}));
+ run();
+}
+async function run(){
+ if(busy)return;busy=true;clearTimeout(resetTimer);
+ setState('loading');say('Looking…');
+ await ready;let n=0,last=null,sure=false;
+ while(queue.length){
+  const {f,li}=queue.shift();
+  if(!model){fail(li,'Model not found');continue}
+  if(!net){fail(li,'Image engine could not load');continue}
+  try{
+   const img=await toImg(li.querySelector('img').src);await tf.nextFrame();
+   const r=predict(embed(img));fill(li,r);n++;last=r[0];sure=r[0].p>=.5;
+  }catch(_){fail(li,'Could not read this picture')}
+ }
+ busy=false;
+ if(!n){setState('idle');say(model&&net?'Show me some trash.':'I can\'t find my model.');return}
+ setState(sure?'joy':'wow');
+ say(n===1?(sure?`That's <b>${last.n}</b>.`:`Hmm, maybe <b>${last.n}</b>?`):`Sorted ${n} pictures.`);
+ resetTimer=setTimeout(()=>setState('idle'),4000);
+}
+
+/* ---------- UI ---------- */
+const mb=$('mbtn'),mn=$('menu');
+function menu(open){mb.setAttribute('aria-expanded',open);mn.hidden=!open}
+mb.onclick=e=>{e.stopPropagation();menu(mn.hidden)};
+mn.onclick=e=>{if(e.target.closest('a'))menu(false)};
+document.addEventListener('click',e=>{if(!mn.contains(e.target))menu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape'){menu(false);mb.focus()}});
+$('pick').onclick=()=>$('files').click();
+$('files').onchange=e=>{add(e.target.files);e.target.value=''};
+const dz=$('drop');
+['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{e.preventDefault();dz.classList.add('over')}));
+['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();if(t==='drop'||!e.relatedTarget)dz.classList.remove('over')}));
+addEventListener('drop',e=>add(e.dataTransfer.files));
+$('clear').onclick=()=>{$('out').innerHTML='';$('head').hidden=true;setState('idle');say('Show me some trash.')};
+</script>
+</body></html>
