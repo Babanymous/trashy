@@ -50,6 +50,7 @@ button{font:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;
 .gt i{display:block;height:100%;width:0;border-radius:4px;background:var(--c);transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .gp{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
 .gr:first-child .gn,.gr:first-child .gp{color:var(--ink);font-weight:800}
+.prog{margin-left:8px;color:var(--mut);font-size:14px}
 .steps2{margin:8px 0 0;padding-left:20px;color:var(--mut)}
 .typing i{display:inline-block;width:8px;height:8px;margin:5px 2px;border-radius:50%;background:#9bb07a;animation:bl 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
@@ -80,6 +81,7 @@ footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:
  <div id="status" class="pill" aria-live="polite">Loading…</div>
 </div></header>
 <main class="thread" id="thread" role="log" aria-live="polite"><section id="hero"><div id="heroAx"></div><h1>Sort your trash with one picture</h1><p>Send Trashy-0.1 a photo. It finds the items in it and tells you what each one is.</p>
+ <ul class="chips"><li>Finds several items</li><li>Draws a box around each</li><li>Shows how sure it is</li></ul></section></main>
 <div class="dock">
  <div id="drop">
   <nav id="menu" hidden aria-label="Menu"><button type="button" data-a="how">How it works</button><button type="button" data-a="clear">Clear chat</button><button type="button" data-a="send">Send image</button></nav>
@@ -403,15 +405,17 @@ async function refine(img,d,cx,c,W,H){
  }
  return {...best,n:d.n,c:d.c,p:cur.p};
 }
-async function detect(img){
+async function detect(img,cb){
  const W=img.naturalWidth,H=img.naturalHeight,c=document.createElement('canvas');c.width=c.height=224;
  const cx=c.getContext('2d'),found=[];let i=0;
- for(const [x,y,w,h] of windows(W,H)){
+ const wins=windows(W,H);
+ for(const [x,y,w,h] of wins){
   cx.drawImage(img,x,y,w,h,0,0,224,224);
   const t=predict(embed(c))[0];
   if(t.n!=='background'&&t.p>=DET_MIN)found.push({x,y,w,h,n:t.n,c:t.c,p:t.p});
-  if(++i%6===0)await tf.nextFrame();
+  if(++i%6===0){if(cb)cb(`Scanning ${Math.round(i/wins.length*100)}%`);await tf.nextFrame()}
  }
+ if(cb)cb('Fitting the boxes…');
  const cand=[];
  for(const d of mergeBoxes(suppress(found),.4))if(!cand.some(u=>u.n===d.n&&iou(u,d)>.5))cand.push(d);
  const refined=[];
@@ -464,22 +468,30 @@ function showDetections(a,img,ds){
 }
 
 const queue=[];let busy=false;
-function add(files){[...files].filter(f=>f.type.startsWith('image/')).forEach(f=>queue.push(f));run()}
-async function run(){
- if(busy)return;busy=true;await ready;
- while(queue.length)await handle(queue.shift());
- busy=false;
+function add(files){
+ [...files].filter(f=>f.type.startsWith('image/')).forEach(f=>{
+  const url=URL.createObjectURL(f);
+  const u=msg('user'),im=new Image();im.src=url;im.alt=f.name;u.querySelector('.b').appendChild(im);syncHero();
+  const a=msg('ai');emo(a,'loading');
+  a.querySelector('.b').innerHTML='<span class="typing"><i></i><i></i><i></i></span><span class="prog">Waiting for my turn…</span>';
+  queue.push({url,a});
+ });
+ run();
 }
-async function handle(f){
- const url=URL.createObjectURL(f);
- const u=msg('user');syncHero();const im=new Image();im.src=url;im.alt=f.name;u.querySelector('.b').appendChild(im);
- const a=msg('ai');emo(a,'loading');a.querySelector('.b').innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
+async function run(){
+ if(busy)return;busy=true;
+ try{await ready;while(queue.length){try{await handle(queue.shift())}catch(_){}}}
+ finally{busy=false}
+}
+async function handle({url,a}){
+ const prog=t=>{const e=a.querySelector('.prog');if(e)e.textContent=t};
+ prog('Looking…');
  if(!model)return say(a,'I can’t find my model file.','idle');
  if(!net)return say(a,'My image engine didn’t load. Check your internet connection.','idle');
  try{
   const img=await toImg(url);await tf.nextFrame();
   if(model.some(c=>c.name==='background')){
-   const ds=await detect(img);
+   const ds=await detect(img,prog);
    if(ds.length)return showDetections(a,img,ds);
   }
   const r=predict(embed(img));
