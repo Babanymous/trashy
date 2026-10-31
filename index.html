@@ -35,6 +35,8 @@ button{font:inherit;font-weight:700;border:0;border-radius:12px;cursor:pointer;t
 .av svg{display:block;width:100%;height:100%;overflow:hidden}
 .b{background:#fff;border:1px solid var(--line);border-radius:22px 22px 22px 6px;padding:14px 18px;max-width:min(520px,82%)}
 .b:has(.graph){width:min(480px,82%)}
+.b:has(canvas){width:min(600px,90%)}
+.b canvas{display:block;max-width:100%;height:auto;border-radius:15px;margin:12px 0 0}
 .user .b{background:var(--lime);border-color:transparent;border-radius:22px 22px 6px 22px;padding:8px}
 .b img{display:block;max-width:100%;max-height:280px;border-radius:15px}
 .say{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
@@ -247,7 +249,7 @@ async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0})}cat
 const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
  if(!model)return;
  if(!net)return status('err','Couldn’t load the image engine. Check your internet connection and reload.');
- status('ok',`Trashy-0.1 is ready. It sorts trash into <b>${model.length} categories</b>.`);
+ status('ok',`Trashy-0.1 is ready. It sorts trash into <b>${model.filter(c=>c.name!=='background').length} categories</b>.`);
  greet();
 });
 
@@ -272,10 +274,10 @@ function msg(who){
  $('thread').appendChild(row);scrollDown();return row;
 }
 function ai(text,emotion){const a=msg('ai');emo(a,emotion||'idle');const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p);return a}
-function greet(){ai('Hi, I’m Trashy-0.1. Send me a picture of some trash and I’ll tell you what it is.','joy')}
+function greet(){ai('Hi, I’m Trashy-0.1. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.','joy')}
 function how(){
  const a=msg('ai');emo(a,'idle');
- a.querySelector('.b').innerHTML='<p class="say">How it works</p><ol class="steps2"><li>You send me a picture of an item.</li><li>I compare it with what I learned in training.</li><li>I tell you the category and how sure I am.</li></ol>';
+ a.querySelector('.b').innerHTML='<p class="say">How it works</p><ol class="steps2"><li>You send me a picture of an item.</li><li>I look for items in it and compare each one with what I learned in training.</li><li>I draw a box around each item and tell you the category and how sure I am.</li></ol>';
 }
 function showResult(a,r){
  const t=r[0],sure=t.p>=.5;
@@ -296,6 +298,80 @@ function showResult(a,r){
 }
 function say(a,text,emotion){emo(a,emotion);a.querySelector('.b').innerHTML='';const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p)}
 
+/* ---------- Object detection ---------- */
+const DET_MIN=0.8; /* how sure a window must be to count as an item (0 to 1) */
+const pos=(L,l,st)=>{const p=[];for(let v=0;v<L-l-1;v+=st)p.push(v);p.push(Math.max(0,L-l));return p};
+function windows(W,H){
+ const m=Math.min(W,H);let f=.5,out;
+ do{out=[];
+  for(const sc of [.33,.5,.75])for(const a of [1,1.6,1/1.6]){
+   const w=Math.min(W,sc*m*Math.sqrt(a)),h=Math.min(H,sc*m/Math.sqrt(a));
+   for(const y of pos(H,h,Math.max(8,h*f)))for(const x of pos(W,w,Math.max(8,w*f)))out.push([x,y,w,h]);
+  }
+  f+=.15;
+ }while(out.length>150);
+ return out;
+}
+function iou(a,b){
+ const ix=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)),iy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)),i=ix*iy;
+ return i/(a.w*a.h+b.w*b.h-i);
+}
+function nms(ds){
+ ds.sort((a,b)=>b.p-a.p);const out=[];
+ for(const d of ds){
+  const g=out.find(o=>o.n===d.n&&iou(o,d)>.3);
+  if(g){g.m.push(d);continue}
+  if(out.some(o=>iou(o,d)>.5))continue;
+  out.push({...d,m:[d]});
+ }
+ out.forEach(o=>{const t=o.m.reduce((a,d)=>a+d.p,0);['x','y','w','h'].forEach(k=>o[k]=o.m.reduce((a,d)=>a+d[k]*d.p,0)/t)});
+ return out;
+}
+async function detect(img){
+ const W=img.naturalWidth,H=img.naturalHeight,c=document.createElement('canvas');c.width=c.height=224;
+ const cx=c.getContext('2d'),found=[];let i=0;
+ for(const [x,y,w,h] of windows(W,H)){
+  cx.drawImage(img,x,y,w,h,0,0,224,224);
+  const t=predict(embed(c))[0];
+  if(t.n!=='background'&&t.p>=DET_MIN)found.push({x,y,w,h,n:t.n,c:t.c,p:t.p});
+  if(++i%6===0)await tf.nextFrame();
+ }
+ return nms(found).slice(0,12);
+}
+function annotate(img,ds){
+ const W=img.naturalWidth,H=img.naturalHeight,sc=Math.min(1,600/W),c=document.createElement('canvas');
+ c.width=Math.round(W*sc);c.height=Math.round(H*sc);
+ const x=c.getContext('2d'),fs=Math.max(13,Math.round(c.width/36));
+ x.drawImage(img,0,0,c.width,c.height);
+ x.font=`700 ${fs}px "Bricolage Grotesque",system-ui,sans-serif`;x.textBaseline='top';
+ ds.forEach(d=>{
+  const bx=d.x*sc,by=d.y*sc,t=`${d.n} ${Math.round(d.p*100)}%`,tw=x.measureText(t).width+12,th=fs+8,ty=by-th>=0?by-th:by;
+  const n=parseInt(String(d.c).slice(1),16),lum=.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255);
+  x.strokeStyle=d.c;x.lineWidth=Math.max(3,fs/5);x.strokeRect(bx,by,d.w*sc,d.h*sc);
+  x.fillStyle=d.c;x.fillRect(bx,ty,tw,th);x.fillStyle=lum>150?'#12200a':'#fff';x.fillText(t,bx+6,ty+4);
+ });
+ return c;
+}
+function showDetections(a,img,ds){
+ const counts={};ds.forEach(d=>counts[d.n]=(counts[d.n]||0)+1);
+ const sum=Object.entries(counts).map(([n,k])=>`${k} ${n}`).join(', ');
+ emo(a,ds.reduce((s,d)=>s+d.p,0)/ds.length>=.75?'joy':'wow');
+ const b=a.querySelector('.b');b.textContent='';
+ const h=document.createElement('p');h.className='say';
+ h.textContent=ds.length===1?`I found 1 item: ${ds[0].n}.`:`I found ${ds.length} items: ${sum}.`;
+ b.append(h,annotate(img,ds));
+ const cap=document.createElement('p');cap.className='cap';cap.textContent='How sure I am about each box';b.appendChild(cap);
+ const g=document.createElement('div');g.className='graph';
+ ds.forEach(d=>{
+  const row=document.createElement('div');row.className='gr';row.style.setProperty('--c',d.c);
+  row.innerHTML='<span class="gn"></span><span class="gt"><i></i></span><span class="gp"></span>';
+  row.querySelector('.gn').textContent=d.n;row.querySelector('.gp').textContent=Math.round(d.p*100)+'%';
+  g.appendChild(row);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{row.querySelector('i').style.width=d.p*100+'%'}));
+ });
+ b.appendChild(g);scrollDown();
+}
+
 const queue=[];let busy=false;
 function add(files){[...files].filter(f=>f.type.startsWith('image/')).forEach(f=>queue.push(f));run()}
 async function run(){
@@ -311,7 +387,13 @@ async function handle(f){
  if(!net)return say(a,'My image engine didn’t load. Check your internet connection.','idle');
  try{
   const img=await toImg(url);await tf.nextFrame();
-  showResult(a,predict(embed(img)));
+  if(model.some(c=>c.name==='background')){
+   const ds=await detect(img);
+   if(ds.length)return showDetections(a,img,ds);
+  }
+  const r=predict(embed(img));
+  if(r[0].n==='background')return say(a,'I don’t see any trash I know in this picture.','wow');
+  showResult(a,r.filter(x=>x.n!=='background'));
  }catch(_){say(a,'I couldn’t read that picture. Try another one.','wow')}
 }
 
