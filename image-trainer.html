@@ -23,7 +23,13 @@ input[type=text]{flex:1;font:inherit;padding:7px 10px;border:1px solid var(--lin
 .card{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:6px;padding:14px;margin-bottom:14px}
 .card.over{outline:2px dashed var(--c)}
 .ch{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-.ch b{flex:1;font-weight:600}.ch span{color:var(--mut);font-size:13px}
+.ch b{flex:1;font-weight:600;cursor:pointer}
+.tg{padding:2px 8px;font-size:16px;line-height:1.2}
+.tg::before{content:"\25BE";display:inline-block;transition:transform .15s}
+.card.closed .tg::before{transform:rotate(-90deg)}
+.card.closed .th{display:none}
+.card.closed .ch{margin-bottom:0}
+.cw{display:flex;gap:8px;margin:-6px 0 14px}.ch span{color:var(--mut);font-size:13px}
 .th{display:flex;flex-wrap:wrap;gap:4px}
 .th img{width:48px;height:48px;object-fit:cover;border-radius:3px;cursor:pointer}
 .th img:hover{opacity:.4}
@@ -53,6 +59,7 @@ select{font:inherit;padding:6px 8px;border-radius:6px;border:1px solid var(--lin
  <section>
   <h2>Categories</h2>
   <div class="add"><input id="nn" type="text" placeholder="Category name, e.g. Cats" maxlength="40"><button id="add">Add category</button></div>
+  <div class="cw"><button id="cAll" type="button">Collapse all</button><button id="eAll" type="button">Expand all</button></div>
   <div id="list"></div>
  </section>
  <section>
@@ -113,11 +120,14 @@ function render(){fillSel();
  if(!classes.length){L.innerHTML='<p class="empty">No categories yet. Add one above, then drop images onto it.</p>';return}
  classes.forEach((c,ci)=>{
   const d=document.createElement('div');d.className='card';d.style.setProperty('--c',c.color);
-  d.innerHTML=`<div class="ch"><b></b><span>${c.s.length} image${c.s.length==1?'':'s'}</span>
-   <label class="btn">Add images<input type="file" accept="image/*" multiple hidden></label><button>Delete</button></div><div class="th"></div>`;
+  d.innerHTML=`<div class="ch"><button class="tg" type="button" aria-label="Show or hide images"></button><b></b><span>${c.s.length} image${c.s.length==1?'':'s'}</span>
+   <label class="btn">Add images<input type="file" accept="image/*" multiple hidden></label><button class="del">Delete</button></div><div class="th"></div>`;
   d.querySelector('b').textContent=c.name;
+  const tg=d.querySelector('.tg'),flip=()=>{c.closed=!c.closed;d.classList.toggle('closed',c.closed);tg.setAttribute('aria-expanded',!c.closed)};
+  d.classList.toggle('closed',!!c.closed);tg.setAttribute('aria-expanded',!c.closed);
+  tg.onclick=flip;d.querySelector('b').onclick=flip;
   d.querySelector('input').onchange=e=>{addFiles(ci,[...e.target.files]);e.target.value=''};
-  d.querySelector('button').onclick=()=>{if(confirm(`Delete "${c.name}" and its ${c.s.length} images?`)){classes.splice(ci,1);render()}};
+  d.querySelector('.del').onclick=()=>{if(confirm(`Delete "${c.name}" and its ${c.s.length} images?`)){classes.splice(ci,1);render()}};
   const T=d.querySelector('.th');
   if(!c.s.length)T.innerHTML='<span class="empty">Drop images here to train this category.</span>';
   c.s.forEach((x,si)=>{const im=new Image();im.src=x.t;im.title='Click to remove';im.alt='';im.onclick=()=>{c.s.splice(si,1);render()};T.appendChild(im)});
@@ -216,6 +226,8 @@ $('dadd').onclick=async()=>{
  det.img=null;det.boxes=[];dc.hidden=true;render();
  setSt(`Added ${n} item${n===1?'':'s'}, ${nb} background box${nb===1?'':'es'} and ${m} random background patch${m===1?'':'es'}.`);
 };
+$('cAll').onclick=()=>{classes.forEach(c=>c.closed=true);render()};
+$('eAll').onclick=()=>{classes.forEach(c=>c.closed=false);render()};
 render();
 </script>
 </body></html>
