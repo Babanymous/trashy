@@ -144,11 +144,13 @@ $('add').onclick=addClass;$('nn').onkeydown=e=>{if(e.key==='Enter')addClass()};
 async function test(f){
  if(!net)return setSt('MobileNet is still loading.');
  if(!classes.some(c=>c.s.length))return setSt('Add images to at least one category first.');
- const img=await toImg(f);$('tp').src=img.src;$('tp').style.display='block';
- const r=predict(embed(img));
- $('res').innerHTML=r.map((x,i)=>`<div class="row${i?'':' top'}" style="--c:${x.c}"><span></span><div class="track"><i style="width:${(x.p*100).toFixed(1)}%"></i></div><span>${Math.round(x.p*100)}%</span></div>`).join('');
- $('res').querySelectorAll('.row').forEach((row,i)=>row.firstElementChild.textContent=r[i].n);
- if(r.length<2)setSt('Add a second category to compare against.')
+ try{
+  const img=await toImg(f);$('tp').src=img.src;$('tp').style.display='block';
+  const r=predict(embed(img));
+  $('res').innerHTML=r.map((x,i)=>`<div class="row${i?'':' top'}" style="--c:${x.c}"><span></span><div class="track"><i style="width:${(x.p*100).toFixed(1)}%"></i></div><span>${Math.round(x.p*100)}%</span></div>`).join('');
+  $('res').querySelectorAll('.row').forEach((row,i)=>row.firstElementChild.textContent=r[i].n);
+  if(r.length<2)setSt('Add a second category to compare against.')
+ }catch(_){setSt('Could not read or classify that image. Try another image.')}
 }
 $('tf').onchange=e=>{if(e.target.files[0])test(e.target.files[0]);e.target.value=''};
 const td=$('td');td.ondragover=e=>{e.preventDefault();td.classList.add('over')};td.ondragleave=()=>td.classList.remove('over');
@@ -189,7 +191,6 @@ function classify(img){
 }
 <\/script>`;
 
-/* ---------- Object detection training ---------- */
 const det={img:null,boxes:[],drag:null,k:1};
 const dc=$('dc'),dg=dc.getContext('2d');
 function fillSel(){const s=$('dcls'),v=s.value;s.innerHTML='';

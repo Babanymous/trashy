@@ -73,6 +73,23 @@ button{font:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;
 .hint svg{flex:none;width:64px;height:72px;stroke:#2f5209;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{50%{transform:translateY(6px)}}
 footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:var(--mut)}
+footer p{margin:0}
+.legal{display:flex;justify-content:center;gap:14px;margin-top:2px}
+.lk{background:none;color:var(--leaf);padding:2px 6px;font-size:13px;text-decoration:underline;border-radius:6px}
+.lk:hover{background:#e7eed8}
+dialog{width:min(720px,94vw);max-height:86vh;padding:0;border:0;border-radius:22px;overflow:auto;color:var(--ink);background:#fff;box-shadow:0 30px 80px -20px rgba(18,32,10,.6)}
+dialog::backdrop{background:rgba(18,32,10,.55)}
+.lh{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.ltabs{display:flex;gap:6px;flex-wrap:wrap}
+.ltabs button{background:none;color:var(--mut);padding:8px 14px}
+.ltabs button[aria-selected=true]{background:var(--deep);color:#fff}
+#lclose{flex:none;width:40px;height:40px;padding:0;font-size:24px;line-height:1;background:#eef3e4;color:var(--ink)}
+#lbody{padding:6px 26px 30px;font-size:15.5px}
+#lbody h2{font-size:26px;letter-spacing:-.02em;margin:18px 0 2px}
+#lbody h3{font-size:17px;margin:22px 0 4px}
+#lbody p,#lbody ul{margin:6px 0;color:#2c3a1f}
+#lbody .up{color:var(--mut);font-size:14px}
+mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
 @media(max-width:600px){.nav>div{padding:0 14px}.pill{max-width:56vw;font-size:12.5px}.av{width:42px;height:42px}#heroAx{width:min(190px,58%)}.b{max-width:88%}.gr{grid-template-columns:78px 1fr 40px}.say{font-size:19px}.bar{font-size:16px;padding-left:18px}.hint span{font-size:21px;max-width:165px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
@@ -81,7 +98,7 @@ footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:
  <div id="status" class="pill" aria-live="polite">Loading…</div>
 </div></header>
 <main class="thread" id="thread" role="log" aria-live="polite"><section id="hero"><div id="heroAx"></div><h1>Sort your trash with one picture</h1><p>Send Trashy-0.1 a photo. It finds the items in it and tells you what each one is.</p>
- <ul class="chips"><li>Finds several items</li><li>Draws a box around each</li><li>Shows how sure it is</li></ul></section></main>
+</section></main>
 <div class="dock">
  <div id="drop">
   <nav id="menu" hidden aria-label="Menu"><button type="button" data-a="how">How it works</button><button type="button" data-a="clear">Clear chat</button><button type="button" data-a="send">Send image</button></nav>
@@ -89,8 +106,13 @@ footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:
   <div class="bar"><span>Choose an option</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><button id="pick" class="go" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
  </div>
- <footer>Trashy-0.1 runs in your browser. Your pictures never leave your device.</footer>
+ <footer><p>Trashy-0.1 runs in your browser. Your pictures never leave your device.</p>
+ <nav class="legal" aria-label="Legal"><button class="lk" type="button" data-doc="privacy">Privacy Policy</button><button class="lk" type="button" data-doc="terms">Terms and Conditions</button></nav></footer>
 </div>
+<dialog id="legal" aria-label="Legal information">
+ <div class="lh"><div class="ltabs"><button type="button" data-doc="privacy">Privacy Policy</button><button type="button" data-doc="terms">Terms and Conditions</button></div><button id="lclose" type="button" aria-label="Close">×</button></div>
+ <article id="lbody"></article>
+</dialog>
 <template id="axFallback"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ax s-idle" viewBox="0 30 400 340" width="400" height="340" role="img" aria-label="Axolotl creature mascot">
 <title>Axolotl</title>
 <style>
@@ -223,7 +245,6 @@ const $=id=>document.getElementById(id);
 function status(kind,html){const e=$('status');e.className='pill '+kind;e.innerHTML=html}
 let net=null, model=null, proto=null, heroSvg=null, heroEyes=[];
 
-/* ---------- Axolotl avatar ---------- */
 const STATES=['idle','joy','wow','loading'];
 async function loadAxolotl(){
  let el;
@@ -251,7 +272,6 @@ function unlook(){
 addEventListener('pointermove',e=>look(e.clientX,e.clientY));
 document.documentElement.addEventListener('mouseleave',unlook);
 function syncHero(){$('hero').hidden=!!document.querySelector('.m.user')}
-/* every copy of the axolotl needs its own ids, or hiding one copy breaks the others */
 let uid=0;
 function uniq(svg){
  const n=++uid,els=[...svg.querySelectorAll('[id]')],ids=els.map(e=>e.id);
@@ -270,7 +290,6 @@ function uniq(svg){
 }
 function emo(row,s){const v=row.querySelector('.av svg');if(!v)return;STATES.forEach(x=>v.classList.remove('s-'+x));v.classList.add('s-'+s)}
 
-/* ---------- Model ---------- */
 function decodeQ(b64,sc){
  const bin=atob(b64),e=new Float32Array(bin.length);let n=0;
  for(let i=0;i<bin.length;i++){let v=bin.charCodeAt(i);if(v>127)v-=256;e[i]=v/sc;n+=e[i]*e[i]}
@@ -279,6 +298,7 @@ function decodeQ(b64,sc){
 function useModel(d){
  if(d.format!=='image-trainer-v1'||!Array.isArray(d.classes))throw 0;
  model=d.classes.filter(c=>c.samples.length).map(c=>({name:c.name,color:c.color,samples:c.samples.map(x=>({e:x.q?decodeQ(x.q,x.s):x.e}))}));
+ if(!model.length)throw 0;
 }
 function missingModel(){
  status('err','Couldn’t load the Trashy-0.1 model. Put <b>image-model.js</b> in the same folder as this page.');
@@ -300,7 +320,6 @@ const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
  greet();
 });
 
-/* ---------- Classify ---------- */
 const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
 function predict(e){
  const sc=model.map(c=>{
@@ -312,7 +331,6 @@ function predict(e){
 const toImg=url=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
 const embed=img=>tf.tidy(()=>{const e=net.infer(img,true);return Array.from(e.div(e.norm()).dataSync())});
 
-/* ---------- Chat ---------- */
 function scrollDown(){requestAnimationFrame(()=>scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}))}
 function msg(who){
  const row=document.createElement('div');row.className='m '+who;
@@ -346,8 +364,7 @@ function showResult(a,r){
 }
 function say(a,text,emotion){emo(a,emotion);a.querySelector('.b').innerHTML='';const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p)}
 
-/* ---------- Object detection ---------- */
-const DET_MIN=0.6; /* how sure a window must be to count as an item (0 to 1) */
+const DET_MIN=0.6;
 const pos=(L,l,st)=>{const p=[];for(let v=0;v<L-l-1;v+=st)p.push(v);p.push(Math.max(0,L-l));return p};
 function windows(W,H){
  const m=Math.min(W,H);let f=.5,out;
@@ -364,14 +381,14 @@ function iou(a,b){
  const ix=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)),iy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)),i=ix*iy;
  return i/(a.w*a.h+b.w*b.h-i);
 }
-const MERGE_OVERLAP=0.2; /* same-class boxes overlapping by more than this share of the smaller box become one box */
+const MERGE_OVERLAP=0.2;
 const inter=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
-function suppress(ds){ /* a weaker box of another class sitting on a stronger one is dropped */
+function suppress(ds){
  ds.sort((a,b)=>b.p-a.p);const keep=[];
  for(const d of ds){if(keep.some(k=>k.n!==d.n&&iou(k,d)>.5))continue;keep.push(d)}
  return keep;
 }
-function mergeBoxes(keep,thr){ /* same class and overlapping: one box around the group */
+function mergeBoxes(keep,thr){
  const out=[];
  for(const n of new Set(keep.map(d=>d.n))){
   const g=keep.filter(d=>d.n===n),par=g.map((_,i)=>i);
@@ -387,7 +404,6 @@ function mergeBoxes(keep,thr){ /* same class and overlapping: one box around the
  return out.sort((a,b)=>b.p-a.p);
 }
 const nms=ds=>mergeBoxes(suppress(ds),MERGE_OVERLAP);
-/* fit a box tightly: nudge each edge in and out while the crop looks more like the item and less like background */
 async function refine(img,d,cx,c,W,H){
  const look=b=>{cx.drawImage(img,b.x,b.y,b.w,b.h,0,0,224,224);const r=predict(embed(c)),me=r.find(x=>x.n===d.n),bg=r.find(x=>x.n==='background');return{s:me.v-(bg?bg.v:0),p:me.p}};
  const mn=Math.min(W,H)*.06;let best={x:d.x,y:d.y,w:d.w,h:d.h},cur=look(best);
@@ -500,7 +516,6 @@ async function handle({url,a}){
  }catch(_){say(a,'I couldn’t read that picture. Try another one.','wow')}
 }
 
-/* ---------- UI ---------- */
 const mb=$('pick'),mn=$('menu');
 function menu(open){mb.setAttribute('aria-expanded',open);mn.hidden=!open;if(open)$('hint').hidden=true}
 mb.onclick=e=>{e.stopPropagation();menu(mn.hidden)};
@@ -517,5 +532,50 @@ const dz=$('drop');
 ['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{e.preventDefault();dz.classList.add('over')}));
 ['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();if(t==='drop'||!e.relatedTarget)dz.classList.remove('over')}));
 addEventListener('drop',e=>add(e.dataTransfer.files));
+
+const LEGAL={name:'Alexej Ryabenko',address:'Eschweiler 52249 Am Kleekamp 26',email:'alexej.ryabenkostalk41@gmail.com',country:'Germany',host:'GitHub Pages (GitHub Inc., USA)',updated:'3 November 2026'};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const L=k=>LEGAL[k]?esc(LEGAL[k]):`<mark>[add your ${k}]</mark>`;
+const DOCS={
+ privacy:()=>`<h2>Privacy Policy</h2><p class="up">Last updated: ${L('updated')}</p>
+<h3>1. Who is responsible</h3><p>${L('name')}, ${L('address')}.</p>
+<p>Email: ${L('email')}.</p>
+<h3>2. In short</h3><p>Trashy-0.1 looks at your pictures on your own device. We do not upload, store or see your pictures. There are no accounts, no cookies, no analytics and no ads.</p>
+<h3>3. Your pictures</h3><p>When you choose a picture, your browser reads it and the AI running in your browser compares it with the trained model file. The picture is not sent to any server. It is gone when you close or reload the page.</p>
+<h3>4. Data processed when you visit</h3><p>This website is hosted by ${L('host')}. When you open the page, the host receives technical data such as your IP address, the date and time, the requested file and your browser type, and keeps it in server logs to deliver and secure the site. We do not use this data to identify you. Legal basis: Art. 6(1)(f) GDPR (our legitimate interest in running a secure website).</p>
+<h3>5. Services loaded from other providers</h3><p>To work, the page loads files from other providers. Each request sends your IP address and browser details to that provider:</p>
+<ul><li>Google Fonts (fonts.googleapis.com and fonts.gstatic.com): the fonts used on this page.</li><li>jsDelivr (cdn.jsdelivr.net): the TensorFlow.js and MobileNet code libraries.</li><li>Google model hosting (tfhub.dev and related domains): the MobileNet model files used to read pictures.</li></ul>
+<p>Legal basis: Art. 6(1)(f) GDPR (showing the page and running the AI tool). Some of these providers are based in the USA or process data there. Where required, they rely on EU standard contractual clauses or the EU–US Data Privacy Framework.</p>
+<h3>6. Cookies and local storage</h3><p>We do not use cookies, local storage or similar tracking technologies.</p>
+<h3>7. Your rights</h3><p>Under Art. 15 to 21 GDPR you have the right to access, rectification, erasure, restriction of processing, data portability and objection. You can also complain to a data protection supervisory authority. Because we do not store personal data ourselves, most requests concern the hosting provider and the providers in section 5.</p>
+<h3>8. Changes</h3><p>We may update this policy when the website changes. The date above shows the latest version.</p>
+<h3>9. Contact</h3><p>Questions about privacy: ${L('email')}.</p>`,
+ terms:()=>`<h2>Terms and Conditions</h2><p class="up">Last updated: ${L('updated')}</p>
+<h3>1. About</h3><p>Trashy-0.1 is a free AI tool that suggests which trash category an item in your picture belongs to. It is provided by ${L('name')}, ${L('address')}, ${L('email')}.</p>
+<h3>2. Agreement</h3><p>By using this website you agree to these terms. If you do not agree, please do not use it.</p>
+<h3>3. Suggestions only</h3><p>Trashy-0.1 can be wrong. The categories, confidence values and boxes it shows are estimates, not facts. Do not rely on them for safety, legal or health decisions, or for hazardous or special waste. Follow the rules of your local waste authority.</p>
+<h3>4. Using the website</h3><p>Use it lawfully and only with pictures you are allowed to use. Do not upload pictures of other people without their permission. Do not try to disrupt or overload the website or get around how it works.</p>
+<h3>5. Your pictures</h3><p>Your pictures stay on your device and remain yours. We receive no rights to them. See the Privacy Policy.</p>
+<h3>6. Ownership</h3><p>The website, its design, the axolotl mascot and the name Trashy-0.1 belong to ${L('name')} or its licensors. You may use the service for personal use. Copying or reselling it needs written permission. TensorFlow.js and MobileNet are open-source components under the Apache License 2.0.</p>
+<h3>7. Availability</h3><p>The service is free and provided “as is” and “as available”. We may change, pause or end it at any time.</p>
+<h3>8. Liability</h3><p>We are fully liable for intent and gross negligence, for injury to life, body or health, and wherever the law does not allow liability to be limited (for example under the Product Liability Act). For a slightly negligent breach of an essential contractual duty, liability is limited to the foreseeable damage typical for this kind of contract. Any further liability is excluded to the extent the law allows.</p>
+<h3>9. Third-party services</h3><p>The website relies on third-party providers (see the Privacy Policy). We are not responsible for their services.</p>
+<h3>10. Changes</h3><p>We may change these terms for good reasons, such as new features or changes in the law. The version on this page applies.</p>
+<h3>11. Governing law</h3><p>The laws of ${L('country')} apply, excluding the UN Convention on Contracts for the International Sale of Goods. Mandatory consumer-protection rules of the country where you live stay unaffected.</p>
+<h3>12. Contact</h3><p>${L('email')}</p>`
+};
+const dlg=$('legal'),setHash=h=>{try{history.replaceState(null,'',h)}catch(_){}};
+function openDoc(k){
+ $('lbody').innerHTML=DOCS[k]();
+ dlg.querySelectorAll('.ltabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.doc===k));
+ if(!dlg.open)dlg.showModal();
+ dlg.scrollTop=0;setHash('#'+k);
+}
+document.querySelectorAll('[data-doc]').forEach(b=>b.onclick=()=>openDoc(b.dataset.doc));
+$('lclose').onclick=()=>dlg.close();
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+dlg.addEventListener('close',()=>setHash(location.pathname+location.search));
+function fromHash(){const k=location.hash.slice(1);if(DOCS[k])openDoc(k)}
+addEventListener('hashchange',fromHash);fromHash();
 </script>
 </body></html>
