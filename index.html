@@ -270,8 +270,8 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
 <g class="ax-dec d-s" fill="#c9ef5d"><path class="ax-sp" d="M110 112l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path class="ax-sp ax-sp2" d="M292 100l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g>
 </svg>
 </template>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js"></script>
+<script src="lib/tf.min.js"></script>
+<script src="lib/mobilenet.min.js"></script>
 <script>
 const MODEL_JS='image-model.js', MODEL_FILE='image-model.json', SVG_FILE='svg/axolotl-bot-idle.svg';
 const $=id=>document.getElementById(id);
@@ -347,7 +347,7 @@ async function loadModel(){
  if(!d){try{const r=await fetch(MODEL_FILE);if(r.ok)d=await r.json()}catch(_){}}
  try{if(!d)throw 0;useModel(d)}catch(_){missingModel()}
 }
-async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0})}catch(_){net=null}}
+async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0,modelUrl:'models/mobilenet_v2_100_224/model.json',inputRange:[0,1]})}catch(_){net=null}}
 const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
  if(!model)return;
  if(!net)return status('err','Couldn’t load the image engine. Check your internet connection and reload.');

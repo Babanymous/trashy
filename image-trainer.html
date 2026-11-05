@@ -84,15 +84,15 @@ select{font:inherit;padding:6px 8px;border-radius:6px;border:1px solid var(--lin
  <canvas id="dc" hidden></canvas>
 </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js"></script>
+<script src="lib/tf.min.js"></script>
+<script src="lib/mobilenet.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const COLORS=['#e4572e','#1f9d8a','#7b4fd1','#d99a00','#2f7de1','#c43e8a','#5b8c2a','#8a5a44'];
 let net=null,classes=[];
 const setSt=t=>$('st').textContent=t;
 
-mobilenet.load({version:2,alpha:1.0}).then(m=>{net=m;setSt('Ready. Add categories and upload images.')})
+mobilenet.load({version:2,alpha:1.0,modelUrl:'models/mobilenet_v2_100_224/model.json',inputRange:[0,1]}).then(m=>{net=m;setSt('Ready. Add categories and upload images.')})
  .catch(()=>setSt('Could not load MobileNet. Check your internet connection and reload.'));
 
 const toImg=f=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(f)});
