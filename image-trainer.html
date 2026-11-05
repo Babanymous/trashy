@@ -92,7 +92,15 @@ const COLORS=['#e4572e','#1f9d8a','#7b4fd1','#d99a00','#2f7de1','#c43e8a','#5b8c
 let net=null,classes=[];
 const setSt=t=>$('st').textContent=t;
 
-mobilenet.load({version:2,alpha:1.0,modelUrl:'models/mobilenet_v2_100_224/model.json',inputRange:[0,1]}).then(m=>{net=m;setSt('Ready. Add categories and upload images.')})
+/* MobileNet: normal files on the website; a packed single-script copy when the page is opened straight from the disk (file://), because browsers block fetch() there */
+const NET_URL='models/mobilenet_v2_100_224/model.json',NET_PACKED='models/mobilenet_v2_100_224/model-packed.js';
+function packedNet(){return new Promise((ok,no)=>{if(window.TRASHY_MOBILENET)return ok(window.TRASHY_MOBILENET);const t=document.createElement('script');t.src=NET_PACKED;t.onload=()=>window.TRASHY_MOBILENET?ok(window.TRASHY_MOBILENET):no();t.onerror=no;document.head.appendChild(t)})}
+async function netSource(){
+ if(location.protocol!=='file:')return NET_URL;
+ const m=await packedNet(),bin=atob(m.weightData),w=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)w[i]=bin.charCodeAt(i);
+ return tf.io.fromMemory({modelTopology:m.modelTopology,weightSpecs:m.weightSpecs,weightData:w.buffer,format:m.format,generatedBy:m.generatedBy,convertedBy:m.convertedBy});
+}
+netSource().then(u=>mobilenet.load({version:2,alpha:1.0,modelUrl:u,inputRange:[0,1]})).then(m=>{net=m;setSt('Ready. Add categories and upload images.')})
  .catch(()=>setSt('Could not load MobileNet. Check your internet connection and reload.'));
 
 const toImg=f=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(f)});

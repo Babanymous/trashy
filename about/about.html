@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="Meet Trashy AI (Trashy-0.1), a browser-based AI project exploring how image recognition and waste classification can help people sort waste.">
+ <title>Trashy AI</title>
+ <link rel="icon" type="image/svg+xml" href="trashy-logo.svg">
+ <style>@font-face{font-family:"Bricolage Grotesque";src:url(fonts/BricolageGrotesque-Variable.ttf) format("truetype");font-weight:200 800;font-stretch:75% 100%;font-display:swap}@font-face{font-family:Caveat;src:url(fonts/Caveat-Variable.ttf) format("truetype");font-weight:400 700;font-display:swap}</style>
+ <style>
+ :root{--bg:#f5f8ef;--ink:#12200a;--mut:#5a6a4b;--line:#e1e8d4;--leaf:#3f6b0c;--lime:#c9ef5d;--soft:#dcf38f;--deep:#12200a;--pink:#ff86b3;color-scheme:light}
+ *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:84px}
+ body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:16.5px/1.55 "Bricolage Grotesque",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+ a{color:inherit}img{max-width:100%}
+ :focus-visible{outline:3px solid var(--leaf);outline-offset:3px;border-radius:6px}
+ .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+ /* nav */
+ .nav{position:sticky;top:0;z-index:5;background:rgba(18,32,10,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff}
+ .nav .wrap{display:flex;align-items:center;gap:20px;height:66px}
+ .brand{display:flex;align-items:center;gap:10px;flex:none;text-decoration:none;font-size:21px;font-weight:800;letter-spacing:-.02em}
+ .brand img{width:34px;height:34px}
+ .links{display:flex;gap:4px;margin-left:auto}
+ .links a{padding:8px 14px;border-radius:999px;color:#cfe0b0;font-size:15px;font-weight:600;text-decoration:none;transition:background .15s,color .15s}
+ .links a:hover{background:#ffffff14;color:#fff}
+ .nav .button{padding:10px 18px;font-size:15px;box-shadow:none}
+
+ /* buttons */
+ .button{display:inline-flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;background:var(--lime);color:var(--ink);font-weight:800;text-decoration:none;box-shadow:0 4px 0 #9fc23c;transition:transform .15s,box-shadow .15s,background .15s}
+ .button:hover{background:#d6f670;transform:translateY(-2px);box-shadow:0 6px 0 #9fc23c}
+ .button:active{transform:translateY(2px);box-shadow:0 2px 0 #9fc23c}
+ .ghost{display:inline-flex;align-items:center;gap:8px;padding:15px 8px;font-weight:700;color:var(--leaf);text-decoration:none}
+ .ghost:hover{text-decoration:underline;text-underline-offset:4px}
+ .arrow{font-size:19px;line-height:1}
+
+ /* hero */
+ .hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:72px 0 64px}
+ .badge{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;padding:7px 14px 7px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--mut)}
+ .badge::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px #c9ef5d55}
+ .hero h1{font-size:clamp(44px,6vw,78px);line-height:.98;letter-spacing:-.05em;margin:0 0 22px;text-wrap:balance}
+ .hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--soft) 62%);padding:0 .06em}
+ .hero p{max-width:560px;color:var(--mut);font-size:19.5px;line-height:1.6;margin:0 0 32px}
+ .actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+ .art{position:relative;display:grid;place-items:center;min-height:420px}
+ .art::before{content:"";position:absolute;width:min(400px,92%);aspect-ratio:1;border-radius:46% 54% 52% 48%/52% 46% 54% 48%;background:radial-gradient(circle at 35% 30%,#ecfab8,var(--soft) 55%,#c3e46a);animation:blob 14s ease-in-out infinite}
+ .art::after{content:"";position:absolute;width:min(470px,108%);aspect-ratio:1;border-radius:50%;border:2px dashed #b9d77a;animation:spin 60s linear infinite}
+ .art img{position:relative;z-index:1;width:min(440px,100%);height:auto}
+ .note{position:absolute;z-index:2;right:0;top:34px;font:700 25px/1 Caveat,cursive;color:var(--leaf);transform:rotate(6deg)}
+ @keyframes blob{50%{border-radius:54% 46% 44% 56%/46% 56% 44% 54%;transform:rotate(8deg) scale(1.03)}}
+ @keyframes spin{to{transform:rotate(360deg)}}
+
+ /* sections */
+ section{padding:64px 0}
+ .eyebrow{display:inline-block;margin-bottom:12px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--leaf)}
+ h2{font-size:clamp(30px,4vw,46px);line-height:1.06;letter-spacing:-.04em;margin:0 0 16px;text-wrap:balance}
+ .lead{font-size:19px;color:var(--mut);max-width:720px;margin:0}
+ .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px;counter-reset:s}
+ .step{position:relative;background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;transition:transform .2s,box-shadow .2s}
+ .step:hover{transform:translateY(-4px);box-shadow:0 22px 40px -28px #12200a55}
+ .step::before{counter-increment:s;content:"0" counter(s);position:absolute;top:24px;right:26px;font-size:15px;font-weight:800;color:#b9c8a6}
+ .ico{display:grid;place-items:center;width:52px;height:52px;margin-bottom:18px;border-radius:16px;background:var(--soft)}
+ .ico svg{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+ .step h3{font-size:21px;letter-spacing:-.02em;margin:0 0 8px}
+ .step p{color:var(--mut);margin:0;font-size:15.5px}
+
+ .why{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;background:#eaf1dc;border-radius:32px;padding:clamp(28px,5vw,56px)}
+ .why p{margin:0;color:#36452a;font-size:17px}
+ .why aside{position:relative;background:#fff;border-radius:22px;padding:26px 26px 26px 76px;font-size:17px;font-weight:600;box-shadow:0 18px 40px -30px #12200a66}
+ .why aside::before{content:"!";position:absolute;left:24px;top:24px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#fff3a3;font-weight:800;font-size:19px}
+
+ .contribute{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;background:var(--deep);color:#fff;border-radius:32px;padding:clamp(28px,5vw,60px);overflow:hidden;position:relative}
+ .contribute::before{content:"";position:absolute;width:520px;height:520px;left:-200px;bottom:-300px;border-radius:50%;background:radial-gradient(circle,#c9ef5d33,transparent 70%)}
+ .contribute>*{position:relative}
+ .contribute .eyebrow{color:var(--lime)}
+ .contribute p{max-width:640px;color:#d5e1c9}
+ .contribute a:not(.button){color:var(--lime);font-weight:700}
+ .tags{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 24px}
+ .tags span{background:#ffffff12;border:1px solid #ffffff26;border-radius:99px;padding:7px 14px;font-size:14px;color:#e6efdb}
+ .tags span::before{content:"✓ ";color:var(--lime);font-weight:800}
+ .shot{margin:0;border-radius:24px;overflow:hidden;aspect-ratio:4/5;box-shadow:0 30px 60px -20px #000a;transform:rotate(2deg);transition:transform .3s}
+ .shot:hover{transform:rotate(0) scale(1.02)}
+ .shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 52%;transform:scale(1.35)}
+
+ /* footer */
+ footer{margin-top:40px;border-top:1px solid var(--line)}
+ footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;padding-top:28px;padding-bottom:36px;font-size:14px;color:var(--mut)}
+ footer .brand{font-size:17px;color:var(--ink)}footer .brand img{width:28px;height:28px}
+ .legal{display:flex;flex-wrap:wrap;gap:4px 18px}
+ .legal a{color:var(--leaf);font-weight:700;text-decoration:none}.legal a:hover{text-decoration:underline}
+
+ /* reveal on scroll */
+ .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+ .rv.in{opacity:1;transform:none}
+
+ @media(max-width:860px){.links{display:none}.nav .button{margin-left:auto}.hero{grid-template-columns:1fr;padding:36px 0 24px;gap:8px}.art{grid-row:1;min-height:280px}.art::after{display:none}.art::before{width:min(280px,80%)}.art img{width:min(320px,90%)}.note{right:4%;top:10px;font-size:21px}.steps{grid-template-columns:1fr}.why,.contribute{grid-template-columns:1fr}.shot{max-width:380px;transform:none}section{padding:44px 0}}
+ @media(max-width:480px){.wrap{padding:0 18px}.nav .button{padding:9px 14px;font-size:14px}.brand span{font-size:19px}}
+ @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}}
+ </style>
+</head>
+<body>
+ <header class="nav"><div class="wrap">
+  <a class="brand" href="about.html"><img src="trashy-logo.svg" alt="" width="34" height="34"><span>Trashy-0.1</span></a>
+  <nav class="links" aria-label="Sections"><a href="#how-it-works">How it works</a><a href="#why">Why</a><a href="#contribute">Contribute</a></nav>
+  <a class="button" href="https://babanymous.github.io/trashy/" target="_blank" rel="noopener noreferrer">Try it <span class="arrow" aria-hidden="true">↗</span></a>
+ </div></header>
+
+ <main class="wrap">
+  <section class="hero">
+   <div>
+    <span class="badge">Early experiment · runs in your browser</span>
+    <h1>Make waste sorting <em>easier</em> to get right.</h1>
+    <p>Trashy-0.1 explores how AI can help automate garbage sorting and make caring for our environment more engaging. The long-term goal is a smarter, simpler path from everyday waste to the right place.</p>
+    <div class="actions">
+     <a class="button" href="https://babanymous.github.io/trashy/" target="_blank" rel="noopener noreferrer">Test Trashy-0.1 <span class="arrow" aria-hidden="true">↗</span></a>
+     <a class="ghost" href="#how-it-works">See how it works <span class="arrow" aria-hidden="true">↓</span></a>
+    </div>
+   </div>
+   <div class="art"><img src="axolotl.svg" alt="Trashy, a dark green axolotl mascot with big bright eyes and pink gills" width="400" height="340"><span class="note" aria-hidden="true">hi, I'm Trashy!</span></div>
+  </section>
+
+  <section id="how-it-works">
+   <div class="rv"><span class="eyebrow">How the AI works</span><h2>It learns from examples.</h2>
+   <p class="lead">Trashy compares visual patterns in a picture with examples it has learned from. The current model uses a pre-trained image network to turn images into features, then matches those features to its waste categories.</p></div>
+   <div class="steps">
+    <article class="step rv"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg></div><h3>Learn visual features</h3><p>A pre-trained image model turns each photo or image crop into a compact numerical representation.</p></article>
+    <article class="step rv"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="18" cy="7" r="2.5"/><circle cx="15" cy="17" r="2.5"/></svg></div><h3>Compare examples</h3><p>Trashy compares a new image with examples in its trained categories and estimates which category is the closest match.</p></article>
+    <article class="step rv"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div><h3>Improve with data</h3><p>More varied, accurately labelled examples can help the model handle different objects, lighting, backgrounds, and camera angles.</p></article>
+   </div>
+  </section>
+
+  <section id="why">
+   <div class="why rv"><div><span class="eyebrow">Why move in this direction?</span><h2>Automation can make care easier to act on.</h2><p>Sorting waste takes attention, and packaging or local rules can be confusing. AI could help identify items and support more automated sorting, while friendly, engaging tools can encourage people to pay attention to waste, recycle thoughtfully, and care for the environment.</p></div>
+    <aside>Trashy is an early experiment, not an authority on local recycling rules. Its suggestions can be wrong, and sorting guidance depends on where you live.</aside>
+   </div>
+  </section>
+
+  <section id="contribute">
+   <div class="contribute rv">
+    <div>
+     <span class="eyebrow">Help Trashy learn</span><h2>Have photos of waste items?</h2>
+     <p>Community datasets can make the model more useful across the objects and conditions people encounter in real life. I’m looking for garbage and recyclable item images with clear category labels. A mix of everyday objects, backgrounds, lighting, and viewpoints is especially helpful.</p>
+     <div class="tags" aria-label="Useful dataset qualities"><span>Clear labels</span><span>Different viewpoints</span><span>Everyday lighting</span><span>Varied backgrounds</span></div>
+     <p>If you have a dataset to share or want to contribute images, please get in touch with me. Please only share images you have the right to share, and remove personal or identifying details where possible. :D (Email: <a href="mailto:alexej.ryabenkostalk41@gmail.com">alexej.ryabenkostalk41@gmail.com</a>)</p>
+     <p style="margin-top:26px"><a class="button" href="https://babanymous.github.io/trashy/" target="_blank" rel="noopener noreferrer">Try the current model <span class="arrow" aria-hidden="true">↗</span></a></p>
+    </div>
+    <figure class="shot"><img src="mockup.jpg" loading="lazy" decoding="async" width="1200" height="1200" alt="Trashy-0.1 on a phone, finding a plastic bottle and a paper box in a photo"></figure>
+   </div>
+  </section>
+ </main>
+
+ <footer><div class="wrap">
+  <a class="brand" href="about.html"><img src="trashy-logo.svg" alt="" width="28" height="28"><span>Trashy-0.1</span></a>
+  <span>Trashy-0.1 runs in your browser. Your pictures never leave your device.</span>
+  <nav class="legal" aria-label="Legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms and Conditions</a><a href="impressum.html">Impressum</a></nav>
+ </div></footer>
+
+ <script>
+ const io='IntersectionObserver' in window&&new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+ document.querySelectorAll('.rv').forEach(el=>io?io.observe(el):el.classList.add('in'));
+ </script>
+</body>
+</html>
