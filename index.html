@@ -559,14 +559,51 @@ async function run(){
  try{await ready;while(queue.length){try{await handle(queue.shift())}catch(_){}}}
  finally{busy=false}
 }
+/* ---------- Detector (a trained D-FINE model; used only when models/trashy-detector/ exists) ---------- */
+const DET_DIR='models/trashy-detector/';
+const COLORS={Paper:'#7b4fd1',Plastic:'#1f9d8a',Glass:'#2f80ed',Metal:'#d99a1e',Trash:'#e4572e'};
+const colorOf=n=>(model&&(model.find(c=>c.name===n)||{}).color)||COLORS[n]||'#5a6a4b';
+let det=null;
+async function loadDetector(){
+ if(location.protocol==='file:')return; /* browsers block the files it needs there; the classic method is used instead */
+ try{
+  const r=await fetch(DET_DIR+'detector.json');if(!r.ok)return;
+  const cfg=await r.json();if(cfg.format!=='trashy-dfine-v1')return;
+  await new Promise((ok,no)=>{const t=document.createElement('script');t.src='lib/ort/ort.wasm.min.js';t.onload=ok;t.onerror=no;document.head.appendChild(t)});
+  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
+  ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
+  det={cfg,s:await ort.InferenceSession.create(DET_DIR+'model.onnx',{executionProviders:['wasm']})};
+ }catch(_){det=null}
+}
+const detReady=loadDetector();
+async function detectDF(img){
+ const N=det.cfg.input||640,cv=document.createElement('canvas');cv.width=cv.height=N;
+ const cx=cv.getContext('2d');cx.drawImage(img,0,0,N,N); /* stretched to N x N, like in training */
+ const px=cx.getImageData(0,0,N,N).data,f=new Float32Array(3*N*N);
+ for(let i=0;i<N*N;i++){f[i]=px[i*4]/255;f[N*N+i]=px[i*4+1]/255;f[2*N*N+i]=px[i*4+2]/255}
+ const s=det.s,o=await s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});
+ const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],W=img.naturalWidth,H=img.naturalHeight,thr=det.cfg.threshold||.35,out=[];
+ for(let q=0;q<Q;q++)for(let k=0;k<K;k++){
+  const p=1/(1+Math.exp(-L.data[q*K+k]));if(p<thr)continue;
+  const cxn=B.data[q*4],cyn=B.data[q*4+1],wn=B.data[q*4+2],hn=B.data[q*4+3],n=det.cfg.classes[k];
+  const x=Math.max(0,(cxn-wn/2)*W),y=Math.max(0,(cyn-hn/2)*H);
+  out.push({x,y,w:Math.min(W-x,wn*W),h:Math.min(H-y,hn*H),n,c:colorOf(n),p});
+ }
+ out.sort((a,b)=>b.p-a.p);const keep=[];
+ for(const b of out)if(!keep.some(k=>iou(k,b)>.6))keep.push(b); /* one box per item */
+ return keep.slice(0,20);
+}
+
 async function handle({url,a}){
  const prog=t=>{const e=a.querySelector('.prog');if(e)e.textContent=t};
  prog('Looking…');
  if(!model)return say(a,'I can’t find my model file.','idle');
- if(!net)return say(a,'My image engine didn’t load. Check your internet connection.','idle');
+ if(!net)return say(a,'My image engine didn’t load. Reload the page to try again.','idle');
  try{
   const img=await toImg(url);await tf.nextFrame();
-  if(model.some(c=>c.name==='background')){
+  await detReady;
+  if(det){const ds=await detectDF(img);if(ds.length)return showDetections(a,img,ds)}
+  else if(model.some(c=>c.name==='background')){
    const ds=await detect(img,prog);
    if(ds.length)return showDetections(a,img,ds);
   }

@@ -19,15 +19,27 @@ Categories: **Paper, Plastic, Glass, Metal, Trash**, plus *background* (used to 
 | `index.html` | The app |
 | `image-model.js` | The trained examples (the model, ~3.4 MB) |
 | `image-trainer.html` | Tool for training a model from your own photos |
-| `lib/` | TensorFlow.js and MobileNet code |
+| `lib/` | TensorFlow.js and MobileNet code; `lib/ort/` is ONNX Runtime Web for the detector |
+| `train-trashy-detector.ipynb` | Google Colab notebook that trains the detector |
 | `models/mobilenet_v2_100_224/` | MobileNet weights (`model-packed.js` is used when `index.html` is opened from disk) |
 | `svg/`, `trashy-logo.svg` | Mascot and logo |
 | `fonts/` | Bricolage Grotesque and Caveat (SIL Open Font License) |
 | `about/` | The project's about website |
 | `privacy.html`, `terms.html`, `impressum.html` | Legal pages |
 
+## Train the detector (recommended next step)
+
+A dedicated detection model (D-FINE nano, Apache-2.0) finds items with proper boxes in about 2–4 seconds instead of ~80.
+
+1. Open [`train-trashy-detector.ipynb` in Google Colab](https://colab.research.google.com/github/Babanymous/trashy/blob/main/train-trashy-detector.ipynb).
+2. **Runtime → Change runtime type → T4 GPU**, then **Runtime → Run all** (about 1–2 hours).
+3. Unzip the downloaded `trashy-detector.zip` into `models/trashy-detector/` (it contains `model.onnx` and `detector.json`).
+
+The app uses the detector automatically when that folder exists (served from a website; when `index.html` is opened from disk it keeps the classic method). It runs with [ONNX Runtime Web](https://onnxruntime.ai) (MIT, in `lib/ort/`).
+
 ## Training data
 
+- [TACO](https://github.com/pedropro/TACO) by Pedro F. Proença, CC BY 4.0 (detector training)
 - [TrashNet](https://huggingface.co/datasets/garythung/trashnet) by Gary Thung and Mindy Yang, MIT License
 - [Bower waste annotations](https://huggingface.co/datasets/BowerApp/bower-waste-annotations) by Bower, MIT License
 - [dmedhi garbage image classification & detection](https://huggingface.co/datasets/dmedhi/garbage-image-classification-detection) by dmedhi, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
