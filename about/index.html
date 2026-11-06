@@ -87,6 +87,7 @@
  footer .brand{font-size:17px;color:var(--ink)}footer .brand img{width:28px;height:28px}
  .legal{display:flex;flex-wrap:wrap;gap:4px 18px}
  .legal a{color:var(--leaf);font-weight:700;text-decoration:none}.legal a:hover{text-decoration:underline}
+ .credit{flex-basis:100%;font-size:12.5px;color:var(--mut)}.credit a{color:inherit}
 
  /* reveal on scroll */
  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
@@ -152,6 +153,7 @@
   <a class="brand" href="index.html"><img src="trashy-logo.svg" alt="" width="28" height="28"><span>Trashy-0.1</span></a>
   <span>Trashy-0.1 runs in your browser. Your pictures never leave your device.</span>
   <nav class="legal" aria-label="Legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms and Conditions</a><a href="impressum.html">Impressum</a></nav>
+  <small class="credit">Training data includes the <a href="https://huggingface.co/datasets/dmedhi/garbage-image-classification-detection" rel="noopener">dmedhi garbage dataset</a> (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>).</small>
  </div></footer>
 
  <script>
