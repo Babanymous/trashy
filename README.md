@@ -24,7 +24,6 @@ Categories: **Paper, Plastic, Glass, Metal, Trash**, plus *background* (used to 
 | `models/mobilenet_v2_100_224/` | MobileNet weights (`model-packed.js` is used when `index.html` is opened from disk) |
 | `svg/`, `trashy-logo.svg` | Mascot and logo |
 | `fonts/` | Bricolage Grotesque and Caveat (SIL Open Font License) |
-| `about/` | The project's about website |
 | `privacy.html`, `terms.html`, `impressum.html` | Legal pages |
 
 ## Train the detector (recommended next step)
