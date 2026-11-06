@@ -7,7 +7,7 @@ A small AI that sorts trash from a photo. It runs entirely in the browser: pictu
 ## How it works
 
 1. [MobileNet v2](https://github.com/tensorflow/tfjs-models/tree/master/mobilenet) (TensorFlow.js) turns each part of the photo into a fingerprint of 1,280 numbers.
-2. Trashy compares that fingerprint with stored examples and picks the category whose 3 closest examples match best.
+2. The fingerprint is compressed to 256 numbers (the same way as the stored examples), then compared with ~8,000 stored examples. Trashy picks the category whose 3 closest examples match best.
 3. A sliding-window search finds the items in the photo and draws a box around each.
 
 Categories: **Paper, Plastic, Glass, Metal, Trash**, plus *background* (used to ignore empty areas).
@@ -17,7 +17,7 @@ Categories: **Paper, Plastic, Glass, Metal, Trash**, plus *background* (used to 
 | Path | What it is |
 |---|---|
 | `index.html` | The app |
-| `image-model.js` | The trained examples (the model) |
+| `image-model.js` | The trained examples (the model, ~3.4 MB) |
 | `image-trainer.html` | Tool for training a model from your own photos |
 | `lib/` | TensorFlow.js and MobileNet code |
 | `models/mobilenet_v2_100_224/` | MobileNet weights (`model-packed.js` is used when `index.html` is opened from disk) |
@@ -39,7 +39,7 @@ Measured on photos the model had not been trained on:
 
 | Test set | Items classified correctly | False alarms on empty areas |
 |---|---|---|
-| dmedhi test photos | 78.5% | 1.4% |
-| Bower real-home photos | 72.5% | 1.7% |
+| dmedhi test photos | 79.1% | 1.9% (both sets) |
+| Bower real-home photos | 73.3% | |
 
 Trashy is an early experiment. Its suggestions can be wrong, and sorting rules depend on where you live.

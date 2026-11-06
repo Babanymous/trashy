@@ -331,9 +331,21 @@ function decodeQ(b64,sc){
  for(let i=0;i<bin.length;i++){let v=bin.charCodeAt(i);if(v>127)v-=256;e[i]=v/sc;n+=e[i]*e[i]}
  n=Math.sqrt(n)||1;for(let i=0;i<e.length;i++)e[i]/=n;return e;
 }
+/* trashy-pca-v1: examples are stored compressed (1280 -> d.dims numbers); each crop is compressed the same way before comparing */
+let pca=null, SCALE=25;
 function useModel(d){
- if(d.format!=='image-trainer-v1'||!Array.isArray(d.classes))throw 0;
+ if(!Array.isArray(d&&d.classes))throw 0;
+ if(d.format==='trashy-pca-v1'){
+  const mb=atob(d.mean),mu=new Float32Array(new Uint8Array([...mb].map(c=>c.charCodeAt(0))).buffer);
+  pca={mean:mu,comps:d.comps.map(c=>decodeQ(c.q,c.s))};SCALE=d.scale||25;
+ }else if(d.format==='image-trainer-v1'){pca=null;SCALE=25}
+ else throw 0;
  model=d.classes.filter(c=>c.samples.length).map(c=>({name:c.name,color:c.color,samples:c.samples.map(x=>({e:x.q?decodeQ(x.q,x.s):x.e}))}));
+}
+function project(e){
+ const o=new Float32Array(pca.comps.length),m=pca.mean;let n=0;
+ for(let a=0;a<o.length;a++){const q=pca.comps[a];let s=0;for(let i=0;i<q.length;i++)s+=(e[i]-m[i])*q[i];o[a]=s;n+=s*s}
+ n=Math.sqrt(n)||1;for(let a=0;a<o.length;a++)o[a]/=n;return o;
 }
 function missingModel(){
  status('err','Couldn’t load the Trashy-0.1 model. Put <b>image-model.js</b> in the same folder as this page.');
@@ -366,10 +378,11 @@ const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
 /* ---------- Classify ---------- */
 const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
 function predict(e){
+ if(pca)e=project(e);
  const sc=model.map(c=>{
-  const t=c.samples.map(x=>dot(x.e,e)).sort((a,b)=>b-a).slice(0,3);
-  return{n:c.name,c:c.color,v:t.reduce((a,b)=>a+b)/t.length}});
- const ex=sc.map(x=>Math.exp(x.v*25)),z=ex.reduce((a,b)=>a+b,0);
+  const t=[-9,-9,-9];for(const x of c.samples){const s=dot(x.e,e);if(s>t[2]){t[2]=s;t.sort((a,b)=>b-a)}}
+  return{n:c.name,c:c.color,v:(t[0]+t[1]+t[2])/3}});
+ const ex=sc.map(x=>Math.exp(x.v*SCALE)),z=ex.reduce((a,b)=>a+b,0);
  sc.forEach((x,i)=>x.p=ex[i]/z);return sc.sort((a,b)=>b.p-a.p);
 }
 const toImg=url=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
