@@ -1,0 +1,71 @@
+{
+ "format": "trashy-dfine-v1",
+ "base": "ustc-community/dfine-nano-coco",
+ "classes": [
+  "Paper",
+  "Plastic",
+  "Glass",
+  "Metal",
+  "Trash"
+ ],
+ "input": 640,
+ "preprocess": "stretch to 640x640, RGB, divide by 255",
+ "outputs": [
+  "logits (sigmoid per class)",
+  "pred_boxes (cx, cy, w, h, 0..1)"
+ ],
+ "threshold": 0.35,
+ "metrics": {
+  "bower": {
+   "mAP50": 0.768,
+   "mAP": 0.701,
+   "items_found": 0.921,
+   "items_right": 0.76,
+   "per_class_right": {
+    "Plastic": 0.769,
+    "Paper": 0.833,
+    "Glass": 0.7,
+    "Metal": 0.614
+   }
+  },
+  "dmedhi": {
+   "mAP50": 0.744,
+   "mAP": 0.665,
+   "items_found": 0.891,
+   "items_right": 0.776,
+   "per_class_right": {
+    "Glass": 0.839,
+    "Paper": 0.776,
+    "Metal": 0.656,
+    "Plastic": 0.894,
+    "Trash": 0.638
+   }
+  },
+  "taco": {
+   "mAP50": 0.201,
+   "mAP": 0.155,
+   "items_found": 0.552,
+   "items_right": 0.341,
+   "per_class_right": {
+    "Plastic": 0.531,
+    "Paper": 0.095,
+    "Trash": 0.065,
+    "Metal": 0.2,
+    "Glass": 0.067
+   }
+  },
+  "trashnet": {
+   "mAP50": 0.901,
+   "mAP": 0.73,
+   "items_found": 0.979,
+   "items_right": 0.918,
+   "per_class_right": {
+    "Paper": 0.95,
+    "Glass": 0.896,
+    "Metal": 0.953,
+    "Plastic": 0.889,
+    "Trash": 0.75
+   }
+  }
+ }
+}
