@@ -11,6 +11,8 @@ A small AI that sorts trash from a photo. It runs entirely in the browser: pictu
 
 Categories: **Paper, Plastic, Glass, Metal, Trash**.
 
+The app is available in English, German and Russian (picked from the browser language, or with `?lang=en|de|ru`), and can be installed on a phone from the menu.
+
 ## Files
 
 | Path | What it is |
@@ -22,6 +24,8 @@ Categories: **Paper, Plastic, Glass, Metal, Trash**.
 | `lib/` | TensorFlow.js and MobileNet code; `lib/ort/` is ONNX Runtime Web |
 | `train-trashy-detector.ipynb` | Google Colab notebook that trains the detector |
 | `models/mobilenet_v2_100_224/` | MobileNet weights (`model-packed.js` is used when `index.html` is opened from disk) |
+| `manifest.webmanifest`, `icons/` | Lets people install Trashy on their phone (Android and iPhone) |
+| `sw.js` | Offline support: saves the app and models on the phone after the first visit. **Change `VERSION` in it whenever a model or library file changes**, or installed copies keep the old files |
 | `svg/`, `trashy-logo.svg` | Mascot and logo |
 | `fonts/` | Bricolage Grotesque and Caveat (SIL Open Font License) |
 | `privacy.html`, `terms.html`, `impressum.html` | Legal pages |

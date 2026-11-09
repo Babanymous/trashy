@@ -1,0 +1,16 @@
+{
+ "name": "Trashy-0.1: Trash sorting AI",
+ "short_name": "Trashy",
+ "description": "Take a photo of your trash and Trashy tells you what each item is. Runs on your device.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f5f8ef",
+ "theme_color": "#12200a",
+ "icons": [
+  {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+  {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+  {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+ ]
+}
