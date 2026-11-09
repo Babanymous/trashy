@@ -15,6 +15,12 @@ self.addEventListener('activate', (e) => {
     .then(() => self.clients.claim()));
 });
 
+/* on the first visit the page loads its models before this worker is running, so it sends the list of files to save */
+self.addEventListener('message', (e) => {
+  const urls = (e.data && e.data.cache || []).filter((u) => new URL(u).origin === location.origin);
+  e.waitUntil(caches.open(VERSION).then((c) => Promise.all(urls.map((u) => c.match(u).then((hit) => hit || c.add(u).catch(() => {}))))));
+});
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;

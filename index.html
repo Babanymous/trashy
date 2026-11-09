@@ -441,7 +441,14 @@ function openInstall(){fillInstall();$('instDlg').showModal()}
 $('instHero').onclick=openInstall;
 $('instClose').onclick=()=>$('instDlg').close();
 $('instDlg').addEventListener('click',e=>{if(e.target===$('instDlg'))$('instDlg').close()});
-if('serviceWorker' in navigator&&location.protocol==='https:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+ navigator.serviceWorker.register('sw.js').catch(()=>{});
+ /* hand the already-loaded files to the offline copy (the first visit loads them before the worker runs) */
+ Promise.all([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,0)).then(()=>Promise.all([ready,detReady]))]).then(([reg])=>{
+  const urls=performance.getEntriesByType('resource').map(e=>e.name.split('#')[0]).filter(u=>u.startsWith(location.origin));
+  if(reg.active)reg.active.postMessage({cache:[...new Set(urls)]});
+ }).catch(()=>{});
+}
 let net=null, model=null, proto=null, heroSvg=null;
 
 /* ---------- Axolotl avatar ---------- */
