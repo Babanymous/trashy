@@ -1,0 +1,88 @@
+{
+ "name": "Trashy-Axel 1",
+ "format": "trashy-dfine-v1",
+ "version": 2,
+ "base": "ustc-community/dfine-nano-coco",
+ "classes": [
+  "Paper",
+  "Plastic",
+  "Glass",
+  "Metal",
+  "Trash"
+ ],
+ "input": 640,
+ "preprocess": "stretch to 640x640, RGB, divide by 255",
+ "outputs": [
+  "logits (sigmoid per class)",
+  "pred_boxes (cx, cy, w, h, 0..1)"
+ ],
+ "threshold": 0.55,
+ "thresholds": {
+  "Paper": 0.6,
+  "Plastic": 0.6,
+  "Glass": 0.55,
+  "Metal": 0.6,
+  "Trash": 0.55
+ },
+ "metrics": {
+  "bower": {
+   "mAP50": 0.768,
+   "mAP": 0.695,
+   "items_found": 0.86,
+   "items_right": 0.702,
+   "items_right_visible": 0.704,
+   "extra_boxes_per_photo": 0.11,
+   "per_class_right": {
+    "Plastic": 0.709,
+    "Paper": 0.786,
+    "Glass": 0.7,
+    "Metal": 0.491
+   }
+  },
+  "dmedhi": {
+   "mAP50": 0.729,
+   "mAP": 0.647,
+   "items_found": 0.776,
+   "items_right": 0.684,
+   "items_right_visible": 0.685,
+   "extra_boxes_per_photo": 0.14,
+   "per_class_right": {
+    "Glass": 0.8,
+    "Paper": 0.713,
+    "Metal": 0.591,
+    "Plastic": 0.723,
+    "Trash": 0.42
+   }
+  },
+  "taco": {
+   "mAP50": 0.192,
+   "mAP": 0.148,
+   "items_found": 0.418,
+   "items_right": 0.28,
+   "items_right_visible": 0.369,
+   "extra_boxes_per_photo": 0.41,
+   "per_class_right": {
+    "Plastic": 0.415,
+    "Paper": 0.143,
+    "Trash": 0.087,
+    "Metal": 0.15,
+    "Glass": 0.067
+   }
+  },
+  "trashnet": {
+   "mAP50": 0.924,
+   "mAP": 0.757,
+   "items_found": 0.925,
+   "items_right": 0.882,
+   "items_right_visible": 0.882,
+   "extra_boxes_per_photo": 0.05,
+   "per_class_right": {
+    "Paper": 0.845,
+    "Glass": 0.922,
+    "Metal": 0.938,
+    "Plastic": 0.905,
+    "Trash": 0.792
+   }
+  }
+ }
+}

@@ -104,6 +104,14 @@ button{font:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;
 #menu{position:absolute;right:0;bottom:calc(100% + 12px);min-width:230px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;box-shadow:0 20px 40px -18px rgba(18,32,10,.45);animation:pop .2s ease-out}
 #menu button{display:block;width:100%;text-align:left;background:none;color:var(--ink);padding:12px 16px;border-radius:12px}
 #menu button:hover{background:#eef5da}
+#detMenu{border-top:1px solid var(--line);margin-top:6px;padding-top:6px}
+#detMenu[hidden]{display:none}
+#detMenu p{margin:4px 16px 2px;font-size:12.5px;font-weight:800;color:var(--mut)}
+#menu #detMenu button{position:relative;padding:9px 40px 9px 16px}
+#detMenu b{display:block}
+#detMenu small{display:block;color:var(--mut);font-size:13px;font-weight:500}
+#menu #detMenu button[aria-checked=true]{background:#eef5da}
+#detMenu button[aria-checked=true]::after{content:'\2713';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-weight:800}
 footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:var(--mut)}
 footer p{margin:0}
 .legal{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;margin-top:2px}
@@ -159,7 +167,7 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" hidden aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button></nav>
+  <nav id="menu" hidden aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -341,7 +349,8 @@ en:{title:'Trashy-0.1: Trash sorting AI',lang:'Language',loading:'Loading…',
  foot:'Trashy-0.1 runs in your browser. Your pictures never leave your device.',privacy:'Privacy Policy',terms:'Terms and Conditions',
  errModel:'Couldn’t load the Trashy-0.1 model. Put <b>image-model.js</b> in the same folder as this page.',
  errNet:'Couldn’t load the image engine. Reload the page to try again.',
- ready:n=>`<b>Ready</b> with ${n} categories`,
+ ready:n=>`<b>Ready</b> with ${n} categories`,readyM:n=>`<b>Ready</b> · ${n}`,loadingM:n=>`Loading ${n}…`,errSwitch:n=>`Couldn’t load ${n}`,
+ mModel:'Model',dT01:'Finds more items',dAxel:'Fewer extra boxes',
  greet:'Hi, I’m Trashy-0.1. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.',
  how:['How it works','You send me a picture of an item.','I look for items in it and compare each one with what I learned in training.','I draw a box around each item and tell you the category and how sure I am.'],
  sure:n=>`That’s ${n}.`,likely:n=>`Looks like ${n}.`,unsure:n=>`Hmm, maybe ${n}? I’m not sure.`,
@@ -364,7 +373,8 @@ de:{title:'Trashy-0.1: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen
  foot:'Trashy-0.1 läuft in deinem Browser. Deine Bilder verlassen nie dein Gerät.',privacy:'Datenschutz',terms:'Nutzungsbedingungen',
  errModel:'Das Trashy-0.1-Modell konnte nicht geladen werden. Lege <b>image-model.js</b> in denselben Ordner wie diese Seite.',
  errNet:'Die Bilderkennung konnte nicht geladen werden. Lade die Seite neu und versuch es nochmal.',
- ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,
+ ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,readyM:n=>`<b>Bereit</b> · ${n}`,loadingM:n=>`${n} wird geladen…`,errSwitch:n=>`${n} konnte nicht geladen werden`,
+ mModel:'Modell',dT01:'Findet mehr Gegenstände',dAxel:'Weniger falsche Rahmen',
  greet:'Hi, ich bin Trashy-0.1. Schick mir ein Foto von deinem Müll, gerne auch mit mehreren Sachen, und ich sage dir, was ich sehe.',
  how:['So funktioniert’s','Du schickst mir ein Foto.','Ich suche die Gegenstände darauf und vergleiche jeden mit dem, was ich im Training gelernt habe.','Ich zeichne einen Rahmen um jeden Gegenstand und sage dir die Kategorie und wie sicher ich bin.'],
  sure:n=>`Das ist ${n}.`,likely:n=>`Sieht aus wie ${n}.`,unsure:n=>`Hmm, vielleicht ${n}? Ich bin mir nicht sicher.`,
@@ -387,7 +397,8 @@ ru:{title:'Trashy-0.1: ИИ для сортировки мусора',lang:'Яз
  foot:'Trashy-0.1 работает в вашем браузере. Ваши фото никогда не покидают устройство.',privacy:'Конфиденциальность',terms:'Условия использования',
  errModel:'Не удалось загрузить модель Trashy-0.1. Положите <b>image-model.js</b> в ту же папку, что и эта страница.',
  errNet:'Не удалось загрузить распознавание изображений. Перезагрузите страницу и попробуйте снова.',
- ready:n=>`<b>Готов</b> · категорий: ${n}`,
+ ready:n=>`<b>Готов</b> · категорий: ${n}`,readyM:n=>`<b>Готов</b> · ${n}`,loadingM:n=>`Загрузка ${n}…`,errSwitch:n=>`Не удалось загрузить ${n}`,
+ mModel:'Модель',dT01:'Находит больше предметов',dAxel:'Меньше лишних рамок',
  greet:'Привет, я Trashy-0.1. Пришлите мне фото мусора, можно сразу с несколькими предметами, и я скажу, что вижу.',
  how:['Как это работает','Вы отправляете мне фото.','Я ищу на нём предметы и сравниваю каждый с тем, чему научился.','Я обвожу каждый предмет рамкой и называю категорию и насколько я уверен.'],
  sure:n=>`Это ${n}.`,likely:n=>`Похоже, это ${n}.`,unsure:n=>`Хм, может быть, ${n}? Я не уверен.`,
@@ -564,9 +575,10 @@ async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0,model
 const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
  if(!model)return;
  if(!net)return status('err','errNet');
- status('ok','ready',model.filter(c=>c.name!=='background').length);
  greet();
+ const p=detReady;p.then(()=>{if(p===detReady)showReady()});
 });
+function showReady(){if(!model||!net)return;if(det)status('ok','readyM',det.m.name);else status('ok','ready',model.filter(c=>c.name!=='background').length)}
 
 /* ---------- Classify ---------- */
 const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
@@ -755,32 +767,61 @@ async function run(){
  finally{busy=false}
 }
 /* ---------- Detector (a trained D-FINE model; used only when models/trashy-detector/ exists) ---------- */
-const DET_DIR='models/trashy-detector/';
+const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1',dir:'models/trashy-axel-1/'}];
 const COLORS={Paper:'#7b4fd1',Plastic:'#1f9d8a',Glass:'#2f80ed',Metal:'#d99a1e',Trash:'#e4572e'};
 const colorOf=n=>(model&&(model.find(c=>c.name===n)||{}).color)||COLORS[n]||'#5a6a4b';
-let det=null;
-async function loadDetector(){
- if(location.protocol==='file:')return; /* browsers block the files it needs there; the classic method is used instead */
- try{
-  const r=await fetch(DET_DIR+'detector.json');if(!r.ok)return;
-  const cfg=await r.json();if(cfg.format!=='trashy-dfine-v1')return;
-  await new Promise((ok,no)=>{const t=document.createElement('script');t.src='lib/ort/ort.wasm.min.js';t.onload=ok;t.onerror=no;document.head.appendChild(t)});
-  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
-  ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
-  det={cfg,s:await ort.InferenceSession.create(DET_DIR+'model.onnx',{executionProviders:['wasm']})};
- }catch(_){det=null}
+const savedDet=()=>{try{return localStorage.getItem('trashy-model')}catch(_){return null}};
+let det=null,detId=(DET_MODELS.find(m=>m.id===savedDet())||DET_MODELS[0]).id,detTurn=0,detRun=null,ortReady=null;
+function markDetMenu(){$('detMenu').querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.m===detId))}
+function loadOrt(){return ortReady||(ortReady=new Promise((ok,no)=>{const t=document.createElement('script');t.src='lib/ort/ort.wasm.min.js';t.onload=ok;t.onerror=no;document.head.appendChild(t)}).then(()=>{
+ ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
+ ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
+}).catch(e=>{ortReady=null;throw e}))}
+async function loadDet(m){
+ const r=await fetch(m.dir+'detector.json');if(!r.ok)throw 0;
+ const cfg=await r.json();if(cfg.format!=='trashy-dfine-v1')throw 0;
+ await loadOrt();
+ return {m,cfg,s:await ort.InferenceSession.create(m.dir+'model.onnx',{executionProviders:['wasm']})};
 }
-const detReady=loadDetector();
+/* only the chosen model is downloaded and kept in memory; resolves false if it could not be loaded */
+async function useDetector(id){
+ if(location.protocol==='file:')return true; /* browsers block the files it needs there; the classic method is used instead */
+ const m=DET_MODELS.find(x=>x.id===id),turn=++detTurn;
+ if(det&&det.m===m)return true;
+ let d;
+ try{d=await loadDet(m)}
+ catch(_){
+  if(turn!==detTurn)return true;
+  if(det){detId=det.m.id;markDetMenu();return false}
+  if(m!==DET_MODELS[0]){detId=DET_MODELS[0].id;markDetMenu();return useDetector(detId)}
+  return false;
+ }
+ if(turn!==detTurn){d.s.release();return true}
+ const old=det;det=d;
+ try{localStorage.setItem('trashy-model',id)}catch(_){}
+ if(old)Promise.resolve(detRun).catch(()=>{}).then(()=>old.s.release()).catch(()=>{}); /* after a photo still being scanned */
+ return true;
+}
+function pickDetector(id){
+ if(id===detId)return;
+ detId=id;markDetMenu();
+ const m=DET_MODELS.find(x=>x.id===id);status('','loadingM',m.name);
+ const p=useDetector(id);detReady=p;
+ p.then(ok=>{if(p!==detReady)return;if(ok)showReady();else{status('err','errSwitch',m.name);setTimeout(()=>{if(p===detReady)showReady()},5000)}});
+}
+$('detMenu').hidden=location.protocol==='file:';markDetMenu();
+let detReady=useDetector(detId);
 async function detectDF(img){
- const N=det.cfg.input||640,cv=document.createElement('canvas');cv.width=cv.height=N;
+ const d=det,N=d.cfg.input||640,cv=document.createElement('canvas');cv.width=cv.height=N;
  const cx=cv.getContext('2d');cx.drawImage(img,0,0,N,N); /* stretched to N x N, like in training */
  const px=cx.getImageData(0,0,N,N).data,f=new Float32Array(3*N*N);
  for(let i=0;i<N*N;i++){f[i]=px[i*4]/255;f[N*N+i]=px[i*4+1]/255;f[2*N*N+i]=px[i*4+2]/255}
- const s=det.s,o=await s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});
- const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],W=img.naturalWidth,H=img.naturalHeight,thr=det.cfg.threshold||.35,out=[];
+ const s=d.s;detRun=s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});const o=await detRun;
+ const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],W=img.naturalWidth,H=img.naturalHeight,thr=d.cfg.threshold||.35,out=[];
+ const th=d.cfg.classes.map(n=>(d.cfg.thresholds||{})[n]||thr); /* confidence level per category (round-2 models) */
  for(let q=0;q<Q;q++)for(let k=0;k<K;k++){
-  const p=1/(1+Math.exp(-L.data[q*K+k]));if(p<thr)continue;
-  const cxn=B.data[q*4],cyn=B.data[q*4+1],wn=B.data[q*4+2],hn=B.data[q*4+3],n=det.cfg.classes[k];
+  const p=1/(1+Math.exp(-L.data[q*K+k]));if(p<th[k])continue;
+  const cxn=B.data[q*4],cyn=B.data[q*4+1],wn=B.data[q*4+2],hn=B.data[q*4+3],n=d.cfg.classes[k];
   const x=Math.max(0,(cxn-wn/2)*W),y=Math.max(0,(cyn-hn/2)*H);
   out.push({x,y,w:Math.min(W-x,wn*W),h:Math.min(H-y,hn*H),n,c:colorOf(n),p});
  }
@@ -814,6 +855,7 @@ function menu(open){mb.setAttribute('aria-expanded',open);mn.hidden=!open}
 mb.onclick=e=>{e.stopPropagation();menu(mn.hidden)};
 mn.onclick=e=>{
  const b=e.target.closest('button');if(!b)return;menu(false);
+ if(b.dataset.m)return pickDetector(b.dataset.m);
  if(b.dataset.a==='how')how();
  else if(b.dataset.a==='install')openInstall();
  else{document.querySelectorAll('.m').forEach(m=>m.remove());syncHero();if(model&&net)greet()}
