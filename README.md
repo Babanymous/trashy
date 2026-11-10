@@ -1,4 +1,4 @@
-# Trashy-0.1
+# Trashy
 
 A small AI that sorts trash from a photo. It runs entirely in the browser: pictures never leave the device.
 

@@ -1,5 +1,5 @@
 {
- "name": "Trashy-0.1: Trash sorting AI",
+ "name": "Trashy: Trash sorting AI",
  "short_name": "Trashy",
  "description": "Take a photo of your trash and Trashy tells you what each item is. Runs on your device.",
  "start_url": "./",

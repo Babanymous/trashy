@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trashy-0.1: Trash sorting AI</title>
+<title>Trashy: Trash sorting AI</title>
 <meta name="description" content="Take a photo of your trash and Trashy finds each item and tells you if it is paper, plastic, glass, metal or general waste. Free, no account, runs on your device, works offline.">
 <link rel="canonical" href="https://babanymous.github.io/trashy/">
 <link rel="alternate" hreflang="en" href="https://babanymous.github.io/trashy/">
@@ -10,14 +10,14 @@
 <link rel="alternate" hreflang="x-default" href="https://babanymous.github.io/trashy/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Trashy">
-<meta property="og:title" content="Trashy-0.1: Sort your trash with one photo">
+<meta property="og:title" content="Trashy: Sort your trash with one photo">
 <meta property="og:description" content="Free AI that finds each item in your photo and tells you if it is paper, plastic, glass, metal or general waste. Private: runs on your device.">
 <meta property="og:url" content="https://babanymous.github.io/trashy/">
 <meta property="og:image" content="https://babanymous.github.io/trashy/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://babanymous.github.io/trashy/#app","name":"Trashy-0.1","alternateName":"Trashy AI","url":"https://babanymous.github.io/trashy/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser); installable on Android and iPhone","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":["en","de","ru"],"image":"https://babanymous.github.io/trashy/og.png","description":"A free AI that sorts trash from a photo: it finds each item, draws a box around it and says whether it is paper, plastic, glass, metal or general waste. Runs on the device, works offline once installed.","sameAs":["https://trashy-ai.neocities.org/","https://github.com/Babanymous/trashy"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://babanymous.github.io/trashy/#app","name":"Trashy","alternateName":"Trashy AI","url":"https://babanymous.github.io/trashy/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser); installable on Android and iPhone","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":["en","de","ru"],"image":"https://babanymous.github.io/trashy/og.png","description":"A free AI that sorts trash from a photo: it finds each item, draws a box around it and says whether it is paper, plastic, glass, metal or general waste. Runs on the device, works offline once installed.","sameAs":["https://trashy-ai.neocities.org/","https://github.com/Babanymous/trashy"]}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="trashy-logo.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -77,6 +77,7 @@ button{font:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;
 .gt{height:8px;border-radius:4px;background:#e9efdc;overflow:hidden}
 .gt i{display:block;height:100%;width:0;border-radius:4px;background:var(--c);transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .gp{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
+.gr.load{grid-template-columns:1fr 44px;margin-top:12px}
 .gr:first-child .gn,.gr:first-child .gp{color:var(--ink);font-weight:800}
 .prog{margin-left:8px;color:var(--mut);font-size:14px}
 .steps2{margin:8px 0 0;padding-left:20px;color:var(--mut)}
@@ -156,14 +157,14 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <header class="nav"><div>
- <span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#c9ef5d"/><path d="M8 13.2L4.2 10.6M7.2 16.6H3.4M8 20L4.2 22.6M24 13.2L27.8 10.6M24.8 16.6H28.6M24 20L27.8 22.6" stroke="#ff6fa5" stroke-width="2" stroke-linecap="round"/><ellipse cx="16" cy="17" rx="9.6" ry="8.4" fill="#16260a"/><ellipse cx="12.4" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="19.6" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="12.9" cy="16.9" rx="1.1" ry="2" fill="#ff3d7f"/><ellipse cx="19.1" cy="16.9" rx="1.1" ry="2" fill="#3a63ff"/><path d="M14.2 21.2q1.8 1.2 3.6 0" stroke="#c9ef5d" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>Trashy-0.1</span>
+ <span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#c9ef5d"/><path d="M8 13.2L4.2 10.6M7.2 16.6H3.4M8 20L4.2 22.6M24 13.2L27.8 10.6M24.8 16.6H28.6M24 20L27.8 22.6" stroke="#ff6fa5" stroke-width="2" stroke-linecap="round"/><ellipse cx="16" cy="17" rx="9.6" ry="8.4" fill="#16260a"/><ellipse cx="12.4" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="19.6" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="12.9" cy="16.9" rx="1.1" ry="2" fill="#ff3d7f"/><ellipse cx="19.1" cy="16.9" rx="1.1" ry="2" fill="#3a63ff"/><path d="M14.2 21.2q1.8 1.2 3.6 0" stroke="#c9ef5d" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>Trashy AI</span>
  <div class="right">
   <div id="status" class="pill" aria-live="polite" data-i18n="loading">Loading…</div>
   <button type="button" class="inst" id="instHead" hidden aria-label="Install on your phone" data-i18n-aria="mInstall"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7M9 11l3 3 3-3M10.5 18.5h3"/></svg><span data-i18n="iShort">Install app</span></button>
   <label class="lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9s1.2-6.4 3.8-9z"/></svg><select id="lang" aria-label="Language"><option value="en">EN</option><option value="de">DE</option><option value="ru">RU</option></select></label>
  </div>
 </div></header>
-<main class="thread" id="thread" role="log" aria-live="polite"><section id="hero"><div id="heroAx"></div><h1 data-i18n="heroH">Sort your trash with <em>one picture</em></h1><p data-i18n="heroP">Send Trashy-0.1 a photo. It finds the items in it and tells you what each one is.</p>
+<main class="thread" id="thread" role="log" aria-live="polite"><section id="hero"><div id="heroAx"></div><h1 data-i18n="heroH">Sort your trash with <em>one picture</em></h1><p data-i18n="heroP">Send Trashy a photo. It finds the items in it and tells you what each one is.</p>
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></section></main>
 <div class="dock">
  <div id="drop">
@@ -172,7 +173,7 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
  </div>
- <footer><p data-i18n="foot">Trashy-0.1 runs in your browser. Your pictures never leave your device.</p>
+ <footer><p data-i18n="foot">Trashy runs in your browser. Your pictures never leave your device.</p>
  <nav class="legal" aria-label="Legal"><a class="lk" href="privacy.html" data-i18n="privacy">Privacy Policy</a><a class="lk" href="terms.html" data-i18n="terms">Terms and Conditions</a><a class="lk" href="impressum.html">Impressum</a></nav></footer>
 </div>
 <dialog id="instDlg" aria-labelledby="instT"><div class="lh"><h2 id="instT"></h2><button id="instClose" type="button" aria-label="Close" data-i18n-aria="close">×</button></div><div id="ibody"></div></dialog>
@@ -341,17 +342,18 @@ const $=id=>document.getElementById(id);
 /* ---------- Languages ---------- */
 const SHARE_ICON='<svg class="sh" viewBox="0 0 24 24" aria-label="Share"><path d="M12 3v12M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 const T={
-en:{title:'Trashy-0.1: Trash sorting AI',lang:'Language',loading:'Loading…',
- heroH:'Sort your trash with <em>one picture</em>',heroP:'Send Trashy-0.1 a photo. It finds the items in it and tells you what each one is.',
+en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
+ heroH:'Sort your trash with <em>one picture</em>',heroP:'Send Trashy a photo. It finds the items in it and tells you what each one is.',
  chip1:'Finds several items',chip2:'Draws a box around each',chip3:'Shows how sure it is',
  mHow:'How it works',mClear:'Clear chat',mSend:'Send image',mInstall:'Install on your phone',iShort:'Install app',
  take:'Take photo',choose:'Choose photo',dropHint:'or drop or paste a picture here',more:'More',close:'Close',
- foot:'Trashy-0.1 runs in your browser. Your pictures never leave your device.',privacy:'Privacy Policy',terms:'Terms and Conditions',
- errModel:'Couldn’t load the Trashy-0.1 model. Put <b>image-model.js</b> in the same folder as this page.',
+ foot:'Trashy runs in your browser. Your pictures never leave your device.',privacy:'Privacy Policy',terms:'Terms and Conditions',
+ errModel:'Couldn’t load the Trashy model. Put <b>image-model.js</b> in the same folder as this page.',
  errNet:'Couldn’t load the image engine. Reload the page to try again.',
- ready:n=>`<b>Ready</b> with ${n} categories`,readyM:n=>`<b>Ready</b> · ${n}`,loadingM:n=>`Loading ${n}…`,errSwitch:n=>`Couldn’t load ${n}`,
+ ready:n=>`<b>Ready</b> with ${n} categories`,readyM:n=>`<b>Ready</b> · ${n}`,loadingM:(n,p)=>`Loading ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Couldn’t load ${n}`,
+ switched:n=>`Now I’m ${n}. Send me a picture!`,switchFail:(n,o)=>`I couldn’t load ${n}. Check your internet and try again. I’m still ${o}.`,
  mModel:'Model',dT01:'Finds more items',dAxel:'Fewer extra boxes',
- greet:'Hi, I’m Trashy-0.1. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.',
+ greet:n=>`Hi, I’m ${n}. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.`,
  how:['How it works','You send me a picture of an item.','I look for items in it and compare each one with what I learned in training.','I draw a box around each item and tell you the category and how sure I am.'],
  sure:n=>`That’s ${n}.`,likely:n=>`Looks like ${n}.`,unsure:n=>`Hmm, maybe ${n}? I’m not sure.`,
  howSure:'How sure I am',howSureBox:'How sure I am about each box',
@@ -365,17 +367,18 @@ en:{title:'Trashy-0.1: Trash sorting AI',lang:'Language',loading:'Loading…',
  iOther:'Open this page on your phone:',
  iosH:'iPhone and iPad',ios:['Open this page in Safari (Chrome works too).',`Tap the Share button ${SHARE_ICON} (at the bottom in Safari, at the top in Chrome).`,'Scroll down and tap <b>Add to Home Screen</b>.','Tap <b>Add</b>.'],
  andH:'Android',and:['Open this page in Chrome.','Tap the menu <b>⋮</b> at the top right.','Tap <b>Install app</b> or <b>Add to Home screen</b>.','Tap <b>Install</b>.']},
-de:{title:'Trashy-0.1: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…',
- heroH:'Trenne deinen Müll mit <em>einem Foto</em>',heroP:'Schick Trashy-0.1 ein Foto. Es findet die Gegenstände darauf und sagt dir, was jeder davon ist.',
+de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…',
+ heroH:'Trenne deinen Müll mit <em>einem Foto</em>',heroP:'Schick Trashy ein Foto. Es findet die Gegenstände darauf und sagt dir, was jeder davon ist.',
  chip1:'Findet mehrere Gegenstände',chip2:'Zeichnet einen Rahmen um jeden',chip3:'Zeigt, wie sicher es ist',
  mHow:'So funktioniert’s',mClear:'Chat leeren',mSend:'Bild senden',mInstall:'Aufs Handy installieren',iShort:'App installieren',
  take:'Foto aufnehmen',choose:'Foto auswählen',dropHint:'oder ein Bild hierher ziehen oder einfügen',more:'Mehr',close:'Schließen',
- foot:'Trashy-0.1 läuft in deinem Browser. Deine Bilder verlassen nie dein Gerät.',privacy:'Datenschutz',terms:'Nutzungsbedingungen',
- errModel:'Das Trashy-0.1-Modell konnte nicht geladen werden. Lege <b>image-model.js</b> in denselben Ordner wie diese Seite.',
+ foot:'Trashy läuft in deinem Browser. Deine Bilder verlassen nie dein Gerät.',privacy:'Datenschutz',terms:'Nutzungsbedingungen',
+ errModel:'Das Trashy-Modell konnte nicht geladen werden. Lege <b>image-model.js</b> in denselben Ordner wie diese Seite.',
  errNet:'Die Bilderkennung konnte nicht geladen werden. Lade die Seite neu und versuch es nochmal.',
- ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,readyM:n=>`<b>Bereit</b> · ${n}`,loadingM:n=>`${n} wird geladen…`,errSwitch:n=>`${n} konnte nicht geladen werden`,
+ ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,readyM:n=>`<b>Bereit</b> · ${n}`,loadingM:(n,p)=>`${n} wird geladen…${p==null?'':' '+p+'%'}`,errSwitch:n=>`${n} konnte nicht geladen werden`,
+ switched:n=>`Jetzt bin ich ${n}. Schick mir ein Foto!`,switchFail:(n,o)=>`Ich konnte ${n} nicht laden. Prüfe deine Internetverbindung und versuch es nochmal. Ich bin weiterhin ${o}.`,
  mModel:'Modell',dT01:'Findet mehr Gegenstände',dAxel:'Weniger falsche Rahmen',
- greet:'Hi, ich bin Trashy-0.1. Schick mir ein Foto von deinem Müll, gerne auch mit mehreren Sachen, und ich sage dir, was ich sehe.',
+ greet:n=>`Hi, ich bin ${n}. Schick mir ein Foto von deinem Müll, gerne auch mit mehreren Sachen, und ich sage dir, was ich sehe.`,
  how:['So funktioniert’s','Du schickst mir ein Foto.','Ich suche die Gegenstände darauf und vergleiche jeden mit dem, was ich im Training gelernt habe.','Ich zeichne einen Rahmen um jeden Gegenstand und sage dir die Kategorie und wie sicher ich bin.'],
  sure:n=>`Das ist ${n}.`,likely:n=>`Sieht aus wie ${n}.`,unsure:n=>`Hmm, vielleicht ${n}? Ich bin mir nicht sicher.`,
  howSure:'Wie sicher ich bin',howSureBox:'Wie sicher ich mir bei jedem Rahmen bin',
@@ -389,17 +392,18 @@ de:{title:'Trashy-0.1: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen
  iOther:'Öffne diese Seite auf deinem Handy:',
  iosH:'iPhone und iPad',ios:['Öffne diese Seite in Safari (Chrome geht auch).',`Tippe auf Teilen ${SHARE_ICON} (in Safari unten, in Chrome oben).`,'Scrolle nach unten und tippe auf <b>Zum Home-Bildschirm</b>.','Tippe auf <b>Hinzufügen</b>.'],
  andH:'Android',and:['Öffne diese Seite in Chrome.','Tippe oben rechts auf das Menü <b>⋮</b>.','Tippe auf <b>App installieren</b> oder <b>Zum Startbildschirm hinzufügen</b>.','Tippe auf <b>Installieren</b>.']},
-ru:{title:'Trashy-0.1: ИИ для сортировки мусора',lang:'Язык',loading:'Загрузка…',
- heroH:'Сортируйте мусор <em>по одному фото</em>',heroP:'Отправьте Trashy-0.1 фото. Он найдёт на нём предметы и скажет, что есть что.',
+ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык',loading:'Загрузка…',
+ heroH:'Сортируйте мусор <em>по одному фото</em>',heroP:'Отправьте Trashy фото. Он найдёт на нём предметы и скажет, что есть что.',
  chip1:'Находит несколько предметов',chip2:'Обводит каждый рамкой',chip3:'Показывает, насколько уверен',
  mHow:'Как это работает',mClear:'Очистить чат',mSend:'Отправить фото',mInstall:'Установить на телефон',iShort:'Установить',
  take:'Сфотографировать',choose:'Выбрать фото',dropHint:'или перетащите либо вставьте фото сюда',more:'Ещё',close:'Закрыть',
- foot:'Trashy-0.1 работает в вашем браузере. Ваши фото никогда не покидают устройство.',privacy:'Конфиденциальность',terms:'Условия использования',
- errModel:'Не удалось загрузить модель Trashy-0.1. Положите <b>image-model.js</b> в ту же папку, что и эта страница.',
+ foot:'Trashy работает в вашем браузере. Ваши фото никогда не покидают устройство.',privacy:'Конфиденциальность',terms:'Условия использования',
+ errModel:'Не удалось загрузить модель Trashy. Положите <b>image-model.js</b> в ту же папку, что и эта страница.',
  errNet:'Не удалось загрузить распознавание изображений. Перезагрузите страницу и попробуйте снова.',
- ready:n=>`<b>Готов</b> · категорий: ${n}`,readyM:n=>`<b>Готов</b> · ${n}`,loadingM:n=>`Загрузка ${n}…`,errSwitch:n=>`Не удалось загрузить ${n}`,
+ ready:n=>`<b>Готов</b> · категорий: ${n}`,readyM:n=>`<b>Готов</b> · ${n}`,loadingM:(n,p)=>`Загрузка ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Не удалось загрузить ${n}`,
+ switched:n=>`Теперь я ${n}. Пришлите мне фото!`,switchFail:(n,o)=>`Не удалось загрузить ${n}. Проверьте интернет и попробуйте снова. Я по-прежнему ${o}.`,
  mModel:'Модель',dT01:'Находит больше предметов',dAxel:'Меньше лишних рамок',
- greet:'Привет, я Trashy-0.1. Пришлите мне фото мусора, можно сразу с несколькими предметами, и я скажу, что вижу.',
+ greet:n=>`Привет, я ${n}. Пришлите мне фото мусора, можно сразу с несколькими предметами, и я скажу, что вижу.`,
  how:['Как это работает','Вы отправляете мне фото.','Я ищу на нём предметы и сравниваю каждый с тем, чему научился.','Я обвожу каждый предмет рамкой и называю категорию и насколько я уверен.'],
  sure:n=>`Это ${n}.`,likely:n=>`Похоже, это ${n}.`,unsure:n=>`Хм, может быть, ${n}? Я не уверен.`,
  howSure:'Насколько я уверен',howSureBox:'Насколько я уверен в каждой рамке',
@@ -599,11 +603,11 @@ function msg(who){
  const row=document.createElement('div');row.className='m '+who;
  if(who==='ai'){const av=document.createElement('div');av.className='av';if(proto)av.appendChild(uniq(proto.cloneNode(true)));row.appendChild(av)}
  const b=document.createElement('div');b.className='b';
- if(who==='ai'){const col=document.createElement('div'),n=document.createElement('div');col.className='col';n.className='who';n.textContent='Trashy-0.1';col.append(n,b);row.appendChild(col)}else row.appendChild(b);
+ if(who==='ai'){const col=document.createElement('div'),n=document.createElement('div');col.className='col';n.className='who';n.textContent=botName();col.append(n,b);row.appendChild(col)}else row.appendChild(b);
  $('thread').appendChild(row);scrollDown();return row;
 }
 function ai(text,emotion){const a=msg('ai');emo(a,emotion||'idle');const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p);return a}
-function greet(){ai(tr('greet'),'joy')}
+function greet(){ai(tr('greet')(botName()),'joy')}
 function how(){
  const a=msg('ai');emo(a,'idle');
  const h=tr('how');a.querySelector('.b').innerHTML=`<p class="say">${h[0]}</p><ol class="steps2">${h.slice(1).map(x=>`<li>${x}</li>`).join('')}</ol>`;
@@ -777,19 +781,31 @@ function loadOrt(){return ortReady||(ortReady=new Promise((ok,no)=>{const t=docu
  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
  ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
 }).catch(e=>{ortReady=null;throw e}))}
-async function loadDet(m){
+function botName(){return location.protocol==='file:'?DET_MODELS[0].name:DET_MODELS.find(m=>m.id===detId).name}
+/* downloads a model and reports how far it got (no percentage if the server doesn't say the size) */
+async function fetchBytes(url,onP){
+ const r=await fetch(url);if(!r.ok)throw 0;
+ const n=+r.headers.get('content-length');
+ if(!r.body||!n||r.headers.get('content-encoding'))return new Uint8Array(await r.arrayBuffer());
+ const rd=r.body.getReader(),out=new Uint8Array(n);let got=0;
+ for(;;){const {done,value}=await rd.read();if(done)break;if(got+value.length>n)throw 0;out.set(value,got);got+=value.length;onP(Math.round(got/n*100))}
+ if(got!==n)throw 0;
+ return out;
+}
+async function loadDet(m,onP){
  const r=await fetch(m.dir+'detector.json');if(!r.ok)throw 0;
  const cfg=await r.json();if(cfg.format!=='trashy-dfine-v1')throw 0;
  await loadOrt();
- return {m,cfg,s:await ort.InferenceSession.create(m.dir+'model.onnx',{executionProviders:['wasm']})};
+ const src=onP?await fetchBytes(m.dir+'model.onnx',onP):m.dir+'model.onnx';
+ return {m,cfg,s:await ort.InferenceSession.create(src,{executionProviders:['wasm']})};
 }
 /* only the chosen model is downloaded and kept in memory; resolves false if it could not be loaded */
-async function useDetector(id){
+async function useDetector(id,onP){
  if(location.protocol==='file:')return true; /* browsers block the files it needs there; the classic method is used instead */
  const m=DET_MODELS.find(x=>x.id===id),turn=++detTurn;
  if(det&&det.m===m)return true;
  let d;
- try{d=await loadDet(m)}
+ try{d=await loadDet(m,onP&&(p=>{if(turn===detTurn)onP(p)}))}
  catch(_){
   if(turn!==detTurn)return true;
   if(det){detId=det.m.id;markDetMenu();return false}
@@ -802,12 +818,36 @@ async function useDetector(id){
  if(old)Promise.resolve(detRun).catch(()=>{}).then(()=>old.s.release()).catch(()=>{}); /* after a photo still being scanned */
  return true;
 }
+/* a chat message that stays until the chosen model is completely loaded */
+let loadMsg=null,loadPc=null;
+function showLoading(){
+ if(loadMsg)loadMsg.remove();
+ const a=loadMsg=msg('ai');emo(a,'idle');
+ a.querySelector('.b').innerHTML='<p class="say"></p><div class="gr load" aria-hidden="true" style="--c:#8cc63f"><span class="gt"><i></i></span><span class="gp"></span></div>';
+}
+function loadProgress(m,p){
+ if(p!=null&&p===loadPc)return;loadPc=p;
+ status('','loadingM',m.name,p);
+ if(!loadMsg)return;
+ loadMsg.querySelector('.say').textContent=tr('loadingM')(m.name);
+ if(p!=null){loadMsg.querySelector('.gt i').style.width=p+'%';loadMsg.querySelector('.gp').textContent=p+'%'}
+}
+function endLoading(text,emotion){
+ const a=loadMsg;loadMsg=null;if(!a)return;
+ a.querySelector('.who').textContent=botName();say(a,text,emotion);scrollDown();
+}
 function pickDetector(id){
  if(id===detId)return;
  detId=id;markDetMenu();
- const m=DET_MODELS.find(x=>x.id===id);status('','loadingM',m.name);
- const p=useDetector(id);detReady=p;
- p.then(ok=>{if(p!==detReady)return;if(ok)showReady();else{status('err','errSwitch',m.name);setTimeout(()=>{if(p===detReady)showReady()},5000)}});
+ const m=DET_MODELS.find(x=>x.id===id);
+ if(model&&net)showLoading();
+ loadProgress(m,null);
+ const p=useDetector(id,pc=>loadProgress(m,pc));detReady=p;
+ p.then(ok=>{
+  if(p!==detReady)return;
+  if(ok){showReady();endLoading(tr('switched')(m.name),'joy')}
+  else{status('err','errSwitch',m.name);endLoading(tr('switchFail')(m.name,botName()),'wow');setTimeout(()=>{if(p===detReady)showReady()},5000)}
+ });
 }
 $('detMenu').hidden=location.protocol==='file:';markDetMenu();
 let detReady=useDetector(detId);

@@ -1,4 +1,4 @@
-/* Trashy-0.1 offline support.
+/* Trashy offline support.
    The page itself is fetched fresh when online (so updates show up), with the saved copy used offline.
    Everything else (models, libraries, fonts) is saved the first time it loads and then used from the phone.
    Change VERSION whenever a model or library file changes, so phones fetch the new files. */
