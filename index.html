@@ -2,6 +2,22 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trashy-0.1: Trash sorting AI</title>
+<meta name="description" content="Take a photo of your trash and Trashy finds each item and tells you if it is paper, plastic, glass, metal or general waste. Free, no account, runs on your device, works offline.">
+<link rel="canonical" href="https://babanymous.github.io/trashy/">
+<link rel="alternate" hreflang="en" href="https://babanymous.github.io/trashy/">
+<link rel="alternate" hreflang="de" href="https://babanymous.github.io/trashy/?lang=de">
+<link rel="alternate" hreflang="ru" href="https://babanymous.github.io/trashy/?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://babanymous.github.io/trashy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Trashy">
+<meta property="og:title" content="Trashy-0.1: Sort your trash with one photo">
+<meta property="og:description" content="Free AI that finds each item in your photo and tells you if it is paper, plastic, glass, metal or general waste. Private: runs on your device.">
+<meta property="og:url" content="https://babanymous.github.io/trashy/">
+<meta property="og:image" content="https://babanymous.github.io/trashy/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://babanymous.github.io/trashy/#app","name":"Trashy-0.1","alternateName":"Trashy AI","url":"https://babanymous.github.io/trashy/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser); installable on Android and iPhone","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":["en","de","ru"],"image":"https://babanymous.github.io/trashy/og.png","description":"A free AI that sorts trash from a photo: it finds each item, draws a box around it and says whether it is paper, plastic, glass, metal or general waste. Runs on the device, works offline once installed.","sameAs":["https://trashy-ai.neocities.org/","https://github.com/Babanymous/trashy"]}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="trashy-logo.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -400,7 +416,8 @@ const cat=n=>(T[lang].cats||{})[n]||n;
 let lastStatus=['','loading'];
 function status(kind,key,...args){lastStatus=[kind,key,...args];const e=$('status'),v=tr(key);e.className='pill '+kind;e.innerHTML='<span>'+(typeof v==='function'?v(...args):v)+'</span>'}
 function applyLang(){
- document.documentElement.lang=lang;document.title=tr('title');$('lang').value=lang;$('lang').setAttribute('aria-label',tr('lang'));
+ document.documentElement.lang=lang;document.title=tr('title');
+ {const q=new URLSearchParams(location.search).get('lang'),c=document.querySelector('link[rel=canonical]');if(c)c.href='https://babanymous.github.io/trashy/'+(LANGS.includes(q)&&q!=='en'?'?lang='+q:'')}$('lang').value=lang;$('lang').setAttribute('aria-label',tr('lang'));
  document.querySelectorAll('[data-i18n]').forEach(e=>{if(e.id!=='status')e.innerHTML=tr(e.dataset.i18n)});
  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',tr(e.dataset.i18nAria)));
  status(...lastStatus);

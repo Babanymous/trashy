@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+ <url><loc>https://babanymous.github.io/trashy/</loc><lastmod>2026-11-10</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://babanymous.github.io/trashy/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://babanymous.github.io/trashy/?lang=de"/>
+  <xhtml:link rel="alternate" hreflang="ru" href="https://babanymous.github.io/trashy/?lang=ru"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://babanymous.github.io/trashy/"/>
+ </url>
+ <url><loc>https://babanymous.github.io/trashy/?lang=de</loc><lastmod>2026-11-10</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://babanymous.github.io/trashy/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://babanymous.github.io/trashy/?lang=de"/>
+  <xhtml:link rel="alternate" hreflang="ru" href="https://babanymous.github.io/trashy/?lang=ru"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://babanymous.github.io/trashy/"/>
+ </url>
+ <url><loc>https://babanymous.github.io/trashy/?lang=ru</loc><lastmod>2026-11-10</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://babanymous.github.io/trashy/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://babanymous.github.io/trashy/?lang=de"/>
+  <xhtml:link rel="alternate" hreflang="ru" href="https://babanymous.github.io/trashy/?lang=ru"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://babanymous.github.io/trashy/"/>
+ </url>
+ <url><loc>https://babanymous.github.io/trashy/privacy.html</loc><lastmod>2026-11-10</lastmod></url>
+ <url><loc>https://babanymous.github.io/trashy/terms.html</loc><lastmod>2026-11-10</lastmod></url>
+ <url><loc>https://babanymous.github.io/trashy/impressum.html</loc><lastmod>2026-11-10</lastmod></url>
+</urlset>
