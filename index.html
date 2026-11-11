@@ -28,134 +28,184 @@
 <meta name="apple-mobile-web-app-title" content="Trashy">
 <style>@font-face{font-family:"Bricolage Grotesque";src:url(fonts/BricolageGrotesque-Variable.ttf) format("truetype");font-weight:200 800;font-stretch:75% 100%;font-display:swap}@font-face{font-family:Caveat;src:url(fonts/Caveat-Variable.ttf) format("truetype");font-weight:400 700;font-display:swap}</style>
 <style>
-:root{--bg:#f5f8ef;--ink:#12200a;--mut:#5a6a4b;--line:#e1e8d4;--leaf:#3f6b0c;--lime:#c9ef5d;--deep:#12200a;color-scheme:light}
+/* ---------- Design tokens (shared with the about page) ---------- */
+:root{
+ color-scheme:light dark;
+ --bg:#f5f8ef;--glow:#e4f4b4;--surface:#fff;--surface-2:#eef3e4;--hover:#eef5da;--track:#e9efdc;
+ --ink:#12200a;--ink-2:#2c3a1f;--mut:#5a6a4b;--line:#e1e8d4;--line-2:#cfe0a6;--leaf:#3f6b0c;
+ --lime:#c9ef5d;--lime-hi:#dcf77a;--soft:#dcf38f;--hl:#dcf38f;--on-lime:#12200a;--user:#12200a;
+ --nav:rgba(18,32,10,.92);--on-nav:#cfe0b0;--warn:#e0b020;--err:#ff7a66;
+ --r-sm:12px;--r-md:18px;--r-lg:22px;--r-full:999px;
+ --sh-1:0 6px 16px -14px rgba(18,32,10,.5);--sh-2:0 10px 28px -18px rgba(18,32,10,.45);--sh-3:0 22px 48px -20px rgba(18,32,10,.5);
+ --ease:cubic-bezier(.2,.8,.2,1);--fast:.16s;--med:.28s;
+ --fs-s:13.5px;--fs-say:clamp(17px,.55vw + 15px,19px);--fs-big:clamp(19.5px,.8vw + 16px,22px);
+ --page:760px;--gutter:clamp(14px,3vw,22px);
+}
+@media(prefers-color-scheme:dark){:root{
+ --bg:#0e1609;--glow:#22351a;--surface:#17230f;--surface-2:#223219;--hover:#26391c;--track:#2b3c21;
+ --ink:#eef5e3;--ink-2:#d5e1c9;--mut:#a3b391;--line:#2b3b21;--line-2:#456330;--leaf:#c9ef5d;--hl:rgba(201,239,93,.3);--user:#2c4419;
+ --nav:rgba(9,15,5,.9);
+ --sh-1:0 6px 16px -12px rgba(0,0,0,.7);--sh-2:0 12px 30px -16px rgba(0,0,0,.7);--sh-3:0 24px 50px -18px rgba(0,0,0,.8);
+}}
+
+/* ---------- Base ---------- */
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(1100px 520px at 50% -140px,#e4f4b4 0%,rgba(228,244,180,0) 70%) no-repeat,var(--bg);color:var(--ink);font:16.5px/1.5 "Bricolage Grotesque",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-button{font:inherit;font-weight:700;border:0;border-radius:999px;cursor:pointer;transition:background .15s,box-shadow .15s}
+[hidden]{display:none!important}
+body{margin:0;background:radial-gradient(1100px 520px at 50% -140px,var(--glow),transparent 70%) no-repeat,var(--bg);color:var(--ink);font:16.5px/1.5 "Bricolage Grotesque",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;font-weight:700;color:inherit;border:0;border-radius:var(--r-full);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color var(--fast),color var(--fast),box-shadow var(--fast),transform var(--fast) var(--ease)}
+button:active{transform:scale(.96)}
 :focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
-.nav{position:sticky;top:0;z-index:5;background:rgba(18,32,10,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff}
-.nav>div{display:flex;justify-content:space-between;align-items:center;gap:16px;height:64px;padding:0 22px}
+
+/* ---------- Header ---------- */
+.nav{position:sticky;top:0;z-index:5;background:var(--nav);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff}
+.nav>div{display:flex;justify-content:space-between;align-items:center;gap:16px;height:64px;padding:0 var(--gutter)}
 .brand{display:flex;align-items:center;gap:10px;flex:none;font-weight:800;font-size:21px;letter-spacing:-.02em}
 .brand svg{width:34px;height:34px}
-.pill{display:flex;gap:9px;align-items:center;max-width:min(560px,62vw);padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.09);color:#cfe0b0;font-size:13.5px;line-height:1.25}
-.pill::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:#e0b020}
-.pill.ok::before{background:var(--lime);box-shadow:0 0 0 4px rgba(201,239,93,.22)}
-.pill.err::before{background:#ff7a66}
+.right{display:flex;align-items:center;gap:10px;min-width:0}
+.pill{display:flex;gap:9px;align-items:center;max-width:min(560px,62vw);padding:6px 14px;border-radius:var(--r-full);background:rgba(255,255,255,.09);color:var(--on-nav);font-size:var(--fs-s);line-height:1.25;transition:background-color var(--med)}
+.pill::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--warn);transition:background-color var(--med),box-shadow var(--med);animation:pulse 1.4s ease-in-out infinite}
+.pill.ok::before{background:var(--lime);box-shadow:0 0 0 4px rgba(201,239,93,.22);animation:none}
+.pill.err{background:rgba(255,122,102,.14)}
+.pill.err::before{background:var(--err);animation:none}
 .pill b{color:#fff}
-.thread{max-width:760px;margin:0 auto;padding:28px 18px 190px}
-#hero{text-align:center;padding:20px 0 4px}
-#hero[hidden]{display:none}
-#heroAx{position:relative;width:min(270px,64%);margin:6px auto 26px}
-#heroAx::before{content:"";position:absolute;inset:8% 14% 0;border-radius:46% 54% 52% 48%/52% 46% 54% 48%;background:radial-gradient(circle at 35% 30%,#ecfab8,#dcf38f 55%,#c3e46a);animation:blob 14s ease-in-out infinite}
-#heroAx::after{content:"";position:absolute;inset:1% 7% -7%;border-radius:50%;border:2px dashed #b9d77a;animation:spin 60s linear infinite}
+@keyframes pulse{50%{opacity:.35}}
+.inst{flex:none;display:inline-flex;align-items:center;gap:7px;padding:7px 14px 7px 11px;background:var(--lime);color:var(--on-lime);font-size:var(--fs-s);font-weight:800}
+.inst:hover{background:var(--lime-hi);box-shadow:0 0 0 4px rgba(201,239,93,.25)}
+.inst svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lang{position:relative;flex:none}
+.lang select{appearance:none;-webkit-appearance:none;font:inherit;font-size:var(--fs-s);font-weight:700;color:#fff;background:rgba(255,255,255,.09) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cfe0b0' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center/13px;border:0;border-radius:var(--r-full);padding:7px 28px 7px 32px;cursor:pointer;transition:background-color var(--fast)}
+.lang select:hover{background-color:rgba(255,255,255,.16)}
+.lang option{color:#12200a;background:#fff}
+.lang svg{position:absolute;left:10px;top:50%;width:16px;height:16px;margin-top:-8px;fill:none;stroke:var(--on-nav);stroke-width:1.8;pointer-events:none}
+
+/* ---------- Hero ---------- */
+.thread{max-width:var(--page);margin:0 auto;padding:28px var(--gutter) 200px}
+#hero{text-align:center;padding:16px 0 4px}
+#heroAx{position:relative;width:min(260px,62%);margin:4px auto 24px}
+#heroAx::before{content:"";position:absolute;inset:8% 14% 0;border-radius:46% 54% 52% 48%/52% 46% 54% 48%;background:radial-gradient(circle at 35% 30%,#ecfab8,var(--soft) 55%,#c3e46a);animation:blob 14s ease-in-out infinite}
+#heroAx::after{content:"";position:absolute;inset:1% 7% -7%;border-radius:50%;border:2px dashed var(--line-2);animation:spin 60s linear infinite}
 @keyframes blob{50%{border-radius:54% 46% 44% 56%/46% 56% 44% 54%;transform:rotate(8deg) scale(1.03)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 #heroAx svg{position:relative;z-index:1;display:block;width:100%;height:auto}
-#hero h1{margin:0 0 14px;font-size:clamp(36px,6.4vw,60px);line-height:1;font-weight:800;letter-spacing:-.045em;text-wrap:balance}
-#hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,#dcf38f 62%);padding:0 .06em}
-#hero p{margin:0 auto;max-width:460px;font-size:18.5px;line-height:1.55;color:var(--mut)}
+#hero h1{margin:0 0 14px;font-size:clamp(34px,5.6vw + 12px,60px);line-height:1;font-weight:800;letter-spacing:-.045em;text-wrap:balance}
+#hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--hl) 62%);padding:0 .06em}
+#hero p{margin:0 auto;max-width:30em;font-size:clamp(16.5px,.6vw + 14px,18.5px);line-height:1.55;color:var(--mut);text-wrap:pretty}
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;list-style:none;padding:0;margin:22px 0 0}
-.chips li{display:flex;align-items:center;gap:8px;padding:7px 15px 7px 9px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14.5px;font-weight:600;box-shadow:0 6px 16px -14px rgba(18,32,10,.5)}
-.chips li::before{content:"✓";display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--lime);font-size:12px;font-weight:800}
-.m{display:flex;gap:12px;align-items:flex-end;margin:20px 0;animation:pop .3s ease-out}
-@keyframes pop{from{opacity:0;transform:translateY(10px)}}
+.chips li{display:flex;align-items:center;gap:8px;padding:7px 15px 7px 9px;border-radius:var(--r-full);background:var(--surface);border:1px solid var(--line);font-size:14.5px;font-weight:600;box-shadow:var(--sh-1)}
+.chips li::before{content:"✓";display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--lime);color:var(--on-lime);font-size:12px;font-weight:800}
+
+/* ---------- Chat ---------- */
+.m{display:flex;gap:12px;align-items:flex-end;margin:18px 0;animation:pop var(--med) var(--ease) both}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}}
 .m.user{justify-content:flex-end}
-.av{flex:none;width:52px;height:52px;border-radius:50%;background:#dcf38f;border:2px solid var(--lime);box-shadow:0 0 0 3px var(--bg);overflow:hidden}
+.av{flex:none;width:48px;height:48px;border-radius:50%;background:var(--soft);border:2px solid var(--lime);box-shadow:0 0 0 3px var(--bg);overflow:hidden}
 .av svg{display:block;width:100%;height:100%;overflow:hidden}
 .col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .who{font-size:13px;font-weight:700;color:var(--mut);margin-left:6px}
-.b{background:#fff;border:1px solid var(--line);border-radius:20px 20px 20px 6px;padding:14px 18px;max-width:min(520px,84%);box-shadow:0 8px 24px -18px rgba(18,32,10,.4)}
-.b:has(.graph){width:min(470px,84%)}
+.b{background:var(--surface);border:1px solid var(--line);border-radius:20px 20px 20px 6px;padding:14px 18px;max-width:min(520px,86%);box-shadow:var(--sh-2)}
+.b:has(.graph){width:min(470px,86%)}
 .b:has(canvas){width:min(600px,92%)}
-.user .b{background:var(--deep);border-color:var(--deep);border-radius:20px 20px 6px 20px;padding:6px}
+.user .b{background:var(--user);border-color:var(--user);border-radius:20px 20px 6px 20px;padding:6px}
 .b img{display:block;max-width:100%;max-height:280px;border-radius:15px}
-.b canvas{display:block;max-width:100%;height:auto;border-radius:14px;margin:12px 0 0}
-.say{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.b canvas{display:block;max-width:100%;height:auto;border-radius:14px;margin:12px 0 0;animation:fade .4s ease-out}
+@keyframes fade{from{opacity:0}}
+.say{margin:0;font-size:var(--fs-say);font-weight:700;letter-spacing:-.015em;line-height:1.35;text-wrap:pretty}
+.say.big{font-size:var(--fs-big);font-weight:800;letter-spacing:-.02em;line-height:1.25}
 .cap{margin:14px 0 6px;font-size:13px;color:var(--mut)}
 .gr{display:grid;grid-template-columns:100px 1fr 44px;gap:10px;align-items:center;margin:7px 0;font-size:14px}
-.gn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.gt{height:8px;border-radius:4px;background:#e9efdc;overflow:hidden}
-.gt i{display:block;height:100%;width:0;border-radius:4px;background:var(--c);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.gn{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.gn::before{content:"";flex:none;width:9px;height:9px;border-radius:3px;background:var(--c)}
+.gn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt{height:8px;border-radius:4px;background:var(--track);overflow:hidden}
+.gt i{display:block;height:100%;width:0;border-radius:4px;background:var(--c);transition:width .8s var(--ease)}
 .gp{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
-.gr.load{grid-template-columns:1fr 44px;margin-top:12px}
 .gr:first-child .gn,.gr:first-child .gp{color:var(--ink);font-weight:800}
+.gr.load{grid-template-columns:1fr 44px;margin-top:12px}
+.gr.load .gt i{transition-duration:.3s}
 .prog{margin-left:8px;color:var(--mut);font-size:14px}
 .steps2{margin:8px 0 0;padding-left:20px;color:var(--mut)}
+.steps2 li{margin:3px 0}
 .typing i{display:inline-block;width:8px;height:8px;margin:5px 2px;border-radius:50%;background:#9bb07a;animation:bl 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{50%{opacity:.25;transform:translateY(-3px)}}
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:4;padding:28px 18px 10px;background:linear-gradient(rgba(245,248,239,0),var(--bg) 32%)}
-#drop{position:relative;max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:999px;box-shadow:0 18px 40px -22px rgba(18,32,10,.5),0 0 0 6px rgba(255,255,255,.6);transition:border-color .2s,background .2s,box-shadow .2s}
-#drop:hover{border-color:#cfe0a6}
-#drop.over{border-color:var(--leaf);background:#f6fbe6}
+
+/* ---------- Photo bar ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:4;padding:28px var(--gutter) max(10px,env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 32%)}
+#drop{position:relative;max-width:var(--page);margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-full);box-shadow:var(--sh-3),0 0 0 6px color-mix(in srgb,var(--bg) 60%,transparent);transition:border-color var(--med),background-color var(--med),box-shadow var(--med),transform var(--med) var(--ease)}
+#drop:hover{border-color:var(--line-2)}
+#drop.over{border-color:var(--leaf);background:var(--hover);box-shadow:var(--sh-3),0 0 0 6px rgba(201,239,93,.45);transform:translateY(-3px)}
 .bar{display:flex;align-items:center;gap:8px;padding:7px}
 .act{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:9px;height:46px;padding:0 20px 0 16px;font-size:16px}
 .act svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.act.main{background:var(--lime);color:var(--ink)}
-.act.main:hover{background:#dcf77a;box-shadow:0 0 0 5px rgba(201,239,93,.45)}
-.act.sub{background:#eef3e4;color:var(--ink)}
-.act.sub:hover{background:#e3ecd2}
+.act.main{background:var(--lime);color:var(--on-lime)}
+.act.main:hover{background:var(--lime-hi);box-shadow:0 0 0 5px rgba(201,239,93,.4)}
 #cam{display:none}
-@media(pointer:coarse){#cam{display:inline-flex}#gal{background:#eef3e4}#gal:hover{background:#e3ecd2;box-shadow:none}}
 .or{flex:1;min-width:0;color:var(--mut);font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:4px}
-@media(pointer:coarse){.or{display:none}#cam{flex:1;min-width:0}#cam span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+@media(pointer:coarse){
+ #cam{display:inline-flex;flex:1;min-width:0}#cam span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ #gal{background:var(--surface-2);color:var(--ink)}#gal:hover{background:var(--hover);box-shadow:none}
+ .or{display:none}
+}
 #pick{margin-left:auto;flex:none;width:46px;height:46px;padding:0;border-radius:50%;background:none;color:var(--mut);display:grid;place-items:center}
-#pick:hover,#pick[aria-expanded=true]{background:#eef3e4;color:var(--ink)}
-#pick svg{width:24px;height:24px;fill:currentColor}
-#menu{position:absolute;right:0;bottom:calc(100% + 12px);min-width:230px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;box-shadow:0 20px 40px -18px rgba(18,32,10,.45);animation:pop .2s ease-out}
-#menu button{display:block;width:100%;text-align:left;background:none;color:var(--ink);padding:12px 16px;border-radius:12px}
-#menu button:hover{background:#eef5da}
+#pick:hover,#pick[aria-expanded=true]{background:var(--surface-2);color:var(--ink)}
+#pick svg{width:24px;height:24px;fill:currentColor;transition:transform var(--med) var(--ease)}
+#pick[aria-expanded=true] svg{transform:rotate(90deg)}
+
+/* ---------- Menu ---------- */
+#menu{position:absolute;right:0;bottom:calc(100% + 12px);min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:8px;box-shadow:var(--sh-3);transform-origin:bottom right;
+ opacity:0;visibility:hidden;transform:translateY(8px) scale(.96);transition:opacity var(--fast),transform var(--med) var(--ease),visibility 0s var(--med)}
+#menu.open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+#menu button{display:block;width:100%;text-align:left;background:none;color:var(--ink);padding:12px 16px;border-radius:var(--r-sm)}
+#menu button:hover{background:var(--hover)}
+#menu button:active{transform:scale(.98)}
 #detMenu{border-top:1px solid var(--line);margin-top:6px;padding-top:6px}
-#detMenu[hidden]{display:none}
-#detMenu p{margin:4px 16px 2px;font-size:12.5px;font-weight:800;color:var(--mut)}
-#menu #detMenu button{position:relative;padding:9px 40px 9px 16px}
+#detMenu p{margin:6px 16px 2px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+#menu #detMenu button{position:relative;padding:9px 44px 9px 16px}
 #detMenu b{display:block}
 #detMenu small{display:block;color:var(--mut);font-size:13px;font-weight:500}
-#menu #detMenu button[aria-checked=true]{background:#eef5da}
-#detMenu button[aria-checked=true]::after{content:'\2713';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-weight:800}
-footer{max-width:760px;margin:8px auto 0;text-align:center;font-size:13px;color:var(--mut)}
+#menu #detMenu button[aria-checked=true]{background:var(--hover)}
+#detMenu button::after{content:"";position:absolute;right:14px;top:50%;width:20px;height:20px;margin-top:-10px;border-radius:50%;background:var(--lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312200a' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/13px no-repeat;opacity:0;transform:scale(.4);transition:opacity var(--fast),transform var(--med) var(--ease)}
+#detMenu button[aria-checked=true]::after{opacity:1;transform:none}
+
+/* ---------- Footer ---------- */
+footer{max-width:var(--page);margin:8px auto 0;text-align:center;font-size:13px;color:var(--mut)}
 footer p{margin:0}
 .legal{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;margin-top:2px}
-.lk{background:none;color:var(--leaf);padding:2px 6px;font-size:13px;text-decoration:underline;border-radius:6px}
-.lk:hover{background:#e7eed8}
-dialog{width:min(720px,94vw);max-height:86vh;padding:0;border:0;border-radius:22px;overflow:auto;color:var(--ink);background:#fff;box-shadow:0 30px 80px -20px rgba(18,32,10,.6)}
-dialog::backdrop{background:rgba(18,32,10,.55)}
-.lh{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--line)}
-.ltabs{display:flex;gap:6px;flex-wrap:wrap}
-.ltabs button{background:none;color:var(--mut);padding:8px 14px}
-.ltabs button[aria-selected=true]{background:var(--deep);color:#fff}
-#lclose,#instClose{flex:none;width:40px;height:40px;padding:0;font-size:24px;line-height:1;background:#eef3e4;color:var(--ink)}
-#lbody{padding:6px 26px 30px;font-size:15.5px}
-#lbody h2{font-size:26px;letter-spacing:-.02em;margin:18px 0 2px}
-#lbody h3{font-size:17px;margin:22px 0 4px}
-#lbody p,#lbody ul{margin:6px 0;color:#2c3a1f}
-#lbody .up{color:var(--mut);font-size:14px}
-mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
-.right{display:flex;align-items:center;gap:10px;min-width:0}
-.lang{position:relative;flex:none}
-.lang select{appearance:none;-webkit-appearance:none;font:inherit;font-size:13.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.09) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cfe0b0' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center/13px;border:0;border-radius:999px;padding:7px 28px 7px 32px;cursor:pointer}
-.lang select:hover{background-color:rgba(255,255,255,.16)}
-.lang option{color:var(--ink);background:#fff}
-.lang svg{position:absolute;left:10px;top:50%;width:16px;height:16px;margin-top:-8px;fill:none;stroke:#cfe0b0;stroke-width:1.8;pointer-events:none}
-.inst{flex:none;display:inline-flex;align-items:center;gap:7px;padding:7px 14px 7px 11px;background:var(--lime);color:var(--ink);font-size:13.5px;font-weight:800}
-.inst:hover{background:#dcf77a;box-shadow:0 0 0 4px rgba(201,239,93,.25)}
-.inst svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.inst[hidden]{display:none}
-#ibody{padding:12px 26px 24px;font-size:15.5px}
+.lk{color:var(--leaf);padding:2px 6px;font-size:13px;border-radius:6px;transition:background-color var(--fast)}
+.lk:hover{background:var(--hover)}
+
+/* ---------- Install dialog ---------- */
+dialog{width:min(720px,94vw);max-height:86vh;padding:0;border:0;border-radius:var(--r-lg);overflow:auto;color:var(--ink);background:var(--surface);box-shadow:var(--sh-3);
+ opacity:0;transform:translateY(16px) scale(.97);transition:opacity var(--med),transform var(--med) var(--ease),overlay var(--med) allow-discrete,display var(--med) allow-discrete}
+dialog[open]{opacity:1;transform:none}
+dialog::backdrop{background:rgba(18,32,10,0);transition:background-color var(--med),overlay var(--med) allow-discrete,display var(--med) allow-discrete}
+dialog[open]::backdrop{background:rgba(18,32,10,.55)}
+@starting-style{dialog[open]{opacity:0;transform:translateY(16px) scale(.97)}dialog[open]::backdrop{background:rgba(18,32,10,0)}}
+.lh{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
 #instT{margin:0;padding-left:10px;font-size:21px;line-height:1.2;letter-spacing:-.02em}
+#instClose{flex:none;width:40px;height:40px;padding:0;font-size:24px;line-height:1;background:var(--surface-2);color:var(--ink)}
+#instClose:hover{background:var(--hover)}
+#ibody{padding:12px 26px 24px;font-size:15.5px}
 #ibody h3{font-size:17px;margin:20px 0 6px}
-#ibody p{margin:6px 0;color:#2c3a1f}
-#ibody ol{margin:6px 0;padding-left:22px;color:#2c3a1f}
+#ibody p,#ibody ol{margin:6px 0;color:var(--ink-2)}
+#ibody ol{padding-left:22px}
 #ibody li{margin:5px 0}
 #ibody .sh{display:inline-block;width:20px;height:20px;vertical-align:-4px;fill:none;stroke:#2f80ed;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#ibody .go{margin:12px 0 4px;padding:12px 22px;background:var(--lime);color:var(--ink)}
-#ibody .go:hover{background:#dcf77a}
+#ibody .go{margin:12px 0 4px;padding:12px 22px;background:var(--lime);color:var(--on-lime)}
+#ibody .go:hover{background:var(--lime-hi)}
 #ibody .url{font-weight:800;word-break:break-all}
-.dock{padding-bottom:max(10px,env(safe-area-inset-bottom))}
-@media(max-width:600px){.nav>div{padding:0 14px}#heroAx::after{display:none}#hero{padding-top:4px}#hero h1{font-size:33px}#hero p{font-size:16.5px}.chips{gap:6px;margin-top:16px}.chips li{font-size:13px;padding:5px 11px 5px 7px}.chips li::before{width:17px;height:17px;font-size:10px}.pill{max-width:56vw;font-size:12.5px}.av{width:42px;height:42px}#heroAx{width:min(170px,50%);margin-bottom:14px}.b{max-width:88%}.gr{grid-template-columns:78px 1fr 40px}.say{font-size:19px}.pill{max-width:44vw}.right{gap:7px}.inst span{display:none}.inst{padding:8px}}
+
+/* ---------- Small screens ---------- */
+@media(max-width:600px){
+ #heroAx{width:min(170px,50%);margin-bottom:14px}#heroAx::after{display:none}#hero{padding-top:2px}
+ .chips{gap:6px;margin-top:16px}.chips li{font-size:13px;padding:5px 11px 5px 7px}.chips li::before{width:17px;height:17px;font-size:10px}
+ .right{gap:7px}.pill{max-width:44vw;font-size:12.5px}.inst span{display:none}.inst{padding:8px}
+ .av{width:40px;height:40px}.m{gap:9px}.b{max-width:90%;padding:12px 15px}.gr{grid-template-columns:84px 1fr 40px}
+}
 @media(max-width:430px){#gal span{display:none}#gal{width:46px;padding:0}.brand{font-size:0;gap:0}.lang select{padding:7px 24px 7px 30px}.pill{max-width:none;flex:1 1 auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style></head><body>
+@media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
+</style>
+</head><body>
 <header class="nav"><div>
  <span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#c9ef5d"/><path d="M8 13.2L4.2 10.6M7.2 16.6H3.4M8 20L4.2 22.6M24 13.2L27.8 10.6M24.8 16.6H28.6M24 20L27.8 22.6" stroke="#ff6fa5" stroke-width="2" stroke-linecap="round"/><ellipse cx="16" cy="17" rx="9.6" ry="8.4" fill="#16260a"/><ellipse cx="12.4" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="19.6" cy="16.2" rx="2.7" ry="3.2" fill="#e9fb6e"/><ellipse cx="12.9" cy="16.9" rx="1.1" ry="2" fill="#ff3d7f"/><ellipse cx="19.1" cy="16.9" rx="1.1" ry="2" fill="#3a63ff"/><path d="M14.2 21.2q1.8 1.2 3.6 0" stroke="#c9ef5d" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>Trashy AI</span>
  <div class="right">
@@ -168,7 +218,7 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" hidden aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -333,11 +383,56 @@ mark{background:#fff3a3;color:var(--ink);padding:0 4px;border-radius:4px}
 <g class="ax-dec d-s" fill="#c9ef5d"><path class="ax-sp" d="M110 112l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path class="ax-sp ax-sp2" d="M292 100l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g>
 </svg>
 </template>
-<script src="lib/tf.min.js"></script>
-<script src="lib/mobilenet.min.js"></script>
 <script>
-const MODEL_JS='image-model.js', MODEL_FILE='image-model.json', SVG_FILE='svg/axolotl-bot-idle.svg';
+'use strict';
+/* Trashy app. Sections: helpers · storage · state · languages · status · axolotl · chat · classic method · detector · photos · menu · install · offline */
+
+/* ---------- Helpers ---------- */
 const $=id=>document.getElementById(id);
+const FILE=location.protocol==='file:'; /* opened straight from disk: browsers block what the detector needs, so the classic method does the work */
+const MODEL_JS='image-model.js',MODEL_FILE='image-model.json',SVG_FILE='svg/axolotl-bot-idle.svg';
+const nextFrame=()=>new Promise(r=>requestAnimationFrame(()=>r()));
+const later=f=>'requestIdleCallback' in window?requestIdleCallback(f,{timeout:3000}):setTimeout(f,1500);
+/* builds an element: h('p',{class:'say',text:'Hi'},child,...) */
+function h(tag,props,...kids){
+ const e=document.createElement(tag);
+ for(const [k,v] of Object.entries(props||{})){
+  if(v==null||v===false)continue;
+  if(k==='class')e.className=v;
+  else if(k==='text')e.textContent=v;
+  else if(k==='style')for(const [p,x] of Object.entries(v))e.style.setProperty(p,x);
+  else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);
+  else e.setAttribute(k,v===true?'':v);
+ }
+ e.append(...kids.flat().filter(x=>x!=null&&x!==false));
+ return e;
+}
+/* loads a script file once */
+const scripts={};
+function script(src){
+ return scripts[src]||(scripts[src]=new Promise((ok,no)=>document.head.append(h('script',{src,onload:ok,onerror:()=>{delete scripts[src];no(new Error(src))}}))));
+}
+
+/* ---------- Storage: settings kept in memory, written only when they change, and safe when the browser blocks storage ---------- */
+const store=(()=>{
+ const mem={};let ls=null;
+ try{ls=window.localStorage;ls.getItem('trashy-lang')}catch(_){ls=null}
+ return{
+  get(k){if(!(k in mem)){let v=null;try{v=ls&&ls.getItem(k)}catch(_){}mem[k]=v}return mem[k]},
+  set(k,v){if(this.get(k)===v)return;mem[k]=v;try{ls&&ls.setItem(k,v)}catch(_){}}
+ };
+})();
+
+/* ---------- App state ---------- */
+const S={
+ lang:'en',status:['','loading'],
+ ax:null,heroSvg:null,                                        /* axolotl template for the chat, and the big one in the hero */
+ classic:{ready:null,ok:false,model:null,net:null,pca:null,scale:25}, /* backup method: MobileNet + stored examples */
+ det:{cur:null,id:'t01',turn:0,run:null,ready:null},           /* detector: the loaded model, the chosen one, the latest switch */
+ load:{msg:null,bar:null,pc:null},                              /* the "Loading model" chat message */
+ queue:[],busy:false,                                           /* photos waiting to be looked at */
+ install:null                                                   /* Android's install prompt */
+};
 
 /* ---------- Languages ---------- */
 const SHARE_ICON='<svg class="sh" viewBox="0 0 24 24" aria-label="Share"><path d="M12 3v12M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
@@ -345,7 +440,7 @@ const T={
 en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
  heroH:'Sort your trash with <em>one picture</em>',heroP:'Send Trashy a photo. It finds the items in it and tells you what each one is.',
  chip1:'Finds several items',chip2:'Draws a box around each',chip3:'Shows how sure it is',
- mHow:'How it works',mClear:'Clear chat',mSend:'Send image',mInstall:'Install on your phone',iShort:'Install app',
+ mHow:'How it works',mClear:'Clear chat',mInstall:'Install on your phone',iShort:'Install app',
  take:'Take photo',choose:'Choose photo',dropHint:'or drop or paste a picture here',more:'More',close:'Close',
  foot:'Trashy runs in your browser. Your pictures never leave your device.',privacy:'Privacy Policy',terms:'Terms and Conditions',
  errModel:'Couldn’t load the Trashy model. Put <b>image-model.js</b> in the same folder as this page.',
@@ -370,7 +465,7 @@ en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
 de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…',
  heroH:'Trenne deinen Müll mit <em>einem Foto</em>',heroP:'Schick Trashy ein Foto. Es findet die Gegenstände darauf und sagt dir, was jeder davon ist.',
  chip1:'Findet mehrere Gegenstände',chip2:'Zeichnet einen Rahmen um jeden',chip3:'Zeigt, wie sicher es ist',
- mHow:'So funktioniert’s',mClear:'Chat leeren',mSend:'Bild senden',mInstall:'Aufs Handy installieren',iShort:'App installieren',
+ mHow:'So funktioniert’s',mClear:'Chat leeren',mInstall:'Aufs Handy installieren',iShort:'App installieren',
  take:'Foto aufnehmen',choose:'Foto auswählen',dropHint:'oder ein Bild hierher ziehen oder einfügen',more:'Mehr',close:'Schließen',
  foot:'Trashy läuft in deinem Browser. Deine Bilder verlassen nie dein Gerät.',privacy:'Datenschutz',terms:'Nutzungsbedingungen',
  errModel:'Das Trashy-Modell konnte nicht geladen werden. Lege <b>image-model.js</b> in denselben Ordner wie diese Seite.',
@@ -395,7 +490,7 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
 ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык',loading:'Загрузка…',
  heroH:'Сортируйте мусор <em>по одному фото</em>',heroP:'Отправьте Trashy фото. Он найдёт на нём предметы и скажет, что есть что.',
  chip1:'Находит несколько предметов',chip2:'Обводит каждый рамкой',chip3:'Показывает, насколько уверен',
- mHow:'Как это работает',mClear:'Очистить чат',mSend:'Отправить фото',mInstall:'Установить на телефон',iShort:'Установить',
+ mHow:'Как это работает',mClear:'Очистить чат',mInstall:'Установить на телефон',iShort:'Установить',
  take:'Сфотографировать',choose:'Выбрать фото',dropHint:'или перетащите либо вставьте фото сюда',more:'Ещё',close:'Закрыть',
  foot:'Trashy работает в вашем браузере. Ваши фото никогда не покидают устройство.',privacy:'Конфиденциальность',terms:'Условия использования',
  errModel:'Не удалось загрузить модель Trashy. Положите <b>image-model.js</b> в ту же папку, что и эта страница.',
@@ -419,75 +514,45 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  andH:'Android',and:['Откройте эту страницу в Chrome.','Нажмите на меню <b>⋮</b> вверху справа.','Нажмите <b>Установить приложение</b> или <b>Добавить на главный экран</b>.','Нажмите <b>Установить</b>.']}
 };
 const LANGS=Object.keys(T);
+const tr=k=>T[S.lang][k]??T.en[k];
+const fmt=(k,...a)=>{const v=tr(k);return typeof v==='function'?v(...a):v};
+const cat=n=>(T[S.lang].cats||{})[n]||n;
 function pickLang(){
  const q=new URLSearchParams(location.search).get('lang');if(LANGS.includes(q))return q;
- try{const s=localStorage.getItem('trashy-lang');if(LANGS.includes(s))return s}catch(_){}
+ const s=store.get('trashy-lang');if(LANGS.includes(s))return s;
  for(const l of navigator.languages||[navigator.language||'']){const c=String(l).slice(0,2).toLowerCase();if(LANGS.includes(c))return c}
  return 'en';
 }
-let lang=pickLang();
-const tr=k=>T[lang][k]??T.en[k];
-const cat=n=>(T[lang].cats||{})[n]||n;
-let lastStatus=['','loading'];
-function status(kind,key,...args){lastStatus=[kind,key,...args];const e=$('status'),v=tr(key);e.className='pill '+kind;e.innerHTML='<span>'+(typeof v==='function'?v(...args):v)+'</span>'}
 function applyLang(){
- document.documentElement.lang=lang;document.title=tr('title');
- {const q=new URLSearchParams(location.search).get('lang'),c=document.querySelector('link[rel=canonical]');if(c)c.href='https://babanymous.github.io/trashy/'+(LANGS.includes(q)&&q!=='en'?'?lang='+q:'')}$('lang').value=lang;$('lang').setAttribute('aria-label',tr('lang'));
+ document.documentElement.lang=S.lang;document.title=tr('title');
+ const q=new URLSearchParams(location.search).get('lang'),c=document.querySelector('link[rel=canonical]');
+ if(c)c.href='https://babanymous.github.io/trashy/'+(LANGS.includes(q)&&q!=='en'?'?lang='+q:'');
+ $('lang').value=S.lang;$('lang').setAttribute('aria-label',tr('lang'));
  document.querySelectorAll('[data-i18n]').forEach(e=>{if(e.id!=='status')e.innerHTML=tr(e.dataset.i18n)});
  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',tr(e.dataset.i18nAria)));
- status(...lastStatus);
+ status(...S.status);
  if($('instDlg').open)fillInstall();
 }
 function setLang(l){
- lang=LANGS.includes(l)?l:'en';try{localStorage.setItem('trashy-lang',lang)}catch(_){}
- const u=new URL(location.href);if(u.searchParams.has('lang')){u.searchParams.set('lang',lang);history.replaceState(null,'',u)}
+ S.lang=LANGS.includes(l)?l:'en';store.set('trashy-lang',S.lang);
+ const u=new URL(location.href);if(u.searchParams.has('lang')){u.searchParams.set('lang',S.lang);history.replaceState(null,'',u)}
  applyLang();
- /* nothing sent yet: say hello again in the new language */
- if(!document.querySelector('.m.user')&&model&&net){document.querySelectorAll('.m').forEach(m=>m.remove());greet()}
+ if(!document.querySelector('.m.user')&&isReady()){clearChat();greet()} /* nothing sent yet: say hello again in the new language */
 }
-$('lang').onchange=e=>setLang(e.target.value);
-applyLang();
 
-/* ---------- Install on a phone ---------- */
-const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-const isAndroid=/Android/i.test(navigator.userAgent);
-const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-let installEvt=null;
-function showInstall(on){$('instHead').hidden=$('instMenu').hidden=!on}
-showInstall(location.protocol!=='file:'&&!standalone());
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;if($('instDlg').open)fillInstall()});
-addEventListener('appinstalled',()=>{installEvt=null;showInstall(false);if($('instDlg').open)fillInstall(true)});
-function fillInstall(done){
- const b=$('ibody'),li=a=>'<ol>'+a.map(x=>`<li>${x}</li>`).join('')+'</ol>';
- $('instT').textContent=tr('iTitle');let h='';
- if(done){b.innerHTML=`<p>${tr('iDone')}</p>`;return}
- h+=`<p>${tr('iIntro')}</p>`;
- if(installEvt)h+=`<button type="button" class="go" id="instGo">${tr('iBtn')}</button>`;
- if(isIOS)h+=li(tr('ios'));
- else if(isAndroid){if(!installEvt)h+=li(tr('and'))}
- else{
-  const u=location.origin+location.pathname.replace(/index\.html$/,'');
-  h+=`<p>${tr('iOther')} <span class="url">${u.replace(/^https?:\/\//,'')}</span></p><h3>${tr('iosH')}</h3>${li(tr('ios'))}<h3>${tr('andH')}</h3>${li(tr('and'))}`;
- }
- b.innerHTML=h;
- const go=$('instGo');if(go)go.onclick=async()=>{const e=installEvt;if(!e)return;e.prompt();const r=await e.userChoice.catch(()=>({}));installEvt=null;if(r.outcome==='accepted'){showInstall(false);fillInstall(true)}else fillInstall()};
+/* ---------- Status pill ---------- */
+function status(kind,key,...args){
+ S.status=[kind,key,...args];
+ const e=$('status');e.className='pill '+kind;e.innerHTML='<span>'+fmt(key,...args)+'</span>';
 }
-function openInstall(){fillInstall();$('instDlg').showModal()}
-$('instHead').onclick=openInstall;
-$('instClose').onclick=()=>$('instDlg').close();
-$('instDlg').addEventListener('click',e=>{if(e.target===$('instDlg'))$('instDlg').close()});
-if('serviceWorker' in navigator&&location.protocol==='https:'){
- navigator.serviceWorker.register('sw.js').catch(()=>{});
- /* hand the already-loaded files to the offline copy (the first visit loads them before the worker runs) */
- Promise.all([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,0)).then(()=>Promise.all([ready,detReady]))]).then(([reg])=>{
-  const urls=performance.getEntriesByType('resource').map(e=>e.name.split('#')[0]).filter(u=>u.startsWith(location.origin));
-  if(reg.active)reg.active.postMessage({cache:[...new Set(urls)]});
- }).catch(()=>{});
+const isReady=()=>!!(S.det.cur||S.classic.ok);
+function showReady(){
+ if(S.det.cur)status('ok','readyM',S.det.cur.m.name);
+ else if(S.classic.ok)status('ok','ready',S.classic.model.filter(c=>c.name!=='background').length);
 }
-let net=null, model=null, proto=null, heroSvg=null;
 
-/* ---------- Axolotl avatar ---------- */
-const STATES=['idle','joy','wow','loading'];
+/* ---------- Axolotl ---------- */
+const MOODS=['idle','joy','wow','loading'];
 async function loadAxolotl(){
  let el;
  try{const r=await fetch(SVG_FILE);if(!r.ok)throw 0;
@@ -495,145 +560,159 @@ async function loadAxolotl(){
  }catch(_){el=document.importNode($('axFallback').content.firstElementChild,true)}
  el.removeAttribute('width');el.removeAttribute('height');
  el.setAttribute('viewBox','86 82 228 228');el.setAttribute('preserveAspectRatio','xMidYMid slice');
- const t=el.querySelector('title');if(t)t.remove();
- proto=el;
- const h=uniq(el.cloneNode(true));h.setAttribute('viewBox','0 30 400 340');h.setAttribute('preserveAspectRatio','xMidYMid meet');
- $('heroAx').appendChild(h);heroSvg=h;
+ el.querySelector('title')?.remove();
+ S.ax=el;
+ const big=uniq(el.cloneNode(true));big.setAttribute('viewBox','0 30 400 340');big.setAttribute('preserveAspectRatio','xMidYMid meet');
+ $('heroAx').append(big);S.heroSvg=big;
 }
-/* the hero axolotl's pupils follow the pointer inside its eyes */
-const LOOK_VARS=['--lx','--ly','--px','--py'];
-function look(x,y){
- if(!heroSvg||$('hero').hidden)return;
- const r=heroSvg.getBoundingClientRect(),dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/320),ux=dx/d*k,uy=dy/d*k;
- heroSvg.classList.add('follow');
- [ux*6,uy*4,ux*11,uy*8].forEach((v,i)=>heroSvg.style.setProperty(LOOK_VARS[i],v+'px'));
-}
-function unlook(){
- if(!heroSvg)return;heroSvg.classList.remove('follow');LOOK_VARS.forEach(v=>heroSvg.style.removeProperty(v));
-}
-addEventListener('pointermove',e=>look(e.clientX,e.clientY));
-document.documentElement.addEventListener('mouseleave',unlook);
-function syncHero(){$('hero').hidden=!!document.querySelector('.m.user')}
 /* every copy of the axolotl needs its own ids, or hiding one copy breaks the others */
 let uid=0;
 function uniq(svg){
- const n=++uid,els=[...svg.querySelectorAll('[id]')],ids=els.map(e=>e.id);
+ const n=++uid,els=[...svg.querySelectorAll('[id]')],ids=new Set(els.map(e=>e.id));
  els.forEach(e=>e.id+='-'+n);
- const fix=v=>v.replace(/url\(#([^)\s'"]+)\)/g,(m,i)=>ids.includes(i)?`url(#${i}-${n})`:m);
- [svg,...svg.querySelectorAll('*')].forEach(e=>{
-  [...e.attributes].forEach(a=>{
+ const fix=v=>v.replace(/url\(#([^)\s'"]+)\)/g,(m,i)=>ids.has(i)?`url(#${i}-${n})`:m);
+ for(const e of [svg,...svg.querySelectorAll('*')]){
+  for(const a of [...e.attributes]){
    let v=a.value;
    if(v.includes('url(#'))v=fix(v);
-   else if((a.name==='href'||a.name==='xlink:href')&&v[0]==='#'&&ids.includes(v.slice(1)))v+='-'+n;
+   else if((a.name==='href'||a.name==='xlink:href')&&v[0]==='#'&&ids.has(v.slice(1)))v+='-'+n;
    if(v!==a.value)a.namespaceURI?e.setAttributeNS(a.namespaceURI,a.name,v):e.setAttribute(a.name,v);
-  });
+  }
   if(e.localName==='style')e.textContent=fix(e.textContent);
- });
+ }
  return svg;
 }
-function emo(row,s){const v=row.querySelector('.av svg');if(!v)return;STATES.forEach(x=>v.classList.remove('s-'+x));v.classList.add('s-'+s)}
+function mood(row,m){const v=row.querySelector('.av svg');if(!v)return;MOODS.forEach(x=>v.classList.remove('s-'+x));v.classList.add('s-'+m)}
+/* the hero axolotl's pupils follow the pointer (at most once per frame, only while the hero is shown) */
+const LOOK_VARS=['--lx','--ly','--px','--py'];
+let lookAt=null;
+function look(){
+ const [x,y]=lookAt;lookAt=null;
+ const v=S.heroSvg;if(!v||$('hero').hidden)return;
+ const r=v.getBoundingClientRect(),dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/320),ux=dx/d*k,uy=dy/d*k;
+ v.classList.add('follow');
+ [ux*6,uy*4,ux*11,uy*8].forEach((n,i)=>v.style.setProperty(LOOK_VARS[i],n+'px'));
+}
+addEventListener('pointermove',e=>{if(!lookAt)requestAnimationFrame(look);lookAt=[e.clientX,e.clientY]},{passive:true});
+document.documentElement.addEventListener('mouseleave',()=>{const v=S.heroSvg;if(!v)return;v.classList.remove('follow');LOOK_VARS.forEach(p=>v.style.removeProperty(p))});
+const syncHero=()=>{$('hero').hidden=!!document.querySelector('.m.user')};
 
-/* ---------- Model ---------- */
+/* ---------- Chat ---------- */
+const scrollDown=()=>requestAnimationFrame(()=>scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}));
+const body=row=>row.querySelector('.b');
+/* one chat message; the AI's carry the axolotl and the active model's name */
+function msg(who){
+ const b=h('div',{class:'b'});
+ const row=who==='ai'
+  ?h('div',{class:'m ai'},h('div',{class:'av'},S.ax&&uniq(S.ax.cloneNode(true))),h('div',{class:'col'},h('div',{class:'who',text:botName()}),b))
+  :h('div',{class:'m user'},b);
+ $('thread').append(row);scrollDown();return row;
+}
+/* replaces a message's content with one sentence; big for short headlines */
+function say(row,text,m='idle',big=false){mood(row,m);body(row).replaceChildren(h('p',{class:big?'say big':'say',text}));return row}
+const ai=(text,m)=>say(msg('ai'),text,m);
+const greet=()=>ai(fmt('greet',botName()),'joy');
+function how(){
+ const [title,...steps]=tr('how'),row=msg('ai');mood(row,'idle');
+ body(row).replaceChildren(h('p',{class:'say',text:title}),h('ol',{class:'steps2'},steps.map(s=>h('li',{text:s}))));
+}
+function clearChat(){document.querySelectorAll('.m').forEach(m=>m.remove());S.load.msg=null;syncHero()}
+/* a confidence bar: {n: name (none for a plain progress bar), c: colour, p: 0..1} */
+function barRow(x){
+ const row=h('div',{class:x.n==null?'gr load':'gr',style:{'--c':x.c}},
+  x.n!=null&&h('span',{class:'gn'},h('span',{text:x.n})),h('span',{class:'gt'},h('i')),h('span',{class:'gp'}));
+ if(x.p!=null)setBar(row,x.p,true);
+ return row;
+}
+function setBar(row,p,animate){
+ row.querySelector('.gp').textContent=Math.round(p*100)+'%';
+ const go=()=>{row.querySelector('i').style.width=p*100+'%'};
+ animate?requestAnimationFrame(()=>requestAnimationFrame(go)):go();
+}
+/* a finished answer: headline, optional annotated photo, caption and bars */
+function answer(row,{line,m,pic,cap,items}){
+ mood(row,m);
+ body(row).replaceChildren(...[h('p',{class:'say big',text:line}),pic,h('p',{class:'cap',text:cap}),h('div',{class:'graph'},items.map(barRow))].filter(Boolean));
+ scrollDown();
+}
+function showResult(row,r){
+ r=r.slice(0,5).map(x=>({...x,n:cat(x.n)}));
+ const t=r[0];
+ answer(row,{line:fmt(t.p>=.8?'sure':t.p>=.5?'likely':'unsure',t.n),m:t.p>=.5?'joy':'wow',cap:tr('howSure'),items:r});
+}
+function showDetections(row,img,ds){
+ ds=ds.map(d=>({...d,n:cat(d.n)}));
+ const counts={};ds.forEach(d=>counts[d.n]=(counts[d.n]||0)+1);
+ const sum=Object.entries(counts).map(([n,k])=>fmt('count',k,n)).join(', ');
+ const avg=ds.reduce((s,d)=>s+d.p,0)/ds.length;
+ answer(row,{line:ds.length===1?fmt('found1',ds[0].n):fmt('foundN',ds.length,sum),m:avg>=.75?'joy':'wow',pic:annotate(img,ds),cap:tr('howSureBox'),items:ds});
+}
+
+/* ---------- Classic method (backup): MobileNet features compared with stored examples ---------- */
+const COLORS={Paper:'#7b4fd1',Plastic:'#1f9d8a',Glass:'#2f80ed',Metal:'#d99a1e',Trash:'#e4572e'};
+const colorOf=n=>COLORS[n]||((S.classic.model||[]).find(c=>c.name===n)||{}).color||'#5a6a4b';
 function decodeQ(b64,sc){
  const bin=atob(b64),e=new Float32Array(bin.length);let n=0;
  for(let i=0;i<bin.length;i++){let v=bin.charCodeAt(i);if(v>127)v-=256;e[i]=v/sc;n+=e[i]*e[i]}
  n=Math.sqrt(n)||1;for(let i=0;i<e.length;i++)e[i]/=n;return e;
 }
 /* trashy-pca-v1: examples are stored compressed (1280 -> d.dims numbers); each crop is compressed the same way before comparing */
-let pca=null, SCALE=25;
-function useModel(d){
+function useExamples(d){
+ const C=S.classic;
  if(!Array.isArray(d&&d.classes))throw 0;
  if(d.format==='trashy-pca-v1'){
-  const mb=atob(d.mean),mu=new Float32Array(new Uint8Array([...mb].map(c=>c.charCodeAt(0))).buffer);
-  pca={mean:mu,comps:d.comps.map(c=>decodeQ(c.q,c.s))};SCALE=d.scale||25;
- }else if(d.format==='image-trainer-v1'){pca=null;SCALE=25}
+  const mb=atob(d.mean),mean=new Float32Array(Uint8Array.from(mb,c=>c.charCodeAt(0)).buffer);
+  C.pca={mean,comps:d.comps.map(c=>decodeQ(c.q,c.s))};C.scale=d.scale||25;
+ }else if(d.format==='image-trainer-v1'){C.pca=null;C.scale=25}
  else throw 0;
- model=d.classes.filter(c=>c.samples.length).map(c=>({name:c.name,color:c.color,samples:c.samples.map(x=>({e:x.q?decodeQ(x.q,x.s):x.e}))}));
+ C.model=d.classes.filter(c=>c.samples.length).map(c=>({name:c.name,color:c.color,samples:c.samples.map(x=>({e:x.q?decodeQ(x.q,x.s):x.e}))}));
 }
-function project(e){
- const o=new Float32Array(pca.comps.length),m=pca.mean;let n=0;
- for(let a=0;a<o.length;a++){const q=pca.comps[a];let s=0;for(let i=0;i<q.length;i++)s+=(e[i]-m[i])*q[i];o[a]=s;n+=s*s}
- n=Math.sqrt(n)||1;for(let a=0;a<o.length;a++)o[a]/=n;return o;
-}
-function missingModel(){
- status('err','errModel');
-}
-function loadModelScript(){
- return new Promise(res=>{const t=document.createElement('script');t.src=MODEL_JS;
-  t.onload=()=>res(window.TRASHY_MODEL||null);t.onerror=()=>res(null);document.head.appendChild(t)});
-}
-async function loadModel(){
- let d=await loadModelScript();
+async function loadExamples(){
+ let d=null;
+ try{await script(MODEL_JS);d=window.TRASHY_MODEL||null}catch(_){}
  if(!d){try{const r=await fetch(MODEL_FILE);if(r.ok)d=await r.json()}catch(_){}}
- try{if(!d)throw 0;useModel(d)}catch(_){missingModel()}
+ try{if(d)useExamples(d)}catch(_){}
 }
-/* MobileNet: normal files on the website; a packed single-script copy when the page is opened straight from the disk (file://), because browsers block fetch() there */
+/* MobileNet: normal files on the website; a packed single-script copy when opened from disk, because browsers block fetch() there */
 const NET_URL='models/mobilenet_v2_100_224/model.json',NET_PACKED='models/mobilenet_v2_100_224/model-packed.js';
-function packedNet(){return new Promise((ok,no)=>{if(window.TRASHY_MOBILENET)return ok(window.TRASHY_MOBILENET);const t=document.createElement('script');t.src=NET_PACKED;t.onload=()=>window.TRASHY_MOBILENET?ok(window.TRASHY_MOBILENET):no();t.onerror=no;document.head.appendChild(t)})}
 async function netSource(){
- if(location.protocol!=='file:')return NET_URL;
- const m=await packedNet(),bin=atob(m.weightData),w=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)w[i]=bin.charCodeAt(i);
+ if(!FILE)return NET_URL;
+ await script(NET_PACKED);
+ const m=window.TRASHY_MOBILENET,w=Uint8Array.from(atob(m.weightData),c=>c.charCodeAt(0));
  return tf.io.fromMemory({modelTopology:m.modelTopology,weightSpecs:m.weightSpecs,weightData:w.buffer,format:m.format,generatedBy:m.generatedBy,convertedBy:m.convertedBy});
 }
-async function loadNet(){try{net=await mobilenet.load({version:2,alpha:1.0,modelUrl:await netSource(),inputRange:[0,1]})}catch(_){net=null}}
-const ready=Promise.all([loadAxolotl(),loadModel(),loadNet()]).then(()=>{
- if(!model)return;
- if(!net)return status('err','errNet');
- greet();
- const p=detReady;p.then(()=>{if(p===detReady)showReady()});
-});
-function showReady(){if(!model||!net)return;if(det)status('ok','readyM',det.m.name);else status('ok','ready',model.filter(c=>c.name!=='background').length)}
-
-/* ---------- Classify ---------- */
+async function loadNet(){try{S.classic.net=await mobilenet.load({version:2,alpha:1.0,modelUrl:await netSource(),inputRange:[0,1]})}catch(_){S.classic.net=null}}
+/* loaded once: right away when there is no detector, otherwise quietly after start-up (so it is also saved for offline use) */
+function loadClassic(){
+ const C=S.classic;
+ return C.ready||(C.ready=(async()=>{
+  try{await script('lib/tf.min.js');await script('lib/mobilenet.min.js')}catch(_){}
+  if(window.tf&&window.mobilenet)await Promise.all([loadExamples(),loadNet()]);
+  C.ok=!!(C.model&&C.net);
+  if(!C.ok&&!S.det.cur)status('err',C.model?'errNet':'errModel');
+  return C.ok;
+ })());
+}
 const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
+function project(e){
+ const {comps,mean}=S.classic.pca,o=new Float32Array(comps.length);let n=0;
+ for(let a=0;a<o.length;a++){const q=comps[a];let s=0;for(let i=0;i<q.length;i++)s+=(e[i]-mean[i])*q[i];o[a]=s;n+=s*s}
+ n=Math.sqrt(n)||1;for(let a=0;a<o.length;a++)o[a]/=n;return o;
+}
 function predict(e){
- if(pca)e=project(e);
- const sc=model.map(c=>{
+ const C=S.classic;if(C.pca)e=project(e);
+ const sc=C.model.map(c=>{
   const t=[-9,-9,-9];for(const x of c.samples){const s=dot(x.e,e);if(s>t[2]){t[2]=s;t.sort((a,b)=>b-a)}}
   return{n:c.name,c:c.color,v:(t[0]+t[1]+t[2])/3}});
- const ex=sc.map(x=>Math.exp(x.v*SCALE)),z=ex.reduce((a,b)=>a+b,0);
+ const ex=sc.map(x=>Math.exp(x.v*C.scale)),z=ex.reduce((a,b)=>a+b,0);
  sc.forEach((x,i)=>x.p=ex[i]/z);return sc.sort((a,b)=>b.p-a.p);
 }
 const toImg=url=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
-const embed=img=>tf.tidy(()=>{const e=net.infer(img,true);return Array.from(e.div(e.norm()).dataSync())});
+const embed=img=>tf.tidy(()=>{const e=S.classic.net.infer(img,true);return Array.from(e.div(e.norm()).dataSync())});
 
-/* ---------- Chat ---------- */
-function scrollDown(){requestAnimationFrame(()=>scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}))}
-function msg(who){
- const row=document.createElement('div');row.className='m '+who;
- if(who==='ai'){const av=document.createElement('div');av.className='av';if(proto)av.appendChild(uniq(proto.cloneNode(true)));row.appendChild(av)}
- const b=document.createElement('div');b.className='b';
- if(who==='ai'){const col=document.createElement('div'),n=document.createElement('div');col.className='col';n.className='who';n.textContent=botName();col.append(n,b);row.appendChild(col)}else row.appendChild(b);
- $('thread').appendChild(row);scrollDown();return row;
-}
-function ai(text,emotion){const a=msg('ai');emo(a,emotion||'idle');const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p);return a}
-function greet(){ai(tr('greet')(botName()),'joy')}
-function how(){
- const a=msg('ai');emo(a,'idle');
- const h=tr('how');a.querySelector('.b').innerHTML=`<p class="say">${h[0]}</p><ol class="steps2">${h.slice(1).map(x=>`<li>${x}</li>`).join('')}</ol>`;
-}
-function showResult(a,r){
- r=r.map(x=>({...x,n:cat(x.n)}));
- const t=r[0],sure=t.p>=.5;
- const line=tr(t.p>=.8?'sure':sure?'likely':'unsure')(t.n);
- emo(a,sure?'joy':'wow');
- const b=a.querySelector('.b');b.textContent='';
- const h=document.createElement('p');h.className='say';h.textContent=line;b.appendChild(h);
- const cap=document.createElement('p');cap.className='cap';cap.textContent=tr('howSure');b.appendChild(cap);
- const g=document.createElement('div');g.className='graph';
- r.slice(0,5).forEach(x=>{
-  const row=document.createElement('div');row.className='gr';row.style.setProperty('--c',x.c);
-  row.innerHTML='<span class="gn"></span><span class="gt"><i></i></span><span class="gp"></span>';
-  row.querySelector('.gn').textContent=x.n;row.querySelector('.gp').textContent=Math.round(x.p*100)+'%';
-  g.appendChild(row);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{row.querySelector('i').style.width=x.p*100+'%'}));
- });
- b.appendChild(g);scrollDown();
-}
-function say(a,text,emotion){emo(a,emotion);a.querySelector('.b').innerHTML='';const p=document.createElement('p');p.className='say';p.textContent=text;a.querySelector('.b').appendChild(p)}
-
-/* ---------- Object detection ---------- */
+/* sliding-window search, only used when the detector is not available */
 const DET_MIN=0.6; /* how sure a window must be to count as an item (0 to 1) */
+const MERGE_OVERLAP=0.2; /* same-class boxes overlapping by more than this share of the smaller box become one box */
 const pos=(L,l,st)=>{const p=[];for(let v=0;v<L-l-1;v+=st)p.push(v);p.push(Math.max(0,L-l));return p};
 function windows(W,H){
  const m=Math.min(W,H);let f=.5,out;
@@ -646,12 +725,8 @@ function windows(W,H){
  }while(out.length>150);
  return out;
 }
-function iou(a,b){
- const ix=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)),iy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)),i=ix*iy;
- return i/(a.w*a.h+b.w*b.h-i);
-}
-const MERGE_OVERLAP=0.2; /* same-class boxes overlapping by more than this share of the smaller box become one box */
 const inter=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+const iou=(a,b)=>{const i=inter(a,b);return i/(a.w*a.h+b.w*b.h-i)};
 function suppress(ds){ /* a weaker box of another class sitting on a stronger one is dropped */
  ds.sort((a,b)=>b.p-a.p);const keep=[];
  for(const d of ds){if(keep.some(k=>k.n!==d.n&&iou(k,d)>.5))continue;keep.push(d)}
@@ -672,11 +747,10 @@ function mergeBoxes(keep,thr){ /* same class and overlapping: one box around the
  }
  return out.sort((a,b)=>b.p-a.p);
 }
-const nms=ds=>mergeBoxes(suppress(ds),MERGE_OVERLAP);
 /* fit a box tightly: nudge each edge in and out while the crop looks more like the item and less like background */
 async function refine(img,d,cx,c,W,H){
- const look=b=>{cx.drawImage(img,b.x,b.y,b.w,b.h,0,0,224,224);const r=predict(embed(c)),me=r.find(x=>x.n===d.n),bg=r.find(x=>x.n==='background');return{s:me.v-(bg?bg.v:0),p:me.p}};
- const mn=Math.min(W,H)*.06;let best={x:d.x,y:d.y,w:d.w,h:d.h},cur=look(best);
+ const view=b=>{cx.drawImage(img,b.x,b.y,b.w,b.h,0,0,224,224);const r=predict(embed(c)),me=r.find(x=>x.n===d.n),bg=r.find(x=>x.n==='background');return{s:me.v-(bg?bg.v:0),p:me.p}};
+ const mn=Math.min(W,H)*.06;let best={x:d.x,y:d.y,w:d.w,h:d.h},cur=view(best);
  for(const st of [.15,.07,.03]){
   for(let round=0,go=true;go&&round<3;round++){
    go=false;
@@ -684,37 +758,36 @@ async function refine(img,d,cx,c,W,H){
     const nb={...best},dx=st*best.w,dy=st*best.h;
     if(e==='l'){nb.x+=dir*dx;nb.w-=dir*dx}else if(e==='r')nb.w+=dir*dx;else if(e==='t'){nb.y+=dir*dy;nb.h-=dir*dy}else nb.h+=dir*dy;
     if(nb.x<0||nb.y<0||nb.x+nb.w>W||nb.y+nb.h>H||nb.w<mn||nb.h<mn)continue;
-    const v=look(nb);if(v.s>cur.s+.002){best=nb;cur=v;go=true}
+    const v=view(nb);if(v.s>cur.s+.002){best=nb;cur=v;go=true}
    }
-   await tf.nextFrame();
+   await nextFrame();
   }
  }
  return {...best,n:d.n,c:d.c,p:cur.p};
 }
-async function detect(img,cb){
- const W=img.naturalWidth,H=img.naturalHeight,c=document.createElement('canvas');c.width=c.height=224;
- const cx=c.getContext('2d'),found=[];let i=0;
- const wins=windows(W,H);
- for(const [x,y,w,h] of wins){
-  cx.drawImage(img,x,y,w,h,0,0,224,224);
+async function detectClassic(img,progress){
+ const W=img.naturalWidth,H=img.naturalHeight,c=h('canvas',{width:224,height:224});
+ const cx=c.getContext('2d'),found=[],wins=windows(W,H);let i=0;
+ for(const [x,y,w,hh] of wins){
+  cx.drawImage(img,x,y,w,hh,0,0,224,224);
   const t=predict(embed(c))[0];
-  if(t.n!=='background'&&t.p>=DET_MIN)found.push({x,y,w,h,n:t.n,c:t.c,p:t.p});
-  if(++i%6===0){if(cb)cb(tr('scanning')(Math.round(i/wins.length*100)));await tf.nextFrame()}
+  if(t.n!=='background'&&t.p>=DET_MIN)found.push({x,y,w,h:hh,n:t.n,c:t.c,p:t.p});
+  if(++i%6===0){progress(fmt('scanning',Math.round(i/wins.length*100)));await nextFrame()}
  }
- if(cb)cb(tr('fitting'));
+ progress(tr('fitting'));
  const cand=[];
  for(const d of mergeBoxes(suppress(found),.4))if(!cand.some(u=>u.n===d.n&&iou(u,d)>.5))cand.push(d);
  const refined=[];
  for(const d of cand.slice(0,8))refined.push(await refine(img,d,cx,c,W,H));
- return nms(refined).filter(d=>d.p>=DET_MIN-.1&&d.w*d.h>=W*H*.003).slice(0,12);
+ return mergeBoxes(suppress(refined),MERGE_OVERLAP).filter(d=>d.p>=DET_MIN-.1&&d.w*d.h>=W*H*.003).slice(0,12);
 }
+/* the photo with a box and a label for each item */
 function annotate(img,ds){
- const W=img.naturalWidth,H=img.naturalHeight,sc=Math.min(1,600/W),c=document.createElement('canvas');
- c.width=Math.round(W*sc);c.height=Math.round(H*sc);
+ const W=img.naturalWidth,H=img.naturalHeight,sc=Math.min(1,600/W),c=h('canvas',{width:Math.round(W*sc),height:Math.round(H*sc)});
  const x=c.getContext('2d'),fs=Math.max(13,Math.round(c.width/38)),lw=Math.max(2.5,fs/5),placed=[];
  x.drawImage(img,0,0,c.width,c.height);
  x.font=`700 ${fs}px "Bricolage Grotesque",system-ui,sans-serif`;x.textBaseline='middle';x.lineJoin='round';
- const rr=(a,b,w,h,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
+ const rr=(a,b,w,hh,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+hh,r);x.arcTo(a+w,b+hh,a,b+hh,r);x.arcTo(a,b+hh,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
  ds.forEach(d=>{
   const bx=d.x*sc,by=d.y*sc,bw=d.w*sc,bh=d.h*sc;
   rr(bx,by,bw,bh,Math.min(10,bw/6,bh/6));
@@ -726,62 +799,25 @@ function annotate(img,ds){
   const bx=d.x*sc,by=d.y*sc,bw=d.w*sc,bh=d.h*sc,t=`${d.n} ${Math.round(d.p*100)}%`,tw=x.measureText(t).width+14,th=fs+10;
   const n=parseInt(String(d.c).slice(1),16),lum=.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255);
   const free=([a,b])=>a>=0&&b>=0&&a+tw<=c.width&&b+th<=c.height&&!placed.some(q=>a<q[0]+q[2]&&a+tw>q[0]&&b<q[1]+q[3]&&b+th>q[1]);
-  const pos=[[bx,by-th],[bx,by],[bx+bw-tw,by-th],[bx+bw-tw,by+bh],[bx,by+bh]].find(free)||[Math.max(0,Math.min(c.width-tw,bx)),Math.max(0,Math.min(c.height-th,by))];
-  placed.push([pos[0],pos[1],tw,th]);
-  rr(pos[0],pos[1],tw,th,th/2.2);x.fillStyle=d.c;x.fill();
-  x.fillStyle=lum>150?'#12200a':'#fff';x.fillText(t,pos[0]+7,pos[1]+th/2+1);
+  const at=[[bx,by-th],[bx,by],[bx+bw-tw,by-th],[bx+bw-tw,by+bh],[bx,by+bh]].find(free)||[Math.max(0,Math.min(c.width-tw,bx)),Math.max(0,Math.min(c.height-th,by))];
+  placed.push([at[0],at[1],tw,th]);
+  rr(at[0],at[1],tw,th,th/2.2);x.fillStyle=d.c;x.fill();
+  x.fillStyle=lum>150?'#12200a':'#fff';x.fillText(t,at[0]+7,at[1]+th/2+1);
  });
  return c;
 }
-function showDetections(a,img,ds){
- ds=ds.map(d=>({...d,n:cat(d.n)}));
- const counts={};ds.forEach(d=>counts[d.n]=(counts[d.n]||0)+1);
- const sum=Object.entries(counts).map(([n,k])=>tr('count')(k,n)).join(', ');
- emo(a,ds.reduce((s,d)=>s+d.p,0)/ds.length>=.75?'joy':'wow');
- const b=a.querySelector('.b');b.textContent='';
- const h=document.createElement('p');h.className='say';
- h.textContent=ds.length===1?tr('found1')(ds[0].n):tr('foundN')(ds.length,sum);
- b.append(h,annotate(img,ds));
- const cap=document.createElement('p');cap.className='cap';cap.textContent=tr('howSureBox');b.appendChild(cap);
- const g=document.createElement('div');g.className='graph';
- ds.forEach(d=>{
-  const row=document.createElement('div');row.className='gr';row.style.setProperty('--c',d.c);
-  row.innerHTML='<span class="gn"></span><span class="gt"><i></i></span><span class="gp"></span>';
-  row.querySelector('.gn').textContent=d.n;row.querySelector('.gp').textContent=Math.round(d.p*100)+'%';
-  g.appendChild(row);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{row.querySelector('i').style.width=d.p*100+'%'}));
- });
- b.appendChild(g);scrollDown();
-}
 
-const queue=[];let busy=false;
-function add(files){
- [...files].filter(f=>f.type.startsWith('image/')).forEach(f=>{
-  const url=URL.createObjectURL(f);
-  const u=msg('user'),im=new Image();im.src=url;im.alt=f.name;u.querySelector('.b').appendChild(im);syncHero();
-  const a=msg('ai');emo(a,'loading');
-  a.querySelector('.b').innerHTML='<span class="typing"><i></i><i></i><i></i></span><span class="prog">'+tr('waiting')+'</span>';
-  queue.push({url,a});
- });
- run();
-}
-async function run(){
- if(busy)return;busy=true;
- try{await ready;while(queue.length){try{await handle(queue.shift())}catch(_){}}}
- finally{busy=false}
-}
-/* ---------- Detector (a trained D-FINE model; used only when models/trashy-detector/ exists) ---------- */
+/* ---------- Detector: trained D-FINE models, only the chosen one is downloaded and kept in memory ---------- */
 const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1',dir:'models/trashy-axel-1/'}];
-const COLORS={Paper:'#7b4fd1',Plastic:'#1f9d8a',Glass:'#2f80ed',Metal:'#d99a1e',Trash:'#e4572e'};
-const colorOf=n=>(model&&(model.find(c=>c.name===n)||{}).color)||COLORS[n]||'#5a6a4b';
-const savedDet=()=>{try{return localStorage.getItem('trashy-model')}catch(_){return null}};
-let det=null,detId=(DET_MODELS.find(m=>m.id===savedDet())||DET_MODELS[0]).id,detTurn=0,detRun=null,ortReady=null;
-function markDetMenu(){$('detMenu').querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.m===detId))}
-function loadOrt(){return ortReady||(ortReady=new Promise((ok,no)=>{const t=document.createElement('script');t.src='lib/ort/ort.wasm.min.js';t.onload=ok;t.onerror=no;document.head.appendChild(t)}).then(()=>{
+const modelById=id=>DET_MODELS.find(m=>m.id===id)||DET_MODELS[0];
+S.det.id=modelById(store.get('trashy-model')).id;
+const botName=()=>FILE?DET_MODELS[0].name:modelById(S.det.id).name;
+function markDetMenu(){$('detMenu').querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.m===S.det.id))}
+async function loadOrt(){
+ await script('lib/ort/ort.wasm.min.js');
  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
  ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
-}).catch(e=>{ortReady=null;throw e}))}
-function botName(){return location.protocol==='file:'?DET_MODELS[0].name:DET_MODELS.find(m=>m.id===detId).name}
+}
 /* downloads a model and reports how far it got (no percentage if the server doesn't say the size) */
 async function fetchBytes(url,onP){
  const r=await fetch(url);if(!r.ok)throw 0;
@@ -799,64 +835,61 @@ async function loadDet(m,onP){
  const src=onP?await fetchBytes(m.dir+'model.onnx',onP):m.dir+'model.onnx';
  return {m,cfg,s:await ort.InferenceSession.create(src,{executionProviders:['wasm']})};
 }
-/* only the chosen model is downloaded and kept in memory; resolves false if it could not be loaded */
+/* resolves false if the model could not be loaded (then the previous one stays) */
 async function useDetector(id,onP){
- if(location.protocol==='file:')return true; /* browsers block the files it needs there; the classic method is used instead */
- const m=DET_MODELS.find(x=>x.id===id),turn=++detTurn;
- if(det&&det.m===m)return true;
+ const D=S.det;
+ if(FILE)return true;
+ const m=modelById(id),turn=++D.turn;
+ if(D.cur&&D.cur.m===m)return true;
  let d;
- try{d=await loadDet(m,onP&&(p=>{if(turn===detTurn)onP(p)}))}
+ try{d=await loadDet(m,onP&&(p=>{if(turn===D.turn)onP(p)}))}
  catch(_){
-  if(turn!==detTurn)return true;
-  if(det){detId=det.m.id;markDetMenu();return false}
-  if(m!==DET_MODELS[0]){detId=DET_MODELS[0].id;markDetMenu();return useDetector(detId)}
+  if(turn!==D.turn)return true;
+  if(D.cur){D.id=D.cur.m.id;markDetMenu();return false}
+  if(m!==DET_MODELS[0]){D.id=DET_MODELS[0].id;markDetMenu();return useDetector(D.id)}
   return false;
  }
- if(turn!==detTurn){d.s.release();return true}
- const old=det;det=d;
- try{localStorage.setItem('trashy-model',id)}catch(_){}
- if(old)Promise.resolve(detRun).catch(()=>{}).then(()=>old.s.release()).catch(()=>{}); /* after a photo still being scanned */
+ if(turn!==D.turn){d.s.release();return true}
+ const old=D.cur;D.cur=d;store.set('trashy-model',m.id);
+ if(old)Promise.resolve(D.run).catch(()=>{}).then(()=>old.s.release()).catch(()=>{}); /* after a photo still being scanned */
  return true;
 }
-/* a chat message that stays until the chosen model is completely loaded */
-let loadMsg=null,loadPc=null;
+/* switching models: a chat message with a progress bar stays until the new model is completely loaded */
 function showLoading(){
- if(loadMsg)loadMsg.remove();
- const a=loadMsg=msg('ai');emo(a,'idle');
- a.querySelector('.b').innerHTML='<p class="say"></p><div class="gr load" aria-hidden="true" style="--c:#8cc63f"><span class="gt"><i></i></span><span class="gp"></span></div>';
+ S.load.msg?.remove();
+ const row=S.load.msg=msg('ai');S.load.bar=barRow({c:'#8cc63f'});S.load.pc=null;
+ mood(row,'loading');body(row).replaceChildren(h('p',{class:'say'}),S.load.bar);
 }
 function loadProgress(m,p){
- if(p!=null&&p===loadPc)return;loadPc=p;
+ if(p!=null&&p===S.load.pc)return;S.load.pc=p;
  status('','loadingM',m.name,p);
- if(!loadMsg)return;
- loadMsg.querySelector('.say').textContent=tr('loadingM')(m.name);
- if(p!=null){loadMsg.querySelector('.gt i').style.width=p+'%';loadMsg.querySelector('.gp').textContent=p+'%'}
+ const row=S.load.msg;if(!row)return;
+ row.querySelector('.say').textContent=fmt('loadingM',m.name);
+ if(p!=null)setBar(S.load.bar,p/100);
 }
-function endLoading(text,emotion){
- const a=loadMsg;loadMsg=null;if(!a)return;
- a.querySelector('.who').textContent=botName();say(a,text,emotion);scrollDown();
+function endLoading(text,m){
+ const row=S.load.msg;S.load.msg=null;if(!row)return;
+ row.querySelector('.who').textContent=botName();say(row,text,m);scrollDown();
 }
 function pickDetector(id){
- if(id===detId)return;
- detId=id;markDetMenu();
- const m=DET_MODELS.find(x=>x.id===id);
- if(model&&net)showLoading();
+ const D=S.det;if(id===D.id)return;
+ D.id=id;markDetMenu();
+ const m=modelById(id);
+ if(isReady())showLoading();
  loadProgress(m,null);
- const p=useDetector(id,pc=>loadProgress(m,pc));detReady=p;
+ const p=D.ready=useDetector(id,pc=>loadProgress(m,pc));
  p.then(ok=>{
-  if(p!==detReady)return;
-  if(ok){showReady();endLoading(tr('switched')(m.name),'joy')}
-  else{status('err','errSwitch',m.name);endLoading(tr('switchFail')(m.name,botName()),'wow');setTimeout(()=>{if(p===detReady)showReady()},5000)}
+  if(p!==D.ready)return;
+  if(ok){showReady();endLoading(fmt('switched',m.name),'joy')}
+  else{status('err','errSwitch',m.name);endLoading(fmt('switchFail',m.name,botName()),'wow');setTimeout(()=>{if(p===D.ready)showReady()},5000)}
  });
 }
-$('detMenu').hidden=location.protocol==='file:';markDetMenu();
-let detReady=useDetector(detId);
 async function detectDF(img){
- const d=det,N=d.cfg.input||640,cv=document.createElement('canvas');cv.width=cv.height=N;
+ const d=S.det.cur,N=d.cfg.input||640,cv=h('canvas',{width:N,height:N});
  const cx=cv.getContext('2d');cx.drawImage(img,0,0,N,N); /* stretched to N x N, like in training */
  const px=cx.getImageData(0,0,N,N).data,f=new Float32Array(3*N*N);
  for(let i=0;i<N*N;i++){f[i]=px[i*4]/255;f[N*N+i]=px[i*4+1]/255;f[2*N*N+i]=px[i*4+2]/255}
- const s=d.s;detRun=s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});const o=await detRun;
+ const s=d.s;S.det.run=s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});const o=await S.det.run;
  const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],W=img.naturalWidth,H=img.naturalHeight,thr=d.cfg.threshold||.35,out=[];
  const th=d.cfg.classes.map(n=>(d.cfg.thresholds||{})[n]||thr); /* confidence level per category (round-2 models) */
  for(let q=0;q<Q;q++)for(let k=0;k<K;k++){
@@ -870,46 +903,117 @@ async function detectDF(img){
  return keep.slice(0,20);
 }
 
-async function handle({url,a}){
- const prog=t=>{const e=a.querySelector('.prog');if(e)e.textContent=t};
- prog(tr('looking'));
- if(!model)return say(a,tr('noModel'),'idle');
- if(!net)return say(a,tr('noNet'),'idle');
+/* ---------- Start-up ---------- */
+$('detMenu').hidden=FILE;markDetMenu();
+S.det.ready=useDetector(S.det.id);
+const ready=(async()=>{
+ const first=S.det.ready;
+ await loadAxolotl();
+ await first;
+ if(!S.det.cur&&!await loadClassic())return; /* no detector: the classic method has to do the work */
+ greet();
+ if(S.det.ready===first)showReady(); /* otherwise a model switch is already showing its own progress */
+})();
+const backup=ready.then(()=>new Promise(r=>later(r))).then(loadClassic); /* also saves it for offline use */
+
+/* ---------- Photos ---------- */
+function add(files){
+ for(const f of [...files].filter(f=>f.type.startsWith('image/'))){
+  const url=URL.createObjectURL(f);
+  body(msg('user')).append(h('img',{src:url,alt:f.name}));syncHero();
+  const row=msg('ai');mood(row,'loading');
+  body(row).replaceChildren(h('span',{class:'typing'},h('i'),h('i'),h('i')),h('span',{class:'prog',text:tr('waiting')}));
+  S.queue.push({url,row});
+ }
+ run();
+}
+async function run(){
+ if(S.busy)return;S.busy=true;
+ try{await ready;while(S.queue.length){try{await handle(S.queue.shift())}catch(_){}}}
+ finally{S.busy=false}
+}
+async function handle({url,row}){
+ const progress=t=>{const e=row.querySelector('.prog');if(e)e.textContent=t};
+ progress(tr('looking'));
  try{
-  const img=await toImg(url);await tf.nextFrame();
-  await detReady;
-  if(det){const ds=await detectDF(img);if(ds.length)return showDetections(a,img,ds)}
-  else if(model.some(c=>c.name==='background')){
-   const ds=await detect(img,prog);
-   if(ds.length)return showDetections(a,img,ds);
+  const img=await toImg(url);await nextFrame();
+  await S.det.ready;
+  if(S.det.cur){const ds=await detectDF(img);if(ds.length)return showDetections(row,img,ds)}
+  if(!await loadClassic())return S.det.cur?say(row,tr('noTrash'),'wow'):say(row,tr(S.classic.model?'noNet':'noModel'));
+  if(!S.det.cur&&S.classic.model.some(c=>c.name==='background')){
+   const ds=await detectClassic(img,progress);
+   if(ds.length)return showDetections(row,img,ds);
   }
   const r=predict(embed(img));
-  if(r[0].n==='background')return say(a,tr('noTrash'),'wow');
-  showResult(a,r.filter(x=>x.n!=='background'));
- }catch(_){say(a,tr('badPic'),'wow')}
+  if(r[0].n==='background')return say(row,tr('noTrash'),'wow');
+  showResult(row,r.filter(x=>x.n!=='background'));
+ }catch(_){say(row,tr('badPic'),'wow')}
 }
-
-/* ---------- UI ---------- */
-const mb=$('pick'),mn=$('menu');
-function menu(open){mb.setAttribute('aria-expanded',open);mn.hidden=!open}
-mb.onclick=e=>{e.stopPropagation();menu(mn.hidden)};
-mn.onclick=e=>{
- const b=e.target.closest('button');if(!b)return;menu(false);
- if(b.dataset.m)return pickDetector(b.dataset.m);
- if(b.dataset.a==='how')how();
- else if(b.dataset.a==='install')openInstall();
- else{document.querySelectorAll('.m').forEach(m=>m.remove());syncHero();if(model&&net)greet()}
-};
-document.addEventListener('click',e=>{if(!mn.contains(e.target))menu(false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){menu(false);mb.focus()}});
 $('gal').onclick=()=>$('files').click();
 $('cam').onclick=()=>$('camIn').click();
 ['files','camIn'].forEach(id=>$(id).onchange=e=>{add(e.target.files);e.target.value=''});
 /* paste a picture (Ctrl+V / long-press Paste) */
 addEventListener('paste',e=>{const f=[...(e.clipboardData||{}).items||[]].filter(i=>i.kind==='file').map(i=>i.getAsFile()).filter(Boolean);if(f.length){e.preventDefault();add(f)}});
-const dz=$('drop');
-['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{e.preventDefault();dz.classList.add('over')}));
-['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();if(t==='drop'||!e.relatedTarget)dz.classList.remove('over')}));
+/* drop a picture anywhere */
+const dropZone=$('drop');
+['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{e.preventDefault();dropZone.classList.add('over')}));
+['dragleave','drop'].forEach(t=>addEventListener(t,e=>{e.preventDefault();if(t==='drop'||!e.relatedTarget)dropZone.classList.remove('over')}));
 addEventListener('drop',e=>add(e.dataTransfer.files));
+
+/* ---------- Menu ---------- */
+const menuBtn=$('pick'),menuEl=$('menu');
+const menuOpen=()=>menuEl.classList.contains('open');
+function menu(open){menuBtn.setAttribute('aria-expanded',open);menuEl.classList.toggle('open',open)}
+menuBtn.onclick=e=>{e.stopPropagation();menu(!menuOpen())};
+const ACTIONS={how,install:openInstall,clear:()=>{clearChat();if(isReady())greet()}};
+menuEl.onclick=e=>{
+ const b=e.target.closest('button');if(!b)return;menu(false);
+ if(b.dataset.m)pickDetector(b.dataset.m);else ACTIONS[b.dataset.a]?.();
+};
+document.addEventListener('click',e=>{if(menuOpen()&&!menuEl.contains(e.target))menu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen()){menu(false);menuBtn.focus()}});
+
+/* ---------- Install on a phone ---------- */
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isAndroid=/Android/i.test(navigator.userAgent);
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function showInstall(on){$('instHead').hidden=$('instMenu').hidden=!on}
+function fillInstall(done){
+ const b=$('ibody'),steps=a=>'<ol>'+a.map(x=>`<li>${x}</li>`).join('')+'</ol>';
+ $('instT').textContent=tr('iTitle');
+ if(done){b.innerHTML=`<p>${tr('iDone')}</p>`;return}
+ let html=`<p>${tr('iIntro')}</p>`;
+ if(S.install)html+=`<button type="button" class="go" id="instGo">${tr('iBtn')}</button>`;
+ if(isIOS)html+=steps(tr('ios'));
+ else if(isAndroid){if(!S.install)html+=steps(tr('and'))}
+ else{
+  const u=location.origin+location.pathname.replace(/index\.html$/,'');
+  html+=`<p>${tr('iOther')} <span class="url">${u.replace(/^https?:\/\//,'')}</span></p><h3>${tr('iosH')}</h3>${steps(tr('ios'))}<h3>${tr('andH')}</h3>${steps(tr('and'))}`;
+ }
+ b.innerHTML=html;
+ const go=$('instGo');if(go)go.onclick=async()=>{const e=S.install;if(!e)return;e.prompt();const r=await e.userChoice.catch(()=>({}));S.install=null;if(r.outcome==='accepted'){showInstall(false);fillInstall(true)}else fillInstall()};
+}
+function openInstall(){fillInstall();$('instDlg').showModal()}
+showInstall(!FILE&&!standalone());
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();S.install=e;if($('instDlg').open)fillInstall()});
+addEventListener('appinstalled',()=>{S.install=null;showInstall(false);if($('instDlg').open)fillInstall(true)});
+$('instHead').onclick=openInstall;
+$('instClose').onclick=()=>$('instDlg').close();
+$('instDlg').addEventListener('click',e=>{if(e.target===$('instDlg'))$('instDlg').close()});
+
+/* ---------- Language picker ---------- */
+S.lang=pickLang();
+$('lang').onchange=e=>setLang(e.target.value);
+applyLang();
+
+/* ---------- Offline ---------- */
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+ navigator.serviceWorker.register('sw.js').catch(()=>{});
+ /* hand the already-loaded files to the offline copy (the first visit loads them before the worker runs) */
+ Promise.all([navigator.serviceWorker.ready,backup.then(()=>S.det.ready)]).then(([reg])=>{
+  const urls=performance.getEntriesByType('resource').map(e=>e.name.split('#')[0]).filter(u=>u.startsWith(location.origin));
+  reg.active?.postMessage({cache:[...new Set(urls)]});
+ }).catch(()=>{});
+}
 </script>
 </body></html>
