@@ -28,7 +28,7 @@ The app is available in English, German and Russian (picked from the browser lan
 | `manifest.webmanifest`, `icons/` | Lets people install Trashy on their phone (Android and iPhone) |
 | `sw.js` | Offline support: saves the app and models on the phone after the first visit. **Change `VERSION` in it whenever a model or library file changes**, or installed copies keep the old files |
 | `svg/`, `trashy-logo.svg` | Mascot and logo |
-| `fonts/` | Bricolage Grotesque and Caveat (SIL Open Font License) |
+| `fonts/` | Onest and JetBrains Mono (SIL Open Font License) |
 | `privacy.html`, `terms.html`, `impressum.html` | Legal pages |
 
 ## Retrain the detector
