@@ -11,7 +11,11 @@
 .ax-float,.ax-turn,.ax-sq{transform-origin:200px 292px}
 .ax-look{transform-origin:200px 190px}
 .ax-sh,.ax-bk,.ax-hp,.ax-dil,.ax-mo{transform-box:fill-box;transform-origin:center}
-.ax-face{transition:transform .2s ease-out;transform:translate(var(--lx,0px),var(--ly,0px))}
+.ax-face{transform-origin:200px 190px;transition:transform .22s ease-out;transform:translate(var(--lx,0px),var(--ly,0px)) rotate(calc(var(--ex,0)*7deg))}
+.ax-bk{transform-origin:50% 100%}
+.ax-el,.ax-er{transition:transform .22s ease-out}
+.ax-el{transform:rotate(-16deg) scaleX(calc(1 - .26*max(0,-1*var(--ex,0))))}
+.ax-er{transform:rotate(16deg) scaleX(calc(1 - .26*max(0,var(--ex,0))))}
 .ax-pf{transition:transform .12s ease-out;transform:translate(var(--px,0px),var(--py,0px))}
 .ax-g{animation:ax-sw var(--sd,4.6s) ease-in-out infinite}
 .ax-g2{animation-delay:-1.2s}.ax-g3{animation-delay:-2.4s}.ax-r1{animation-delay:-.5s}.ax-r2{animation-delay:-1.7s}.ax-r3{animation-delay:-2.9s}
@@ -24,8 +28,10 @@
 .ax.s-idle .ax-turn{animation:ax-turn 12s ease-in-out infinite}
 .ax.s-idle .ax-look{animation:ax-look 12s ease-in-out infinite}
 .ax.s-idle .ax-pl{animation:ax-pl 12s ease-in-out infinite}
+.ax.s-idle .ax-el{animation:ax-el 12s ease-in-out infinite}
+.ax.s-idle .ax-er{animation:ax-er 12s ease-in-out infinite}
 .ax.s-idle .ax-bk{animation:ax-blink 6s infinite}
-.ax.follow .ax-look,.ax.follow .ax-turn,.ax.follow .ax-pl{animation:none}
+.ax.follow .ax-look,.ax.follow .ax-turn,.ax.follow .ax-pl,.ax.follow .ax-el,.ax.follow .ax-er{animation:none}
 
 .ax.s-cool .ax-float{animation:ax-bob 5.5s ease-in-out infinite}
 .ax.s-cool .ax-sh{animation:ax-sh 5.5s ease-in-out infinite}
@@ -72,9 +78,11 @@
 @keyframes ax-br{0%,100%{transform:scale(1.025,.975)}50%{transform:scale(.985,1.025)}}
 @keyframes ax-sh{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.8,.72);opacity:.5}}
 @keyframes ax-sw{0%,100%{transform:rotate(calc(var(--sa,7)*-1deg)) scale(1)}50%{transform:rotate(calc(var(--sa,7)*1deg)) scale(1.05,.95)}}
-@keyframes ax-blink{0%,46%,50%,84%,87%,90%,93%,100%{transform:scaleY(1)}48%,85.5%,91.5%{transform:scaleY(.06)}}
-@keyframes ax-look{0%,10%,36%,46%,86%,100%{transform:translate(0,0)}16%,30%{transform:translate(-6px,0)}52%,66%{transform:translate(6px,-3px)}72%,80%{transform:translate(2px,4px)}}
-@keyframes ax-pl{0%,10%,36%,46%,86%,100%{transform:translate(0,0)}14%,32%{transform:translate(-11px,1px)}50%,68%{transform:translate(10px,-6px)}72%,82%{transform:translate(1px,7px)}}
+@keyframes ax-blink{0%,44%,53%,84%,89.5%,100%{transform:scaleY(1)}45.6%,49.6%,85.4%,87.4%{transform:scaleY(.05)}51.4%,88.6%{transform:scaleY(1.05)}}
+@keyframes ax-look{0%,10%,36%,46%,86%,100%{transform:translate(0,0) rotate(0)}16%,30%{transform:translate(-20px,2px) rotate(-6deg)}52%,66%{transform:translate(18px,-9px) rotate(6deg)}72%,80%{transform:translate(5px,11px) rotate(2deg)}}
+@keyframes ax-el{0%,10%,36%,100%{transform:rotate(-16deg) scaleX(1)}16%,30%{transform:rotate(-16deg) scaleX(.74)}}
+@keyframes ax-er{0%,46%,72%,100%{transform:rotate(16deg) scaleX(1)}52%,66%{transform:rotate(16deg) scaleX(.76)}}
+@keyframes ax-pl{0%,10%,36%,46%,86%,100%{transform:translate(0,0)}14%,32%{transform:translate(-9px,1px)}50%,68%{transform:translate(9px,-6px)}72%,82%{transform:translate(1px,8px)}}
 @keyframes ax-turn{0%,10%,36%,46%,86%,100%{transform:rotate(0)}16%,30%{transform:rotate(-3deg)}52%,66%{transform:rotate(3deg)}72%,80%{transform:rotate(.8deg)}}
 @keyframes ax-lean{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(-1.5deg) translateX(3px)}}
 @keyframes ax-side{0%,40%,100%{transform:translate(9px,0)}55%,85%{transform:translate(-4px,1px)}}
@@ -126,7 +134,7 @@
 
 <g class="ax-face"><g class="ax-look">
 <g class="ax-bl"><ellipse cx="128" cy="228" rx="17" ry="10" fill="url(#axbl)"/><ellipse cx="272" cy="228" rx="17" ry="10" fill="url(#axbl)"/></g>
-<g class="ly l-idle"><g transform="translate(158 186)"><g class="ax-bk"><g transform="rotate(-16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g clip-path="url(#axcl)"><g class="ax-pl"><g class="ax-pf"><circle cx="8" cy="6" r="18" fill="var(--pa)"/></g></g></g></g></g></g><g transform="translate(242 186)"><g class="ax-bk"><g transform="rotate(16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g clip-path="url(#axcl)"><g class="ax-pl"><g class="ax-pf"><circle cx="-8" cy="6" r="18" fill="var(--pb)"/></g></g></g></g></g></g><path d="M180 228Q200 240 220 228" fill="none" stroke="var(--ln)" stroke-width="4.5" stroke-linecap="round"/></g>
+<g class="ly l-idle"><g transform="translate(158 186)"><g class="ax-bk"><g class="ax-el" transform="rotate(-16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g clip-path="url(#axcl)"><g class="ax-pl"><g class="ax-pf"><circle cx="8" cy="6" r="18" fill="var(--pa)"/></g></g></g></g></g></g><g transform="translate(242 186)"><g class="ax-bk"><g class="ax-er" transform="rotate(16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g clip-path="url(#axcl)"><g class="ax-pl"><g class="ax-pf"><circle cx="-8" cy="6" r="18" fill="var(--pb)"/></g></g></g></g></g></g><path d="M180 228Q200 240 220 228" fill="none" stroke="var(--ln)" stroke-width="4.5" stroke-linecap="round"/></g>
 <g class="ly l-joy"><g transform="translate(158 186)"><path transform="rotate(-16)" d="M-25 8Q0 -40 25 8Q0 -12 -25 8Z" fill="var(--sc)" stroke="var(--se)" stroke-width="3" stroke-linejoin="round"/></g><g transform="translate(242 186)"><path transform="rotate(16)" d="M-25 8Q0 -40 25 8Q0 -12 -25 8Z" fill="var(--sc)" stroke="var(--se)" stroke-width="3" stroke-linejoin="round"/></g><path d="M178 224Q200 256 222 224Z" fill="#2a0715" stroke="var(--ln)" stroke-width="4.5" stroke-linejoin="round"/><path d="M190 241Q200 233 210 241Q200 249 190 241Z" fill="var(--bl)"/></g>
 <g class="ly l-love"><g transform="translate(158 186)"><g transform="rotate(-16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g class="ax-hp"><use href="#axheart" xlink:href="#axheart" transform="translate(3 4) scale(1.25)" fill="var(--pa)"/></g></g></g><g transform="translate(242 186)"><g transform="rotate(16)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g class="ax-hp"><use href="#axheart" xlink:href="#axheart" transform="translate(-3 4) scale(1.25)" fill="var(--pa)"/></g></g></g><path d="M182 228Q200 242 218 228" fill="none" stroke="var(--ln)" stroke-width="4.5" stroke-linecap="round"/></g>
 <g class="ly l-cool"><g transform="translate(158 186)"><g transform="rotate(-4)"><g clip-path="url(#axlid)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g class="ax-pl"><ellipse cx="0" cy="11" rx="10" ry="17" fill="var(--pa)"/></g></g><path d="M-32 -6H32" stroke="var(--ln)" stroke-width="5" stroke-linecap="round"/></g></g><g transform="translate(242 186)"><g transform="rotate(4)"><g clip-path="url(#axlid)"><ellipse rx="30" ry="35" fill="var(--sc)" stroke="var(--eo)" stroke-width="3.5"/><g class="ax-pl"><ellipse cx="0" cy="11" rx="10" ry="17" fill="var(--pb)"/></g></g><path d="M-32 -6H32" stroke="var(--ln)" stroke-width="5" stroke-linecap="round"/></g></g><path d="M186 232Q204 238 218 224" fill="none" stroke="var(--ln)" stroke-width="4.5" stroke-linecap="round"/></g>
