@@ -218,7 +218,7 @@ dialog[open]::backdrop{background:rgba(18,32,10,.55)}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.2</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -808,7 +808,7 @@ function annotate(img,ds){
 }
 
 /* ---------- Detector: trained D-FINE models, only the chosen one is downloaded and kept in memory ---------- */
-const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1',dir:'models/trashy-axel-1/'}];
+const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1.2',dir:'models/trashy-axel-1-2/'}];
 const modelById=id=>DET_MODELS.find(m=>m.id===id)||DET_MODELS[0];
 S.det.id=modelById(store.get('trashy-model')).id;
 const botName=()=>FILE?DET_MODELS[0].name:modelById(S.det.id).name;

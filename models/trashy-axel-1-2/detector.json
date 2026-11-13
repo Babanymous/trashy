@@ -1,0 +1,110 @@
+{
+ "name": "Trashy-Axel 1.2",
+ "format": "trashy-dfine-v1",
+ "version": 3,
+ "base": "ustc-community/dfine-nano-coco",
+ "started_from": "Trashy-Axel 1",
+ "classes": [
+  "Paper",
+  "Plastic",
+  "Glass",
+  "Metal",
+  "Trash"
+ ],
+ "input": 640,
+ "preprocess": "stretch to 640x640, RGB, divide by 255",
+ "outputs": [
+  "logits (sigmoid per class)",
+  "pred_boxes (cx, cy, w, h, 0..1)"
+ ],
+ "threshold": 0.5,
+ "thresholds": {
+  "Paper": 0.575,
+  "Plastic": 0.725,
+  "Glass": 0.5,
+  "Metal": 0.675,
+  "Trash": 0.825
+ },
+ "thresholds_with_outdoor_photos": {
+  "Paper": 0.575,
+  "Plastic": 0.55,
+  "Glass": 0.5,
+  "Metal": 0.675,
+  "Trash": 0.85
+ },
+ "recipe": {
+  "epochs": 30,
+  "polish_epochs": 6,
+  "lr": 5e-05,
+  "polish_lr": 5e-06,
+  "zoom_p": 0.1,
+  "tiny": 0.015,
+  "repeat_t": 0.35,
+  "fp_weight": 1.5
+ },
+ "metrics": {
+  "bower": {
+   "mAP50": 0.767,
+   "mAP": 0.692,
+   "items_found": 0.848,
+   "items_right": 0.692,
+   "items_wrong_category": 0.156,
+   "items_right_visible": 0.693,
+   "extra_boxes_per_photo": 0.1,
+   "per_class_right": {
+    "Plastic": 0.664,
+    "Paper": 0.817,
+    "Glass": 0.72,
+    "Metal": 0.509
+   }
+  },
+  "dmedhi": {
+   "mAP50": 0.718,
+   "mAP": 0.636,
+   "items_found": 0.778,
+   "items_right": 0.685,
+   "items_wrong_category": 0.092,
+   "items_right_visible": 0.687,
+   "extra_boxes_per_photo": 0.1,
+   "per_class_right": {
+    "Glass": 0.794,
+    "Paper": 0.764,
+    "Metal": 0.581,
+    "Plastic": 0.713,
+    "Trash": 0.348
+   }
+  },
+  "taco": {
+   "mAP50": 0.196,
+   "mAP": 0.153,
+   "items_found": 0.336,
+   "items_right": 0.233,
+   "items_wrong_category": 0.103,
+   "items_right_visible": 0.31,
+   "extra_boxes_per_photo": 0.2,
+   "per_class_right": {
+    "Plastic": 0.354,
+    "Paper": 0.095,
+    "Trash": 0.043,
+    "Metal": 0.15,
+    "Glass": 0.067
+   }
+  },
+  "trashnet": {
+   "mAP50": 0.906,
+   "mAP": 0.75,
+   "items_found": 0.928,
+   "items_right": 0.884,
+   "items_wrong_category": 0.044,
+   "items_right_visible": 0.884,
+   "extra_boxes_per_photo": 0.04,
+   "per_class_right": {
+    "Paper": 0.919,
+    "Glass": 0.922,
+    "Metal": 0.891,
+    "Plastic": 0.825,
+    "Trash": 0.667
+   }
+  }
+ }
+}
