@@ -20,6 +20,7 @@ The app is available in English, German and Russian (picked from the browser lan
 | `index.html` | The app |
 | `models/trashy-detector/` | The default detector, Trashy-0.1 (`model.onnx`, 15 MB, and `detector.json` with its test results) |
 | `models/trashy-axel-1-3/` | A second detector, Trashy-Axel 1.3: stricter, so fewer extra boxes but fewer items found. Chosen in the ⋯ menu and only downloaded when picked |
+| `models/trashy-caracas-1/` | A third detector, Trashy Caracas 1: a bigger model (D-FINE small, 41 MB, about three times slower per photo) that is more accurate on real-home photos. Chosen in the ⋯ menu and only downloaded when picked |
 | `image-model.js` | Stored examples for the classic method (~3.4 MB) |
 | `image-trainer.html` | Tool for training a classic model from your own photos |
 | `lib/` | TensorFlow.js and MobileNet code; `lib/ort/` is ONNX Runtime Web |
@@ -57,6 +58,8 @@ Detector, measured on test photos it was not trained on. "Found and right" means
 | TACO (litter outdoors) | 55.2% | 34.1% |
 
 These numbers are for Trashy-0.1. Trashy-Axel 1.3 with its own confidence levels: Bower 83.5% found, 69.8% right; dmedhi 73.7% found, 66.0% right; about 0.1 wrong extra boxes per photo. It is the fourth training round and replaces Trashy-Axel 1 and 1.2; the three measure about the same.
+
+Trashy Caracas 1 (D-FINE small) with its own confidence levels: Bower 85.4% found, 72.9% right, 0.12 wrong extra boxes per photo; dmedhi 79.7% found, 67.4% right, 0.14 wrong extra boxes per photo.
 
 Weakest categories: Metal (61–66%) and Trash (64%). The classic method only names items it is given (no finding): 73.3% on Bower, 79.1% on dmedhi.
 
