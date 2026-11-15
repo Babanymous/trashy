@@ -96,7 +96,7 @@ button:active{transform:scale(.98)}
 .m.user{justify-content:flex-end}
 /* the axolotl is white: a deeper tint behind it and a firmer outline keep it readable on the light page */
 .av{flex:none;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--accent) 34%,var(--raised));border:1px solid var(--line-2);overflow:hidden}
-.av .ax,#heroAx .ax{--ol:#a89c8b}
+.av .ax,#heroAx .ax,#liveAx .ax{--ol:#a89c8b}
 @media(prefers-color-scheme:dark){.av{background:var(--raised);border-color:var(--line)}}
 .av svg{display:block;width:100%;height:100%;overflow:hidden}
 .col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
@@ -161,7 +161,7 @@ button:active{transform:scale(.98)}
 #pick svg{width:20px;height:20px;fill:currentColor}
 
 /* ---------- Menu ---------- */
-#menu{position:absolute;right:0;bottom:calc(100% + 8px);min-width:240px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:4px;box-shadow:var(--sh-2);transform-origin:bottom right;
+#menu{position:absolute;right:0;bottom:calc(100% + 8px);min-width:240px;overflow-y:auto;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:4px;box-shadow:var(--sh-2);transform-origin:bottom right;
  opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity var(--fast),transform var(--med) var(--ease),visibility 0s var(--med)}
 #menu.open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
 #menu button{display:block;width:100%;text-align:left;background:none;color:var(--ink);padding:10px 12px;font-size:15px;line-height:20px;font-weight:400}
@@ -173,6 +173,26 @@ button:active{transform:scale(.98)}
 #detMenu small{display:block;color:var(--mut);font-size:13px}
 /* the chosen model wears the detection frame */
 #menu #detMenu button[aria-checked=true]{border-color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+
+#liveMenu b,#liveMenu small{display:block}#liveMenu b{font-weight:500}#liveMenu small{color:var(--mut);font-size:13px}
+
+/* ---------- Trashy Live: only the camera, the axolotl and what it says ---------- */
+#liveBtn{background:color-mix(in srgb,var(--accent) 24%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-ink) 40%,transparent)}
+#liveBtn:hover{background:color-mix(in srgb,var(--accent) 36%,var(--surface))}
+#liveBtn circle{fill:var(--accent-ink);stroke:none}
+.live-on{overflow:hidden}
+#live{position:fixed;inset:0;z-index:30;overflow:hidden;background:#000;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+#liveV{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#liveUi{position:absolute;left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+#liveSay{position:relative;margin:0;max-width:min(380px,100%);padding:8px 16px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgb(0 0 0/.3);text-align:center;font-size:18px;line-height:24px;font-weight:500;text-wrap:balance}
+#liveSay::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;background:var(--surface);border:solid var(--line);border-width:0 1px 1px 0;border-radius:0 0 3px 0;transform:rotate(45deg)}
+#liveWho{display:block;font:400 12px/16px var(--mono);color:var(--mut)}
+#liveText{display:block}
+#liveAx{width:clamp(128px,36vw,168px)}
+#liveAx svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 12px rgb(0 0 0/.4))}
+#liveHint{position:absolute;top:max(16px,env(safe-area-inset-top));left:50%;margin:0;padding:6px 12px;border-radius:8px;background:rgb(22 21 19/.6);color:#fff;font-size:13px;line-height:20px;white-space:nowrap;transform:translateX(-50%);pointer-events:none;animation:liveHint 5s ease-in both}
+@keyframes liveHint{0%,80%{opacity:1}to{opacity:0}}
+@media(orientation:landscape) and (max-height:500px){#liveUi{flex-direction:row;justify-content:center;align-items:center;gap:12px}#liveAx{order:-1;width:96px}#liveSay::after{left:-7px;bottom:50%;margin:0 0 -6px;transform:rotate(135deg)}}
 
 /* ---------- Footer ---------- */
 footer{max-width:var(--page);margin:12px auto 0;text-align:center;font-size:13px;line-height:20px;color:var(--mut)}
@@ -215,7 +235,9 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
  .right{gap:8px}.pill{max-width:44vw;font-size:12px}.inst span{display:none}.inst{width:36px;padding:0;justify-content:center}
  .m{gap:8px}.b{max-width:90%}.gr{grid-template-columns:84px 1fr 40px}.gr.fx{grid-template-columns:76px 1fr 40px 36px;gap:8px}
 }
+@media(max-width:399px){#liveBtn span{display:none}#liveBtn{width:44px;padding:0}}
 @media(max-width:430px){#gal span{display:none}#gal{width:44px;padding:0}.brand{font-size:0;gap:0}.lang select{padding:0 24px 0 28px}.pill{max-width:none;flex:1 1 auto}}
+@media(max-width:350px){#liveBtn{display:none}} /* too narrow for a fourth button: Trashy Live stays in the menu */
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style>
 </head><body>
@@ -231,14 +253,15 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></div></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button><button type="button" data-m="caracas1" role="radio" aria-checked="false"><b>Trashy Caracas 1</b><small data-i18n="dCaracas">More accurate, 41 MB, slower</small></button></div></nav>
-  <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="live" id="liveMenu"><b>Trashy Live</b><small data-i18n="dLive">Point the camera, I say what I see</small></button><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button><button type="button" data-m="caracas1" role="radio" aria-checked="false"><b>Trashy Caracas 1</b><small data-i18n="dCaracas">More accurate, 41 MB, slower</small></button></div></nav>
+  <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act" id="liveBtn" aria-label="Trashy Live" title="Trashy Live"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V6.5A2.5 2.5 0 0 1 6.5 4H9M15 4h2.5A2.5 2.5 0 0 1 20 6.5V9M20 15v2.5a2.5 2.5 0 0 1-2.5 2.5H15M9 20H6.5A2.5 2.5 0 0 1 4 17.5V15"/><circle cx="12" cy="12" r="3.2"/></svg><span>Live</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
  </div>
  <footer><p data-i18n="foot">Trashy runs in your browser. Your pictures never leave your device.</p>
  <nav class="legal" aria-label="Legal"><a class="lk" href="privacy.html" data-i18n="privacy">Privacy Policy</a><a class="lk" href="terms.html" data-i18n="terms">Terms and Conditions</a><a class="lk" href="impressum.html">Impressum</a></nav></footer>
 </div>
+<div id="live" hidden role="dialog" aria-label="Trashy Live"><video id="liveV" playsinline muted autoplay></video><p id="liveHint" data-i18n="liveHint">Tap anywhere to leave</p><div id="liveUi"><p id="liveSay" aria-live="polite"><span id="liveWho"></span><span id="liveText"></span></p><div id="liveAx"></div></div></div>
 <dialog id="instDlg" aria-labelledby="instT"><div class="lh"><h2 id="instT"></h2><button id="instClose" type="button" aria-label="Close" data-i18n-aria="close">×</button></div><div id="ibody"></div></dialog>
 
 <template id="axFallback"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ax s-idle" viewBox="0 30 400 340" width="400" height="340" role="img" aria-label="Axolotl creature mascot">
@@ -464,6 +487,7 @@ const S={
  ax:null,heroSvg:null,                                        /* axolotl template for the chat, and the big one in the hero */
  classic:{ready:null,ok:false,model:null,net:null,pca:null,scale:25}, /* backup method: MobileNet + stored examples */
  det:{cur:null,id:'t01',turn:0,run:null,ready:null},           /* detector: the loaded model, the chosen one, the latest switch */
+ live:{on:false,opening:false,run:0,stream:null,prev:null,text:'',n:0,ms:0,lock:null,full:false}, /* Trashy Live: camera, loop and what the bubble says */
  load:{msg:null,bar:null,pc:null},                              /* the "Loading model" chat message */
  queue:[],busy:false,                                           /* photos waiting to be looked at */
  install:null                                                   /* Android's install prompt */
@@ -492,6 +516,10 @@ en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
  noModel:'I can’t find my model file.',noNet:'My image engine didn’t load. Reload the page to try again.',
  noTrash:'I don’t see any trash I know in this picture.',badPic:'I couldn’t read that picture. Try another one.',
  fix:'Wrong? Fix it',fixQ:'What is it really?',fixNone:'Not trash',fixSaved:'Thanks. Your fix is saved on this device only.',fixAll:'Thanks. I took the boxes away.',mExport:n=>`Save my fixes as a file (${n})`,
+ dLive:'Point the camera, I say what I see',liveHint:'Tap anywhere to leave',liveSee:s=>`I see ${s}.`,liveNone:'I don’t see any trash right now.',
+ liveFile:'Trashy Live needs the camera. Browsers only allow that on the website, not on a page opened as a file.',liveDenied:'I’m not allowed to use the camera. Allow the camera for this page in your browser settings and try again.',
+ liveNoCam:'I can’t find a camera on this device.',liveBusy:'I couldn’t start the camera. Close other apps that use it and try again.',
+ liveNoModel:'My model isn’t loaded yet. Try Trashy Live again in a moment.',liveLost:'The camera stopped, so I closed Trashy Live.',
  cats:{Paper:'Paper',Plastic:'Plastic',Glass:'Glass',Metal:'Metal',Trash:'Trash'},
  iTitle:'Put Trashy on your phone',iIntro:'Trashy then opens like an app from your home screen. After the first start it also works without internet.',
  iBtn:'Install Trashy',iDone:'Trashy is installed. You can open it from your home screen.',
@@ -502,7 +530,7 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
  heroH:'Trenne deinen Müll mit <em>einem Foto</em>',heroP:'Schick Trashy ein Foto. Es findet die Gegenstände darauf und sagt dir, was jeder davon ist.',
  chip1:'Findet mehrere Gegenstände',chip2:'Zeichnet einen Rahmen um jeden',chip3:'Zeigt, wie sicher es ist',
  mHow:'So funktioniert’s',mClear:'Chat leeren',mInstall:'Aufs Handy installieren',iShort:'App installieren',
- take:'Foto aufnehmen',choose:'Foto auswählen',dropHint:'oder ein Bild hierher ziehen oder einfügen',more:'Mehr',close:'Schließen',
+ take:'Foto machen',choose:'Foto auswählen',dropHint:'oder ein Bild hierher ziehen oder einfügen',more:'Mehr',close:'Schließen',
  foot:'Trashy läuft in deinem Browser. Deine Bilder verlassen nie dein Gerät.',privacy:'Datenschutz',terms:'Nutzungsbedingungen',
  errModel:'Das Trashy-Modell konnte nicht geladen werden. Lege <b>image-model.js</b> in denselben Ordner wie diese Seite.',
  errNet:'Die Bilderkennung konnte nicht geladen werden. Lade die Seite neu und versuch es nochmal.',
@@ -518,6 +546,10 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
  noModel:'Ich finde meine Modelldatei nicht.',noNet:'Meine Bilderkennung wurde nicht geladen. Lade die Seite neu und versuch es nochmal.',
  noTrash:'Auf diesem Bild sehe ich keinen Müll, den ich kenne.',badPic:'Ich konnte dieses Bild nicht lesen. Probier ein anderes.',
  fix:'Falsch? Korrigieren',fixQ:'Was ist es wirklich?',fixNone:'Kein Müll',fixSaved:'Danke. Deine Korrektur ist nur auf diesem Gerät gespeichert.',fixAll:'Danke. Ich habe die Rahmen entfernt.',mExport:n=>`Meine Korrekturen als Datei speichern (${n})`,
+ dLive:'Kamera draufhalten, ich sage, was ich sehe',liveHint:'Tippe irgendwohin, um zu schließen',liveSee:s=>`Ich sehe ${s}.`,liveNone:'Gerade sehe ich keinen Müll.',
+ liveFile:'Trashy Live braucht die Kamera. Browser erlauben das nur auf der Website, nicht bei einer als Datei geöffneten Seite.',liveDenied:'Ich darf die Kamera nicht benutzen. Erlaube die Kamera für diese Seite in den Browser-Einstellungen und versuch es nochmal.',
+ liveNoCam:'Ich finde auf diesem Gerät keine Kamera.',liveBusy:'Ich konnte die Kamera nicht starten. Schließe andere Apps, die sie benutzen, und versuch es nochmal.',
+ liveNoModel:'Mein Modell ist noch nicht geladen. Probier Trashy Live gleich nochmal.',liveLost:'Die Kamera wurde beendet, deshalb habe ich Trashy Live geschlossen.',
  cats:{Paper:'Papier',Plastic:'Plastik',Glass:'Glas',Metal:'Metall',Trash:'Restmüll'},
  iTitle:'Trashy aufs Handy holen',iIntro:'Dann öffnet sich Trashy wie eine App von deinem Startbildschirm. Nach dem ersten Start funktioniert es auch ohne Internet.',
  iBtn:'Trashy installieren',iDone:'Trashy ist installiert. Du findest es auf deinem Startbildschirm.',
@@ -528,7 +560,7 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  heroH:'Сортируйте мусор <em>по одному фото</em>',heroP:'Отправьте Trashy фото. Он найдёт на нём предметы и скажет, что есть что.',
  chip1:'Находит несколько предметов',chip2:'Обводит каждый рамкой',chip3:'Показывает, насколько уверен',
  mHow:'Как это работает',mClear:'Очистить чат',mInstall:'Установить на телефон',iShort:'Установить',
- take:'Сфотографировать',choose:'Выбрать фото',dropHint:'или перетащите либо вставьте фото сюда',more:'Ещё',close:'Закрыть',
+ take:'Снять фото',choose:'Выбрать фото',dropHint:'или перетащите либо вставьте фото сюда',more:'Ещё',close:'Закрыть',
  foot:'Trashy работает в вашем браузере. Ваши фото никогда не покидают устройство.',privacy:'Конфиденциальность',terms:'Условия использования',
  errModel:'Не удалось загрузить модель Trashy. Положите <b>image-model.js</b> в ту же папку, что и эта страница.',
  errNet:'Не удалось загрузить распознавание изображений. Перезагрузите страницу и попробуйте снова.',
@@ -544,6 +576,10 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  noModel:'Не могу найти файл модели.',noNet:'Распознавание изображений не загрузилось. Перезагрузите страницу и попробуйте снова.',
  noTrash:'Не вижу на этом фото знакомого мне мусора.',badPic:'Не получилось открыть это фото. Попробуйте другое.',
  fix:'Неверно? Исправить',fixQ:'Что это на самом деле?',fixNone:'Не мусор',fixSaved:'Спасибо. Исправление сохранено только на этом устройстве.',fixAll:'Спасибо. Я убрал рамки.',mExport:n=>`Сохранить мои исправления в файл (${n})`,
+ dLive:'Наведите камеру, и я скажу, что вижу',liveHint:'Коснитесь экрана, чтобы выйти',liveSee:s=>`Вижу: ${s}.`,liveNone:'Сейчас я не вижу мусора.',
+ liveFile:'Для Trashy Live нужна камера. Браузеры разрешают её только на сайте, а не на странице, открытой как файл.',liveDenied:'Мне не разрешено использовать камеру. Разрешите камеру для этой страницы в настройках браузера и попробуйте снова.',
+ liveNoCam:'Не могу найти камеру на этом устройстве.',liveBusy:'Не удалось запустить камеру. Закройте другие приложения, которые её используют, и попробуйте снова.',
+ liveNoModel:'Моя модель ещё не загрузилась. Попробуйте Trashy Live чуть позже.',liveLost:'Камера отключилась, поэтому я закрыл Trashy Live.',
  cats:{Paper:'Бумага',Plastic:'Пластик',Glass:'Стекло',Metal:'Металл',Trash:'Прочий мусор'},
  iTitle:'Установить Trashy на телефон',iIntro:'Trashy будет открываться как приложение с главного экрана. После первого запуска он работает и без интернета.',
  iBtn:'Установить Trashy',iDone:'Trashy установлен. Он теперь на вашем главном экране.',
@@ -647,7 +683,7 @@ function pose(){
  v.style.setProperty('--px',lim((f[0]-h[0])*14+h[0]*9,13)+'px');v.style.setProperty('--py',lim((f[1]-h[1])*11+h[1]*7,10)+'px');
 }
 function gazeStep(now){
- gaze.raf=0;const v=S.heroSvg;if(!v||$('hero').hidden)return;
+ gaze.raf=0;const v=S.heroSvg;if(!v||($('hero').hidden&&!S.live.on))return;
  if(!gaze.parts){
   const all=q=>[...v.querySelectorAll(q)];
   gaze.parts=FACE.map(([x,y,q,eye])=>[x,y,all(q),eye]);gaze.head=all('.ax-3h');gaze.gills=[all('.ax-3gl'),all('.ax-3gr')];gaze.turn=all('.ax-turn');
@@ -966,6 +1002,7 @@ function markDetMenu(){$('detMenu').querySelectorAll('button').forEach(b=>b.setA
 async function loadOrt(){
  await script('lib/ort/ort.wasm.min.js');
  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
+ ort.env.wasm.proxy=true; /* the model works in the background, so the camera picture and the axolotl keep moving */
  ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
 }
 /* downloads a model and reports how far it got (no percentage if the server doesn't say the size) */
@@ -1034,13 +1071,15 @@ function pickDetector(id){
   else{status('err','errSwitch',m.name);endLoading(fmt('switchFail',m.name,botName()),'wow');setTimeout(()=>{if(p===D.ready)showReady()},5000)}
  });
 }
-async function detectDF(img){
- const d=S.det.cur,N=d.cfg.input||640,cv=h('canvas',{width:N,height:N});
- const cx=cv.getContext('2d');cx.drawImage(img,0,0,N,N); /* stretched to N x N, like in training */
+/* src is a photo or the camera video; W and H are its real size (the boxes come back in those pixels) */
+async function detectDF(src,W=src.naturalWidth,H=src.naturalHeight){
+ const d=S.det.cur,N=d.cfg.input||640;
+ let cv=S.det.cv;if(!cv||cv.width!==N){cv=S.det.cv=h('canvas',{width:N,height:N});S.det.cx=cv.getContext('2d',{willReadFrequently:true})}
+ const cx=S.det.cx;cx.drawImage(src,0,0,N,N); /* stretched to N x N, like in training */
  const px=cx.getImageData(0,0,N,N).data,f=new Float32Array(3*N*N);
  for(let i=0;i<N*N;i++){f[i]=px[i*4]/255;f[N*N+i]=px[i*4+1]/255;f[2*N*N+i]=px[i*4+2]/255}
  const s=d.s;S.det.run=s.run({[s.inputNames[0]]:new ort.Tensor('float32',f,[1,3,N,N])});const o=await S.det.run;
- const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],W=img.naturalWidth,H=img.naturalHeight,thr=d.cfg.threshold||.35,out=[];
+ const L=o[s.outputNames[0]],B=o[s.outputNames[1]],Q=L.dims[1],K=L.dims[2],thr=d.cfg.threshold||.35,out=[];
  const th=d.cfg.classes.map(n=>(d.cfg.thresholds||{})[n]||thr); /* confidence level per category (round-2 models) */
  for(let q=0;q<Q;q++)for(let k=0;k<K;k++){
   const p=1/(1+Math.exp(-L.data[q*K+k]));if(p<th[k])continue;
@@ -1052,6 +1091,80 @@ async function detectDF(img){
  for(const b of out)if(!keep.some(k=>iou(k,b)>.6))keep.push(b); /* one box per item */
  return keep.slice(0,20);
 }
+
+/* ---------- Trashy Live: the camera fills the screen and the axolotl says what the chosen model sees in it.
+   Camera frames are looked at on the device, one at a time, and are never stored or sent anywhere. ---------- */
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const liveEl=$('live'),liveV=$('liveV');
+function liveSay(text){if(text!==S.live.text){S.live.text=text;$('liveText').textContent=text}}
+/* the sentence for one camera frame. A category that was there a moment ago and is missing once stays, so the bubble doesn't flicker */
+function liveLine(ds,order){
+ const L=S.live,now={};ds.forEach(d=>now[d.n]=(now[d.n]||0)+1);
+ const seen={...L.prev,...now};L.prev=now;
+ const e=order.filter(n=>seen[n]).map(n=>[n,seen[n]]);
+ if(!e.length)return tr('liveNone');
+ if(e.length===1&&e[0][1]===1)return fmt('sure',cat(e[0][0]));
+ return fmt('liveSee',e.map(([n,k])=>k>1?fmt('count',k,cat(n)):cat(n)).join(', '));
+}
+/* one frame at a time: the next one starts when the last is done, and nothing runs while the page is hidden */
+async function liveLoop(run){
+ const L=S.live;
+ while(L.run===run){
+  const d=S.det.cur;
+  if(document.hidden||S.busy||!d||liveV.readyState<2||!liveV.videoWidth){await sleep(200);continue}
+  let ds=null;const t0=performance.now();
+  try{ds=await detectDF(liveV,liveV.videoWidth,liveV.videoHeight)}catch(_){}
+  if(L.run!==run)return;
+  if(ds){L.n++;L.ms=Math.round(performance.now()-t0);$('liveWho').textContent=d.m.name;liveSay(liveLine(ds,d.cfg.classes))}
+  await sleep(ds?60:1000);
+ }
+}
+async function openLive(){
+ const L=S.live;if(L.on||L.opening)return;
+ if(FILE||!isSecureContext)return ai(tr('liveFile'),'wow');
+ if(!navigator.mediaDevices?.getUserMedia)return ai(tr('liveNoCam'),'wow');
+ if(!S.det.cur)return ai(tr('liveNoModel'),'wow');
+ L.opening=true;
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}})}
+ catch(e){
+  const n=e&&e.name;
+  return ai(tr(n==='NotAllowedError'||n==='SecurityError'?'liveDenied':n==='NotFoundError'||n==='OverconstrainedError'?'liveNoCam':'liveBusy'),'wow');
+ }
+ finally{L.opening=false}
+ Object.assign(L,{on:true,stream,prev:null,n:0,full:false});
+ stream.getVideoTracks().forEach(t=>t.addEventListener('ended',()=>{if(L.stream===stream){closeLive();ai(tr('liveLost'),'wow')}})); /* the camera was taken away */
+ liveV.srcObject=stream;liveV.play().catch(()=>{});
+ if(S.heroSvg)$('liveAx').append(S.heroSvg); /* the big axolotl moves over, with its look-around */
+ $('liveWho').textContent=S.det.cur.m.name;liveSay(tr('looking'));
+ liveEl.hidden=false;document.documentElement.classList.add('live-on');
+ history.pushState({live:1},''); /* so the phone's back button leaves Trashy Live */
+ try{liveEl.requestFullscreen?.({navigationUI:'hide'})?.catch(()=>{})}catch(_){} /* hides the browser's bars where the phone allows it */
+ liveWake();lookTo(0,0);
+ liveLoop(++L.run);
+}
+function closeLive(){
+ const L=S.live;if(!L.on)return;
+ L.on=false;L.run++;
+ L.stream.getTracks().forEach(t=>t.stop());L.stream=null;liveV.srcObject=null;
+ liveEl.hidden=true;document.documentElement.classList.remove('live-on');
+ if(S.heroSvg){$('heroAx').append(S.heroSvg);lookTo(0,0)}
+ if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+ if(L.lock){L.lock.release().catch(()=>{});L.lock=null}
+ if(history.state&&history.state.live)history.back();
+}
+/* keeps the screen on while the camera is open, where the browser can */
+function liveWake(){
+ const L=S.live;if(!L.on||L.lock||!navigator.wakeLock)return;
+ navigator.wakeLock.request('screen').then(k=>{if(L.on&&!L.lock){L.lock=k;k.addEventListener('release',()=>{if(L.lock===k)L.lock=null})}else k.release().catch(()=>{})}).catch(()=>{});
+}
+/* no buttons in there: a tap anywhere, the back button or Escape leaves */
+liveEl.onclick=closeLive;
+addEventListener('popstate',closeLive);
+addEventListener('keydown',e=>{if(e.key==='Escape')closeLive()});
+document.addEventListener('fullscreenchange',()=>{const L=S.live;if(document.fullscreenElement===liveEl)L.full=true;else if(L.full){L.full=false;closeLive()}});
+document.addEventListener('visibilitychange',()=>{if(S.live.on&&!document.hidden){liveV.play().catch(()=>{});liveWake()}});
+$('liveBtn').onclick=openLive;
 
 /* ---------- Start-up ---------- */
 $('detMenu').hidden=FILE;markDetMenu();
@@ -1072,6 +1185,7 @@ addEventListener('appinstalled',()=>ready.then(loadClassic));
 
 /* ---------- Photos ---------- */
 function add(files){
+ if(S.live.on)return;
  for(const f of [...files].filter(f=>f.type.startsWith('image/'))){
   const url=URL.createObjectURL(f);
   body(msg('user')).append(h('img',{src:url,alt:f.name}));syncHero();
@@ -1121,9 +1235,12 @@ addEventListener('drop',e=>add(e.dataTransfer.files));
 /* ---------- Menu ---------- */
 const menuBtn=$('pick'),menuEl=$('menu');
 const menuOpen=()=>menuEl.classList.contains('open');
-function menu(open){menuBtn.setAttribute('aria-expanded',open);menuEl.classList.toggle('open',open)}
+function menu(open){
+ if(open)menuEl.style.maxHeight=Math.max(200,dropZone.getBoundingClientRect().top-16-$('status').closest('.nav').offsetHeight)+'px'; /* never taller than the room above the bar */
+ menuBtn.setAttribute('aria-expanded',open);menuEl.classList.toggle('open',open);
+}
 menuBtn.onclick=e=>{e.stopPropagation();menu(!menuOpen())};
-const ACTIONS={how,install:openInstall,export:exportFixes,clear:()=>{clearChat();if(isReady())greet()}};
+const ACTIONS={live:openLive,how,install:openInstall,export:exportFixes,clear:()=>{clearChat();if(isReady())greet()}};
 menuEl.onclick=e=>{
  const b=e.target.closest('button');if(!b)return;menu(false);
  if(b.dataset.m)pickDetector(b.dataset.m);else ACTIONS[b.dataset.a]?.();
