@@ -94,7 +94,10 @@ button:active{transform:scale(.98)}
 .m{display:flex;gap:12px;align-items:flex-end;margin:20px 0;animation:pop .3s var(--ease) both}
 @keyframes pop{from{opacity:0;transform:translateY(8px)}}
 .m.user{justify-content:flex-end}
-.av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--raised);border:1px solid var(--line);overflow:hidden}
+/* the axolotl is white: a deeper tint behind it and a firmer outline keep it readable on the light page */
+.av{flex:none;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--accent) 34%,var(--raised));border:1px solid var(--line-2);overflow:hidden}
+.av .ax,#heroAx .ax{--ol:#a89c8b}
+@media(prefers-color-scheme:dark){.av{background:var(--raised);border-color:var(--line)}}
 .av svg{display:block;width:100%;height:100%;overflow:hidden}
 .col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .who{margin-left:4px;font:400 12px/16px var(--mono);color:var(--mut)}
@@ -119,6 +122,18 @@ button:active{transform:scale(.98)}
 .gr.load{grid-template-columns:1fr 44px;margin-top:8px}
 .gr.load .gt i{transition-duration:.3s}
 .prog{margin-left:8px;color:var(--mut);font-size:14px}
+/* fixing a wrong label: a pencil at the end of each row opens the choices */
+.gr.fx{grid-template-columns:104px 1fr 44px 36px;gap:8px 12px;height:36px}
+.fixb{width:36px;height:36px;padding:0;background:none;color:var(--mut);display:grid;place-items:center}
+.fixb:hover,.fixb[aria-expanded=true]{background:var(--raised);color:var(--ink)}
+.fixb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.fixp{margin:4px 0 12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.fixp p{margin:0 0 8px;font-size:13px;line-height:20px;color:var(--mut)}
+.fixp div{display:flex;flex-wrap:wrap;gap:8px}
+.fixp button{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;background:var(--surface);border:1px solid var(--line-2);font-size:14px;font-weight:400}
+.fixp button:hover{background:var(--raised)}
+.fixp button::before{content:"";flex:none;width:8px;height:8px;border-radius:2px;background:var(--c,var(--mut))}
+.note{margin:12px 0 0;font-size:13px;line-height:20px;color:var(--mut)}
 .steps2{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:15px}
 .steps2 li{margin:4px 0}
 .typing i{display:inline-block;width:6px;height:6px;margin:4px 2px;border-radius:50%;background:var(--mut);animation:bl 1s infinite}
@@ -190,11 +205,15 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
 
 /* ---------- Small screens ---------- */
 @media(max-width:600px){
- #hero{grid-template-columns:1fr;gap:8px;padding-top:8px}#heroAx{width:140px;margin-left:-16px}
- #hero h1{font-size:36px}#hero p{font-size:16px;line-height:24px}
- .chips{flex-direction:column}
+ /* phone: the axolotl sits beside a shorter headline, so the first chat message stays on the first screen */
+ #hero{grid-template-columns:104px minmax(0,1fr);grid-template-areas:"ax h" "rest rest";gap:4px 12px;align-items:center;padding:4px 0 8px}
+ #hero>div:last-child{display:contents}
+ #heroAx{grid-area:ax;margin-left:-8px}
+ #hero h1{grid-area:h;margin:0;font-size:clamp(26px,7.4vw,32px)}
+ #hero p{grid-column:1/-1;font-size:16px;line-height:24px}
+ .chips{grid-column:1/-1;margin-top:8px;gap:2px 16px}
  .right{gap:8px}.pill{max-width:44vw;font-size:12px}.inst span{display:none}.inst{width:36px;padding:0;justify-content:center}
- .m{gap:8px}.b{max-width:90%}.gr{grid-template-columns:84px 1fr 40px}
+ .m{gap:8px}.b{max-width:90%}.gr{grid-template-columns:84px 1fr 40px}.gr.fx{grid-template-columns:76px 1fr 40px 36px;gap:8px}
 }
 @media(max-width:430px){#gal span{display:none}#gal{width:44px;padding:0}.brand{font-size:0;gap:0}.lang select{padding:0 24px 0 28px}.pill{max-width:none;flex:1 1 auto}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
@@ -212,7 +231,7 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></div></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -224,7 +243,7 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
 
 <template id="axFallback"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ax s-idle" viewBox="0 30 400 340" width="400" height="340" role="img" aria-label="Axolotl creature mascot">
 <style>
-.ax{color-scheme:only light;--hd1:#fff;--hd2:#fcfaf6;--hd3:#e9e2d6;--ol:#cfc6b8;--ln:#1f1b16;--eo:#111;--se:#111;--sc:#fff;--pa:#111;--pb:#111;--bl:#d8cfc2;overflow:visible}
+.ax{color-scheme:only light;--hd1:#fff;--hd2:#fcfaf6;--hd3:#e9e2d6;--ol:#b9ad9c;--ln:#1f1b16;--eo:#111;--se:#111;--sc:#fff;--pa:#111;--pb:#111;--bl:#d8cfc2;overflow:visible}
 .ax .ly,.ax .ax-dec{opacity:0}
 .ax.s-idle .l-idle,.ax.s-joy .l-joy,.ax.s-love .l-love,.ax.s-cool .l-cool,.ax.s-wow .l-wow,
 .ax.s-angry .l-angry,.ax.s-loading .l-loading,.ax.s-sleep .l-sleep{opacity:1}
@@ -472,6 +491,7 @@ en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
  scanning:p=>`Scanning ${p}%`,fitting:'Fitting the boxes…',waiting:'Waiting for my turn…',looking:'Looking…',
  noModel:'I can’t find my model file.',noNet:'My image engine didn’t load. Reload the page to try again.',
  noTrash:'I don’t see any trash I know in this picture.',badPic:'I couldn’t read that picture. Try another one.',
+ fix:'Wrong? Fix it',fixQ:'What is it really?',fixNone:'Not trash',fixSaved:'Thanks. Your fix is saved on this device only.',fixAll:'Thanks. I took the boxes away.',mExport:n=>`Save my fixes as a file (${n})`,
  cats:{Paper:'Paper',Plastic:'Plastic',Glass:'Glass',Metal:'Metal',Trash:'Trash'},
  iTitle:'Put Trashy on your phone',iIntro:'Trashy then opens like an app from your home screen. After the first start it also works without internet.',
  iBtn:'Install Trashy',iDone:'Trashy is installed. You can open it from your home screen.',
@@ -497,6 +517,7 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
  scanning:p=>`Suche… ${p}%`,fitting:'Rahmen werden angepasst…',waiting:'Gleich bin ich dran…',looking:'Ich schaue…',
  noModel:'Ich finde meine Modelldatei nicht.',noNet:'Meine Bilderkennung wurde nicht geladen. Lade die Seite neu und versuch es nochmal.',
  noTrash:'Auf diesem Bild sehe ich keinen Müll, den ich kenne.',badPic:'Ich konnte dieses Bild nicht lesen. Probier ein anderes.',
+ fix:'Falsch? Korrigieren',fixQ:'Was ist es wirklich?',fixNone:'Kein Müll',fixSaved:'Danke. Deine Korrektur ist nur auf diesem Gerät gespeichert.',fixAll:'Danke. Ich habe die Rahmen entfernt.',mExport:n=>`Meine Korrekturen als Datei speichern (${n})`,
  cats:{Paper:'Papier',Plastic:'Plastik',Glass:'Glas',Metal:'Metall',Trash:'Restmüll'},
  iTitle:'Trashy aufs Handy holen',iIntro:'Dann öffnet sich Trashy wie eine App von deinem Startbildschirm. Nach dem ersten Start funktioniert es auch ohne Internet.',
  iBtn:'Trashy installieren',iDone:'Trashy ist installiert. Du findest es auf deinem Startbildschirm.',
@@ -522,6 +543,7 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  scanning:p=>`Сканирую… ${p}%`,fitting:'Подгоняю рамки…',waiting:'Жду своей очереди…',looking:'Смотрю…',
  noModel:'Не могу найти файл модели.',noNet:'Распознавание изображений не загрузилось. Перезагрузите страницу и попробуйте снова.',
  noTrash:'Не вижу на этом фото знакомого мне мусора.',badPic:'Не получилось открыть это фото. Попробуйте другое.',
+ fix:'Неверно? Исправить',fixQ:'Что это на самом деле?',fixNone:'Не мусор',fixSaved:'Спасибо. Исправление сохранено только на этом устройстве.',fixAll:'Спасибо. Я убрал рамки.',mExport:n=>`Сохранить мои исправления в файл (${n})`,
  cats:{Paper:'Бумага',Plastic:'Пластик',Glass:'Стекло',Metal:'Металл',Trash:'Прочий мусор'},
  iTitle:'Установить Trashy на телефон',iIntro:'Trashy будет открываться как приложение с главного экрана. После первого запуска он работает и без интернета.',
  iBtn:'Установить Trashy',iDone:'Trashy установлен. Он теперь на вашем главном экране.',
@@ -546,14 +568,14 @@ function applyLang(){
  $('lang').value=S.lang;$('lang').setAttribute('aria-label',tr('lang'));
  document.querySelectorAll('[data-i18n]').forEach(e=>{if(e.id!=='status')e.innerHTML=tr(e.dataset.i18n)});
  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',tr(e.dataset.i18nAria)));
- status(...S.status);
+ status(...S.status);syncExport();
  if($('instDlg').open)fillInstall();
 }
 function setLang(l){
  S.lang=LANGS.includes(l)?l:'en';store.set('trashy-lang',S.lang);
  const u=new URL(location.href);if(u.searchParams.has('lang')){u.searchParams.set('lang',S.lang);history.replaceState(null,'',u)}
  applyLang();
- if(!document.querySelector('.m.user')&&isReady()){clearChat();greet()} /* nothing sent yet: say hello again in the new language */
+ if(!document.querySelector('.m.user')&&document.querySelector('.m.ai')&&!S.load.msg){clearChat();greet()} /* nothing sent yet: say hello again in the new language */
 }
 
 /* ---------- Status pill ---------- */
@@ -704,12 +726,54 @@ function showResult(row,r){
  const t=r[0];
  answer(row,{line:fmt(t.p>=.8?'sure':t.p>=.5?'likely':'unsure',t.n),m:t.p>=.5?'joy':'wow',cap:tr('howSure'),items:r});
 }
-function showDetections(row,img,ds){
- ds=ds.map(d=>({...d,n:cat(d.n)}));
- const counts={};ds.forEach(d=>counts[d.n]=(counts[d.n]||0)+1);
+function showDetections(row,img,raw,note){
+ const ds=raw.map(d=>({...d,n:cat(d.n)}));
+ const counts={};raw.forEach(d=>{const n=cat(d.n);counts[n]=(counts[n]||0)+1});
  const sum=Object.entries(counts).map(([n,k])=>fmt('count',k,n)).join(', ');
  const avg=ds.reduce((s,d)=>s+d.p,0)/ds.length;
- answer(row,{line:ds.length===1?fmt('found1',ds[0].n):fmt('foundN',ds.length,sum),m:avg>=.75?'joy':'wow',pic:annotate(img,ds),cap:tr('howSureBox'),items:ds});
+ answer(row,{line:ds.length===1?fmt('found1',cat(raw[0].n)):fmt('foundN',ds.length,sum),m:avg>=.75?'joy':'wow',pic:annotate(img,ds),cap:tr('howSureBox'),items:ds});
+ addFixes(row,img,raw);
+ if(note)body(row).append(h('p',{class:'note',text:note}));
+}
+
+/* ---------- Fixes: a wrong label can be corrected. The fix (old and new label, the box and a small cut-out of the item) is kept
+   on this device only, at most FIX_MAX of them, and can be saved as a file from the menu to help train the next model. ---------- */
+const FIX_KEY='trashy-fixes',FIX_MAX=120;
+const PENCIL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M14.5 6.5l3 3"/></svg>';
+function fixes(){try{const a=JSON.parse(store.get(FIX_KEY)||'[]');return Array.isArray(a)?a:[]}catch(_){return []}}
+function syncExport(){const n=fixes().length,b=$('fixMenu');b.hidden=!n;b.textContent=fmt('mExport',n)}
+function saveFix(f){store.set(FIX_KEY,JSON.stringify([...fixes(),f].slice(-FIX_MAX)));syncExport()}
+/* a cut-out of one item, at most 160 px on its longer side */
+function cutOut(img,d){
+ const sc=Math.min(1,160/Math.max(d.w,d.h)),c=h('canvas',{width:Math.max(1,Math.round(d.w*sc)),height:Math.max(1,Math.round(d.h*sc))});
+ c.getContext('2d').drawImage(img,d.x,d.y,d.w,d.h,0,0,c.width,c.height);
+ try{return c.toDataURL('image/jpeg',.7)}catch(_){return null}
+}
+function addFixes(row,img,raw){
+ body(row).querySelectorAll('.graph .gr').forEach((gr,i)=>{
+  const b=h('button',{type:'button',class:'fixb','aria-label':tr('fix'),title:tr('fix'),'aria-expanded':'false',onclick:()=>askFix(row,img,raw,i,gr,b)});
+  b.innerHTML=PENCIL;gr.classList.add('fx');gr.append(b);
+  if(raw[i].fixed)gr.querySelector('.gp').textContent='✓'; /* a corrected item shows a tick, not a percentage */
+ });
+}
+function askFix(row,img,raw,i,gr,btn){
+ const open=body(row).querySelector('.fixp');
+ if(open){const same=open.previousElementSibling===gr;open.remove();body(row).querySelectorAll('.fixb').forEach(b=>b.setAttribute('aria-expanded','false'));if(same)return}
+ const d=raw[i];
+ const pick=to=>{
+  saveFix({t:new Date().toISOString(),model:botName(),from:d.n,to,p:+d.p.toFixed(3),box:[d.x,d.y,d.w,d.h].map(Math.round),size:[img.naturalWidth,img.naturalHeight],crop:cutOut(img,d)});
+  if(to)Object.assign(d,{n:to,c:colorOf(to),p:1,fixed:true});else raw.splice(i,1);
+  if(raw.length)showDetections(row,img,raw,tr('fixSaved'));
+  else{say(row,tr('fixAll'),'joy');body(row).append(h('p',{class:'note',text:tr('fixSaved')}))}
+ };
+ btn.setAttribute('aria-expanded','true');
+ gr.after(h('div',{class:'fixp'},h('p',{text:tr('fixQ')}),h('div',null,
+  Object.keys(COLORS).filter(n=>n!==d.n).map(n=>h('button',{type:'button',style:{'--c':colorOf(n)},text:cat(n),onclick:()=>pick(n)})),
+  h('button',{type:'button',text:tr('fixNone'),onclick:()=>pick(null)}))));
+}
+function exportFixes(){
+ const a=h('a',{href:URL.createObjectURL(new Blob([JSON.stringify({format:'trashy-fixes-v1',fixes:fixes()})],{type:'application/json'})),download:'trashy-fixes-'+new Date().toISOString().slice(0,10)+'.json'});
+ document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),10000);
 }
 
 /* ---------- Classic method (backup): MobileNet features compared with stored examples ---------- */
@@ -853,7 +917,7 @@ function annotate(img,ds){
  x.font=`500 ${fs}px "JetBrains Mono",ui-monospace,Consolas,monospace`;x.textBaseline='middle';x.lineJoin='round';
  const rr=(a,b,w,hh,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+hh,r);x.arcTo(a+w,b+hh,a,b+hh,r);x.arcTo(a,b+hh,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
  const boxes=ds.map(d=>{
-  const bx=d.x*sc,by=d.y*sc,bw=d.w*sc,bh=d.h*sc,t=`${d.n} ${Math.round(d.p*100)}%`,tw=x.measureText(t).width+14,th=fs+10;
+  const bx=d.x*sc,by=d.y*sc,bw=d.w*sc,bh=d.h*sc,t=d.fixed?d.n+' ✓':`${d.n} ${Math.round(d.p*100)}%`,tw=x.measureText(t).width+14,th=fs+10;
   const n=parseInt(String(d.c).slice(1),16),lum=.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255);
   const free=([a,b])=>a>=0&&b>=0&&a+tw<=c.width&&b+th<=c.height&&!placed.some(q=>a<q[0]+q[2]&&a+tw>q[0]&&b<q[1]+q[3]&&b+th>q[1]);
   const at=[[bx,by-th],[bx,by],[bx+bw-tw,by-th],[bx+bw-tw,by+bh],[bx,by+bh]].find(free)||[Math.max(0,Math.min(c.width-tw,bx)),Math.max(0,Math.min(c.height-th,by))];
@@ -991,16 +1055,20 @@ async function detectDF(img){
 
 /* ---------- Start-up ---------- */
 $('detMenu').hidden=FILE;markDetMenu();
-S.det.ready=useDetector(S.det.id);
+/* the first download is the big one (about 30 MB), so the status shows how far it is */
+S.det.ready=useDetector(S.det.id,FILE?null:p=>status('','loadingM',modelById(S.det.id).name,p));
 const ready=(async()=>{
  const first=S.det.ready;
  await loadAxolotl();
+ greet(); /* say hello right away; a photo sent now waits for the model */
  await first;
- if(!S.det.cur&&!await loadClassic())return; /* no detector: the classic method has to do the work */
- greet();
+ if(!S.det.cur&&!await loadClassic()){document.querySelectorAll('.m.ai').forEach(m=>m.remove());return} /* no detector: the classic method has to do the work */
  if(S.det.ready===first)showReady(); /* otherwise a model switch is already showing its own progress */
 })();
-const backup=ready.then(()=>new Promise(r=>later(r))).then(loadClassic); /* also saves it for offline use */
+/* The backup method is another 19 MB. It is fetched when a photo needs it. Only the installed app fetches it ahead of time, so it also works offline. */
+const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const backup=ready.then(()=>new Promise(r=>later(r))).then(()=>installed()?loadClassic():null);
+addEventListener('appinstalled',()=>ready.then(loadClassic));
 
 /* ---------- Photos ---------- */
 function add(files){
@@ -1035,6 +1103,10 @@ async function handle({url,row}){
   showResult(row,r.filter(x=>x.n!=='background'));
  }catch(_){say(row,tr('badPic'),'wow')}
 }
+/* opened with ?example (the about page links here like that): look at the example photo straight away */
+if(!FILE&&new URLSearchParams(location.search).has('example'))ready.then(async()=>{
+ try{const r=await fetch('example.jpg');if(r.ok)add([new File([await r.blob()],'example.jpg',{type:'image/jpeg'})])}catch(_){}
+});
 $('gal').onclick=()=>$('files').click();
 $('cam').onclick=()=>$('camIn').click();
 ['files','camIn'].forEach(id=>$(id).onchange=e=>{add(e.target.files);e.target.value=''});
@@ -1051,7 +1123,7 @@ const menuBtn=$('pick'),menuEl=$('menu');
 const menuOpen=()=>menuEl.classList.contains('open');
 function menu(open){menuBtn.setAttribute('aria-expanded',open);menuEl.classList.toggle('open',open)}
 menuBtn.onclick=e=>{e.stopPropagation();menu(!menuOpen())};
-const ACTIONS={how,install:openInstall,clear:()=>{clearChat();if(isReady())greet()}};
+const ACTIONS={how,install:openInstall,export:exportFixes,clear:()=>{clearChat();if(isReady())greet()}};
 menuEl.onclick=e=>{
  const b=e.target.closest('button');if(!b)return;menu(false);
  if(b.dataset.m)pickDetector(b.dataset.m);else ACTIONS[b.dataset.a]?.();

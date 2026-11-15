@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="ax s-idle" viewBox="0 30 400 340" width="400" height="340" role="img" aria-label="Axolotl creature mascot">
 <title>Axolotl</title>
 <style>
-.ax{color-scheme:only light;--hd1:#fff;--hd2:#fcfaf6;--hd3:#e9e2d6;--ol:#cfc6b8;--ln:#1f1b16;--eo:#111;--se:#111;--sc:#fff;--pa:#111;--pb:#111;--bl:#d8cfc2;overflow:visible}
+.ax{color-scheme:only light;--hd1:#fff;--hd2:#fcfaf6;--hd3:#e9e2d6;--ol:#b9ad9c;--ln:#1f1b16;--eo:#111;--se:#111;--sc:#fff;--pa:#111;--pb:#111;--bl:#d8cfc2;overflow:visible}
 .ax .ly,.ax .ax-dec{opacity:0}
 .ax.s-idle .l-idle,.ax.s-joy .l-joy,.ax.s-love .l-love,.ax.s-cool .l-cool,.ax.s-wow .l-wow,
 .ax.s-angry .l-angry,.ax.s-loading .l-loading,.ax.s-sleep .l-sleep{opacity:1}
