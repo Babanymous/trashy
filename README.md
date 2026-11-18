@@ -20,7 +20,7 @@ The app is available in English, German and Russian (picked from the browser lan
 | `index.html` | The app |
 | `models/trashy-detector/` | The default detector, Trashy-0.1 (`model.onnx`, 15 MB, and `detector.json` with its test results) |
 | `models/trashy-axel-1-3/` | A second detector, Trashy-Axel 1.3: stricter, so fewer extra boxes but fewer items found. Chosen in the ⋯ menu and only downloaded when picked |
-| `models/trashy-caracas-1/` | A third detector, Trashy Caracas 1: a bigger model (D-FINE small, 41 MB, about three times slower per photo) that is more accurate on real-home photos. Chosen in the ⋯ menu and only downloaded when picked |
+| `models/trashy-caracas-2/` | A third detector, Trashy Caracas 2: the biggest model (D-FINE small, 41 MB, about three times slower per photo), trained with the most photos. Chosen in the ⋯ menu and only downloaded when picked |
 | `image-model.js` | Stored examples for the classic method (~3.4 MB) |
 | `image-trainer.html` | Tool for training a classic model from your own photos |
 | `lib/` | TensorFlow.js and MobileNet code; `lib/ort/` is ONNX Runtime Web |
@@ -44,6 +44,8 @@ The app is available in English, German and Russian (picked from the browser lan
 - [TrashNet](https://huggingface.co/datasets/garythung/trashnet) by Gary Thung and Mindy Yang, MIT License
 - [Bower waste annotations](https://huggingface.co/datasets/BowerApp/bower-waste-annotations) by Bower, MIT License
 - [dmedhi garbage image classification & detection](https://huggingface.co/datasets/dmedhi/garbage-image-classification-detection) by dmedhi, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- [GARBAGE CLASSIFICATION 3](https://universe.roboflow.com/material-identification/garbage-classification-3) by Material Identification (Roboflow Universe, via [keremberke/garbage-object-detection](https://huggingface.co/datasets/keremberke/garbage-object-detection)), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- [MRS Trash Detection](https://huggingface.co/datasets/alexNova/MRS-Trash-Detection) by YizheDev (first published on [ModelScope](https://www.modelscope.cn/datasets/YizheDev/trash_detection)), Apache License 2.0
 - The author's own photos
 
 ## Accuracy
@@ -59,7 +61,7 @@ Detector, measured on test photos it was not trained on. "Found and right" means
 
 These numbers are for Trashy-0.1. Trashy-Axel 1.3 with its own confidence levels: Bower 83.5% found, 69.8% right; dmedhi 73.7% found, 66.0% right; about 0.1 wrong extra boxes per photo. It is the fourth training round and replaces Trashy-Axel 1 and 1.2; the three measure about the same.
 
-Trashy Caracas 1 (D-FINE small) with its own confidence levels: Bower 85.4% found, 72.9% right, 0.12 wrong extra boxes per photo; dmedhi 79.7% found, 67.4% right, 0.14 wrong extra boxes per photo.
+Trashy Caracas 2 (D-FINE small) with its own confidence levels: Bower 83.3% found, 69.4% right, 0.09 wrong extra boxes per photo; dmedhi 79.3% found, 71.1% right, 0.13 wrong extra boxes per photo. It continues Trashy Caracas 1 with about 6,000 more training photos and replaces it.
 
 Weakest categories: Metal (61–66%) and Trash (64%). The classic method only names items it is given (no finding): 73.3% on Bower, 79.1% on dmedhi.
 

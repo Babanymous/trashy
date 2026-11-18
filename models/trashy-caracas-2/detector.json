@@ -1,0 +1,114 @@
+{
+ "name": "Trashy Caracas 2",
+ "format": "trashy-dfine-v1",
+ "version": 6,
+ "base": "ustc-community/dfine-small-obj2coco",
+ "started_from": "Trashy Caracas 1",
+ "classes": [
+  "Paper",
+  "Plastic",
+  "Glass",
+  "Metal",
+  "Trash"
+ ],
+ "input": 640,
+ "preprocess": "stretch to 640x640, RGB, divide by 255",
+ "outputs": [
+  "logits (sigmoid per class)",
+  "pred_boxes (cx, cy, w, h, 0..1)"
+ ],
+ "threshold": 0.525,
+ "thresholds": {
+  "Paper": 0.6,
+  "Plastic": 0.75,
+  "Glass": 0.65,
+  "Metal": 0.525,
+  "Trash": 0.675
+ },
+ "thresholds_with_outdoor_photos": {
+  "Paper": 0.625,
+  "Plastic": 0.6,
+  "Glass": 0.65,
+  "Metal": 0.525,
+  "Trash": 0.775
+ },
+ "recipe": {
+  "epochs": 36,
+  "polish_epochs": 6,
+  "lr": 0.00005,
+  "polish_lr": 0.000005,
+  "zoom_p": 0.1,
+  "tiny": 0.015,
+  "repeat_t": 0.35,
+  "new_sources": {
+   "gc3": 3000,
+   "mrs": 3000
+  },
+  "fp_weight": 1.5
+ },
+ "metrics": {
+  "bower": {
+   "mAP50": 0.781,
+   "mAP": 0.716,
+   "items_found": 0.833,
+   "items_right": 0.694,
+   "items_wrong_category": 0.14,
+   "items_right_visible": 0.695,
+   "extra_boxes_per_photo": 0.09,
+   "per_class_right": {
+    "Plastic": 0.644,
+    "Paper": 0.825,
+    "Glass": 0.64,
+    "Metal": 0.667
+   }
+  },
+  "dmedhi": {
+   "mAP50": 0.728,
+   "mAP": 0.653,
+   "items_found": 0.793,
+   "items_right": 0.711,
+   "items_wrong_category": 0.082,
+   "items_right_visible": 0.712,
+   "extra_boxes_per_photo": 0.13,
+   "per_class_right": {
+    "Glass": 0.761,
+    "Paper": 0.764,
+    "Metal": 0.742,
+    "Plastic": 0.723,
+    "Trash": 0.406
+   }
+  },
+  "taco": {
+   "mAP50": 0.228,
+   "mAP": 0.191,
+   "items_found": 0.448,
+   "items_right": 0.315,
+   "items_wrong_category": 0.134,
+   "items_right_visible": 0.429,
+   "extra_boxes_per_photo": 0.16,
+   "per_class_right": {
+    "Plastic": 0.462,
+    "Paper": 0.143,
+    "Trash": 0.109,
+    "Metal": 0.25,
+    "Glass": 0
+   }
+  },
+  "trashnet": {
+   "mAP50": 0.902,
+   "mAP": 0.732,
+   "items_found": 0.895,
+   "items_right": 0.846,
+   "items_wrong_category": 0.049,
+   "items_right_visible": 0.846,
+   "extra_boxes_per_photo": 0.06,
+   "per_class_right": {
+    "Paper": 0.863,
+    "Glass": 0.844,
+    "Metal": 0.922,
+    "Plastic": 0.746,
+    "Trash": 0.792
+   }
+  }
+ }
+}

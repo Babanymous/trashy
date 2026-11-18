@@ -253,7 +253,7 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></div></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" aria-label="Menu"><button type="button" data-a="live" id="liveMenu"><b>Trashy Live</b><small data-i18n="dLive">Point the camera, I say what I see</small></button><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button><button type="button" data-m="caracas1" role="radio" aria-checked="false"><b>Trashy Caracas 1</b><small data-i18n="dCaracas">More accurate, 41 MB, slower</small></button></div></nav>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="live" id="liveMenu"><b>Trashy Live</b><small data-i18n="dLive">Point the camera, I say what I see</small></button><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button><button type="button" data-m="caracas1" role="radio" aria-checked="false"><b>Trashy Caracas 2</b><small data-i18n="dCaracas">Biggest model, 41 MB, slower</small></button></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act" id="liveBtn" aria-label="Trashy Live" title="Trashy Live"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V6.5A2.5 2.5 0 0 1 6.5 4H9M15 4h2.5A2.5 2.5 0 0 1 20 6.5V9M20 15v2.5a2.5 2.5 0 0 1-2.5 2.5H15M9 20H6.5A2.5 2.5 0 0 1 4 17.5V15"/><circle cx="12" cy="12" r="3.2"/></svg><span>Live</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -506,7 +506,7 @@ en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
  errNet:'Couldn’t load the image engine. Reload the page to try again.',
  ready:n=>`<b>Ready</b> with ${n} categories`,readyM:n=>`<b>Ready</b> · ${n}`,loadingM:(n,p)=>`Loading ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Couldn’t load ${n}`,
  switched:n=>`Now I’m ${n}. Send me a picture.`,switchFail:(n,o)=>`I couldn’t load ${n}. Check your internet and try again. I’m still ${o}.`,
- mModel:'Model',dT01:'Finds more items',dAxel:'Fewer extra boxes',dCaracas:'More accurate, 41 MB, slower',
+ mModel:'Model',dT01:'Finds more items',dAxel:'Fewer extra boxes',dCaracas:'Biggest model, 41 MB, slower',
  greet:n=>`Hi, I’m ${n}. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.`,
  how:['How it works','You send me a picture of an item.','I look for items in it and compare each one with what I learned in training.','I draw a box around each item and tell you the category and how sure I am.'],
  sure:n=>`That’s ${n}.`,likely:n=>`Looks like ${n}.`,unsure:n=>`Hmm, maybe ${n}? I’m not sure.`,
@@ -536,7 +536,7 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
  errNet:'Die Bilderkennung konnte nicht geladen werden. Lade die Seite neu und versuch es nochmal.',
  ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,readyM:n=>`<b>Bereit</b> · ${n}`,loadingM:(n,p)=>`${n} wird geladen…${p==null?'':' '+p+'%'}`,errSwitch:n=>`${n} konnte nicht geladen werden`,
  switched:n=>`Jetzt bin ich ${n}. Schick mir ein Foto.`,switchFail:(n,o)=>`Ich konnte ${n} nicht laden. Prüfe deine Internetverbindung und versuch es nochmal. Ich bin weiterhin ${o}.`,
- mModel:'Modell',dT01:'Findet mehr Gegenstände',dAxel:'Weniger falsche Rahmen',dCaracas:'Genauer, 41 MB, langsamer',
+ mModel:'Modell',dT01:'Findet mehr Gegenstände',dAxel:'Weniger falsche Rahmen',dCaracas:'Größtes Modell, 41 MB, langsamer',
  greet:n=>`Hi, ich bin ${n}. Schick mir ein Foto von deinem Müll, gerne auch mit mehreren Sachen, und ich sage dir, was ich sehe.`,
  how:['So funktioniert’s','Du schickst mir ein Foto.','Ich suche die Gegenstände darauf und vergleiche jeden mit dem, was ich im Training gelernt habe.','Ich zeichne einen Rahmen um jeden Gegenstand und sage dir die Kategorie und wie sicher ich bin.'],
  sure:n=>`Das ist ${n}.`,likely:n=>`Sieht aus wie ${n}.`,unsure:n=>`Hmm, vielleicht ${n}? Ich bin mir nicht sicher.`,
@@ -566,7 +566,7 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  errNet:'Не удалось загрузить распознавание изображений. Перезагрузите страницу и попробуйте снова.',
  ready:n=>`<b>Готов</b> · категорий: ${n}`,readyM:n=>`<b>Готов</b> · ${n}`,loadingM:(n,p)=>`Загрузка ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Не удалось загрузить ${n}`,
  switched:n=>`Теперь я ${n}. Пришлите мне фото.`,switchFail:(n,o)=>`Не удалось загрузить ${n}. Проверьте интернет и попробуйте снова. Я по-прежнему ${o}.`,
- mModel:'Модель',dT01:'Находит больше предметов',dAxel:'Меньше лишних рамок',dCaracas:'Точнее, 41 МБ, медленнее',
+ mModel:'Модель',dT01:'Находит больше предметов',dAxel:'Меньше лишних рамок',dCaracas:'Самая большая модель, 41 МБ, медленнее',
  greet:n=>`Привет, я ${n}. Пришлите мне фото мусора, можно сразу с несколькими предметами, и я скажу, что вижу.`,
  how:['Как это работает','Вы отправляете мне фото.','Я ищу на нём предметы и сравниваю каждый с тем, чему научился.','Я обвожу каждый предмет рамкой и называю категорию и насколько я уверен.'],
  sure:n=>`Это ${n}.`,likely:n=>`Похоже, это ${n}.`,unsure:n=>`Хм, может быть, ${n}? Я не уверен.`,
@@ -994,7 +994,7 @@ function annotate(img,ds){
 }
 
 /* ---------- Detector: trained D-FINE models, only the chosen one is downloaded and kept in memory ---------- */
-const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1.3',dir:'models/trashy-axel-1-3/'},{id:'caracas1',name:'Trashy Caracas 1',dir:'models/trashy-caracas-1/'}];
+const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id:'axel1',name:'Trashy-Axel 1.3',dir:'models/trashy-axel-1-3/'},{id:'caracas1',name:'Trashy Caracas 2',dir:'models/trashy-caracas-2/'}];
 const modelById=id=>DET_MODELS.find(m=>m.id===id)||DET_MODELS[0];
 S.det.id=modelById(store.get('trashy-model')).id;
 const botName=()=>FILE?DET_MODELS[0].name:modelById(S.det.id).name;
