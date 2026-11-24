@@ -30,6 +30,7 @@ The app is available in English, German and Russian (picked from the browser lan
 | `sw.js` | Offline support: saves the app and models on the phone after the first visit. **Change `VERSION` in it whenever a model or library file changes**, or installed copies keep the old files |
 | `svg/`, `trashy-logo.svg` | Mascot and logo |
 | `fonts/` | Onest and JetBrains Mono (SIL Open Font License) |
+| `sakuga/` | Button and slider reactions: `core.js` and `slider.js` are [Sakuga VFX](https://github.com/finktheartist/sakuga-vfx) by Justin Finkelman (MIT, see `sakuga/LICENSE`); `trashy-fx.js` recolours them and adds the button reactions and the model slider. The about page has its own copy in `about/sakuga/` |
 | `privacy.html`, `terms.html`, `impressum.html` | Legal pages |
 
 ## Retrain the detector

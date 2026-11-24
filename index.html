@@ -168,11 +168,14 @@ button:active{transform:scale(.98)}
 #menu button:hover{background:var(--raised)}
 #detMenu{display:grid;gap:2px;border-top:1px solid var(--line);margin-top:4px;padding-top:4px}
 #detMenu p{margin:8px 12px 4px;font-size:12px;line-height:16px;color:var(--mut)}
-#menu #detMenu button{padding:6px 10px;border:2px solid transparent}
-#detMenu b{display:block;font-weight:500}
-#detMenu small{display:block;color:var(--mut);font-size:13px}
-/* the chosen model wears the detection frame */
-#menu #detMenu button[aria-checked=true]{border-color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+/* the model slider (Sakuga VFX): low is Trashy-0.1, middle Axel, high Caracas */
+:root{--sk-card:var(--surface);--sk-ink:var(--ink);--sk-pri:var(--accent);--sk-acc:var(--accent-ink);--sk-bw:2px;--sk-slider-width:100%}
+#detSlider{display:block;margin:34px 28px 0}
+#detMenu .scale{position:relative;height:20px;margin:2px 28px 0;font:400 11px/20px var(--mono);color:var(--mut)}
+#detMenu .scale span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;cursor:pointer}
+#detMenu .scale span:hover{color:var(--ink)}
+#detMenu .scale span:nth-child(1){left:14px}#detMenu .scale span:nth-child(2){left:50%}#detMenu .scale span:nth-child(3){left:calc(100% - 14px)}
+#detNote{display:block;margin:6px 12px 8px;color:var(--ink-2);font-size:13px;line-height:18px}
 
 #liveMenu b,#liveMenu small{display:block}#liveMenu b{font-weight:500}#liveMenu small{color:var(--mut);font-size:13px}
 
@@ -253,7 +256,7 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
  <ul class="chips"><li data-i18n="chip1">Finds several items</li><li data-i18n="chip2">Draws a box around each</li><li data-i18n="chip3">Shows how sure it is</li></ul></div></section></main>
 <div class="dock">
  <div id="drop">
-  <nav id="menu" aria-label="Menu"><button type="button" data-a="live" id="liveMenu"><b>Trashy Live</b><small data-i18n="dLive">Point the camera, I say what I see</small></button><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="radiogroup" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><button type="button" data-m="t01" role="radio" aria-checked="true"><b>Trashy-0.1</b><small data-i18n="dT01">Finds more items</small></button><button type="button" data-m="axel1" role="radio" aria-checked="false"><b>Trashy-Axel 1.3</b><small data-i18n="dAxel">Fewer extra boxes</small></button><button type="button" data-m="caracas1" role="radio" aria-checked="false"><b>Trashy Caracas 2</b><small data-i18n="dCaracas">Biggest model, 41 MB, slower</small></button></div></nav>
+  <nav id="menu" aria-label="Menu"><button type="button" data-a="live" id="liveMenu"><b>Trashy Live</b><small data-i18n="dLive">Point the camera, I say what I see</small></button><button type="button" data-a="how" data-i18n="mHow">How it works</button><button type="button" data-a="clear" data-i18n="mClear">Clear chat</button><button type="button" data-a="export" id="fixMenu" hidden></button><button type="button" data-a="install" id="instMenu" data-i18n="mInstall" hidden>Install on your phone</button><div id="detMenu" role="group" aria-labelledby="detL"><p id="detL" data-i18n="mModel">Model</p><trashy-model-slider id="detSlider" min="0" max="2" step="1" value="0" unit="" label="Model" names="Trashy-0.1|Axel 1.3|Caracas 2"></trashy-model-slider><div class="scale" aria-hidden="true"><span data-i18n="sLow">Low</span><span data-i18n="sMid">Middle</span><span data-i18n="sHigh">High</span></div><small id="detNote"></small></div></nav>
   <div class="bar"><button type="button" class="act main" id="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.3" r="3.4"/></svg><span data-i18n="take">Take photo</span></button><button type="button" class="act" id="liveBtn" aria-label="Trashy Live" title="Trashy Live"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V6.5A2.5 2.5 0 0 1 6.5 4H9M15 4h2.5A2.5 2.5 0 0 1 20 6.5V9M20 15v2.5a2.5 2.5 0 0 1-2.5 2.5H15M9 20H6.5A2.5 2.5 0 0 1 4 17.5V15"/><circle cx="12" cy="12" r="3.2"/></svg><span>Live</span></button><button type="button" class="act main" id="gal" aria-label="Choose photo" data-i18n-aria="choose"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-4.5-4.5-8.5 8.5"/></svg><span data-i18n="choose">Choose photo</span></button><span class="or" data-i18n="dropHint">or drop or paste a picture here</span><button id="pick" type="button" aria-label="More" data-i18n-aria="more" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button></div>
   <input id="files" type="file" accept="image/*" multiple hidden>
   <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
@@ -440,6 +443,9 @@ dialog[open]::backdrop{background:rgb(22 21 19/.5)}
 <g class="ax-dec d-s" fill="#8a847a"><path class="ax-sp" d="M110 112l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path class="ax-sp ax-sp2" d="M292 100l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g>
 </svg>
 </template>
+<script src="sakuga/core.js"></script>
+<script src="sakuga/trashy-fx.js"></script>
+<script src="sakuga/slider.js"></script>
 <script>
 'use strict';
 /* Trashy app. Sections: helpers · storage · state · languages · status · axolotl · chat · classic method · detector · photos · menu · install · offline */
@@ -506,7 +512,7 @@ en:{title:'Trashy: Trash sorting AI',lang:'Language',loading:'Loading…',
  errNet:'Couldn’t load the image engine. Reload the page to try again.',
  ready:n=>`<b>Ready</b> with ${n} categories`,readyM:n=>`<b>Ready</b> · ${n}`,loadingM:(n,p)=>`Loading ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Couldn’t load ${n}`,
  switched:n=>`Now I’m ${n}. Send me a picture.`,switchFail:(n,o)=>`I couldn’t load ${n}. Check your internet and try again. I’m still ${o}.`,
- mModel:'Model',dT01:'Finds more items',dAxel:'Fewer extra boxes',dCaracas:'Biggest model, 41 MB, slower',
+ mModel:'Model',dT01:'Finds more items',sLow:'Low',sMid:'Middle',sHigh:'High',dAxel:'Fewer extra boxes',dCaracas:'Biggest model, 41 MB, slower',
  greet:n=>`Hi, I’m ${n}. Send me a picture of some trash, even with a few different items, and I’ll tell you what I see.`,
  how:['How it works','You send me a picture of an item.','I look for items in it and compare each one with what I learned in training.','I draw a box around each item and tell you the category and how sure I am.'],
  sure:n=>`That’s ${n}.`,likely:n=>`Looks like ${n}.`,unsure:n=>`Hmm, maybe ${n}? I’m not sure.`,
@@ -536,7 +542,7 @@ de:{title:'Trashy: KI zum Mülltrennen',lang:'Sprache',loading:'Wird geladen…'
  errNet:'Die Bilderkennung konnte nicht geladen werden. Lade die Seite neu und versuch es nochmal.',
  ready:n=>`<b>Bereit</b> mit ${n} Kategorien`,readyM:n=>`<b>Bereit</b> · ${n}`,loadingM:(n,p)=>`${n} wird geladen…${p==null?'':' '+p+'%'}`,errSwitch:n=>`${n} konnte nicht geladen werden`,
  switched:n=>`Jetzt bin ich ${n}. Schick mir ein Foto.`,switchFail:(n,o)=>`Ich konnte ${n} nicht laden. Prüfe deine Internetverbindung und versuch es nochmal. Ich bin weiterhin ${o}.`,
- mModel:'Modell',dT01:'Findet mehr Gegenstände',dAxel:'Weniger falsche Rahmen',dCaracas:'Größtes Modell, 41 MB, langsamer',
+ mModel:'Modell',dT01:'Findet mehr Gegenstände',sLow:'Niedrig',sMid:'Mittel',sHigh:'Hoch',dAxel:'Weniger falsche Rahmen',dCaracas:'Größtes Modell, 41 MB, langsamer',
  greet:n=>`Hi, ich bin ${n}. Schick mir ein Foto von deinem Müll, gerne auch mit mehreren Sachen, und ich sage dir, was ich sehe.`,
  how:['So funktioniert’s','Du schickst mir ein Foto.','Ich suche die Gegenstände darauf und vergleiche jeden mit dem, was ich im Training gelernt habe.','Ich zeichne einen Rahmen um jeden Gegenstand und sage dir die Kategorie und wie sicher ich bin.'],
  sure:n=>`Das ist ${n}.`,likely:n=>`Sieht aus wie ${n}.`,unsure:n=>`Hmm, vielleicht ${n}? Ich bin mir nicht sicher.`,
@@ -566,7 +572,7 @@ ru:{title:'Trashy: ИИ для сортировки мусора',lang:'Язык
  errNet:'Не удалось загрузить распознавание изображений. Перезагрузите страницу и попробуйте снова.',
  ready:n=>`<b>Готов</b> · категорий: ${n}`,readyM:n=>`<b>Готов</b> · ${n}`,loadingM:(n,p)=>`Загрузка ${n}…${p==null?'':' '+p+'%'}`,errSwitch:n=>`Не удалось загрузить ${n}`,
  switched:n=>`Теперь я ${n}. Пришлите мне фото.`,switchFail:(n,o)=>`Не удалось загрузить ${n}. Проверьте интернет и попробуйте снова. Я по-прежнему ${o}.`,
- mModel:'Модель',dT01:'Находит больше предметов',dAxel:'Меньше лишних рамок',dCaracas:'Самая большая модель, 41 МБ, медленнее',
+ mModel:'Модель',dT01:'Находит больше предметов',sLow:'Низкий',sMid:'Средний',sHigh:'Высокий',dAxel:'Меньше лишних рамок',dCaracas:'Самая большая модель, 41 МБ, медленнее',
  greet:n=>`Привет, я ${n}. Пришлите мне фото мусора, можно сразу с несколькими предметами, и я скажу, что вижу.`,
  how:['Как это работает','Вы отправляете мне фото.','Я ищу на нём предметы и сравниваю каждый с тем, чему научился.','Я обвожу каждый предмет рамкой и называю категорию и насколько я уверен.'],
  sure:n=>`Это ${n}.`,likely:n=>`Похоже, это ${n}.`,unsure:n=>`Хм, может быть, ${n}? Я не уверен.`,
@@ -605,6 +611,7 @@ function applyLang(){
  document.querySelectorAll('[data-i18n]').forEach(e=>{if(e.id!=='status')e.innerHTML=tr(e.dataset.i18n)});
  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',tr(e.dataset.i18nAria)));
  status(...S.status);syncExport();
+ if($('detNote').textContent)markDetMenu();
  if($('instDlg').open)fillInstall();
 }
 function setLang(l){
@@ -998,7 +1005,17 @@ const DET_MODELS=[{id:'t01',name:'Trashy-0.1',dir:'models/trashy-detector/'},{id
 const modelById=id=>DET_MODELS.find(m=>m.id===id)||DET_MODELS[0];
 S.det.id=modelById(store.get('trashy-model')).id;
 const botName=()=>FILE?DET_MODELS[0].name:modelById(S.det.id).name;
-function markDetMenu(){$('detMenu').querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.m===S.det.id))}
+const DET_NOTES={t01:'dT01',axel1:'dAxel',caracas1:'dCaracas'};
+function markDetMenu(){
+ const sl=$('detSlider'),i=Math.max(0,DET_MODELS.findIndex(m=>m.id===S.det.id));
+ if(sl){sl.setAttribute('value',i);sl.setAttribute('label',tr('mModel'))}
+ $('detNote').textContent=tr(DET_NOTES[S.det.id]||'dT01');
+}
+/* picking happens when the thumb is let go (or with the arrow keys), so a fast drag across does not load every model */
+function slideTo(i){const m=DET_MODELS[i];if(m&&m.id!==S.det.id){pickDetector(m.id);setTimeout(()=>menu(false),650)}}
+$('detSlider').addEventListener('change',e=>slideTo(+e.currentTarget.value));
+/* the Low / Middle / High words under the stops also move the thumb (the slider itself handles the keyboard) */
+$('detMenu').querySelectorAll('.scale span').forEach((s,i)=>s.onclick=()=>{$('detSlider').value=i;slideTo(i)});
 async function loadOrt(){
  await script('lib/ort/ort.wasm.min.js');
  ort.env.wasm.wasmPaths=new URL('lib/ort/',location.href).href;
